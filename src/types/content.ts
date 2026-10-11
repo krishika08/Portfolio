@@ -145,4 +145,14 @@ export interface Profile {
 export interface NavItem {
   label: string;
   href: string;
+  /** Home-page section id this item scrolls to; drives the active state. */
+  section?: string;
+  /** Route prefix that also marks this item active, e.g. "/projects". */
+  activePrefix?: string;
+}
+
+export interface SocialLink {
+  id: "github" | "linkedin" | "email";
+  label: string;
+  href: string;
 }

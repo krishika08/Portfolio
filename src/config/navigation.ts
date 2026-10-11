@@ -1,15 +1,23 @@
-import { profile } from "@/content/profile";
+import { routes } from "@/config/routes";
 import type { NavItem } from "@/types/content";
 
-// Primary navigation lists only destinations that exist. Section anchors
-// (e.g. "/#work") are added when those sections are built.
-export const primaryNavigation: NavItem[] = [];
+/**
+ * Home-page section ids. Sections built in later phases must use these ids
+ * so navigation anchors and the active state resolve. Until a section
+ * exists, its nav link points at a not-yet-present anchor.
+ */
+export const sectionIds = {
+  work: "work",
+  experience: "experience",
+  about: "about",
+  contact: "contact",
+} as const;
 
-// Resume and contact entries appear automatically once verified values
-// are added to `src/content/profile.ts`.
-export const utilityNavigation: NavItem[] = [
-  ...(profile.resume ? [{ label: "Resume", href: profile.resume }] : []),
-  ...(profile.contact.email
-    ? [{ label: "Contact", href: `mailto:${profile.contact.email}` }]
-    : []),
+const sectionHref = (id: string) => `${routes.home}#${id}`;
+
+export const primaryNavigation: NavItem[] = [
+  { label: "Work", href: sectionHref(sectionIds.work), section: sectionIds.work, activePrefix: "/projects" },
+  { label: "Experience", href: sectionHref(sectionIds.experience), section: sectionIds.experience },
+  { label: "About", href: sectionHref(sectionIds.about), section: sectionIds.about },
+  { label: "Contact", href: sectionHref(sectionIds.contact), section: sectionIds.contact },
 ];

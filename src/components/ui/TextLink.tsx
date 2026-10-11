@@ -2,11 +2,11 @@ import { BaseLink, type BaseLinkProps } from "@/components/ui/BaseLink";
 import { cn } from "@/lib/cn";
 
 const variants = {
-  /** Underlined; for links inside running text. */
+  /** Underlined accent; for links inside running text. */
   inline:
-    "text-interactive underline decoration-1 underline-offset-4 hover:text-interactive-hover hover:decoration-2",
+    "text-accent underline decoration-1 underline-offset-4 hover:text-accent-hover hover:decoration-2",
   /** No underline until hover; for navigation and lists of links. */
-  plain: "text-foreground underline-offset-4 hover:text-interactive hover:underline",
+  plain: "text-foreground underline-offset-4 hover:text-accent hover:underline",
 } as const;
 
 interface TextLinkProps extends BaseLinkProps {

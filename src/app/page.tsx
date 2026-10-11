@@ -16,7 +16,7 @@ export default function HomePage() {
         <Heading level={1} id="page-title">
           {profile.name}
         </Heading>
-        <Text size="lead" tone="muted" className="mt-4 max-w-reading">
+        <Text size="lead" tone="secondary" className="mt-4 max-w-reading">
           {profile.positioning}
         </Text>
       </Container>

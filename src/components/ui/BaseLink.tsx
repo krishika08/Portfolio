@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
-import { isExternalHref } from "@/lib/url";
+import { isExternalHref, isFileHref } from "@/lib/url";
 
 export interface BaseLinkProps extends Omit<ComponentPropsWithoutRef<"a">, "href"> {
   href: string;
@@ -9,12 +9,13 @@ export interface BaseLinkProps extends Omit<ComponentPropsWithoutRef<"a">, "href
 }
 
 /**
- * Unstyled link. Internal paths use next/link (client navigation + prefetch);
- * external URLs, mailto: and tel: render a plain <a>.
+ * Unstyled link. App routes use next/link (client navigation + prefetch);
+ * external URLs, mailto:, tel: and static files (e.g. a resume PDF) render a
+ * plain <a>.
  * Styled links (TextLink, ButtonLink) compose this.
  */
 export function BaseLink({ href, newTab = false, children, ...props }: BaseLinkProps) {
-  if (!isExternalHref(href)) {
+  if (!isExternalHref(href) && !isFileHref(href)) {
     return (
       <Link href={href} {...props}>
         {children}

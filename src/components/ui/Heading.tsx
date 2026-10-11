@@ -1,12 +1,12 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
 
+// Weight, tracking and leading come from the text-* tokens.
 const sizes = {
-  display: "font-display text-display font-semibold",
-  h1: "font-display text-h1 font-semibold",
-  h2: "font-display text-h2 font-semibold",
-  h3: "text-h3 font-semibold",
-  h4: "text-h4 font-semibold",
+  display: "text-display",
+  h1: "text-h1",
+  h2: "text-h2",
+  h3: "text-h3",
 } as const;
 
 type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
@@ -16,9 +16,9 @@ const defaultSize: Record<HeadingLevel, HeadingSize> = {
   1: "h1",
   2: "h2",
   3: "h3",
-  4: "h4",
-  5: "h4",
-  6: "h4",
+  4: "h3",
+  5: "h3",
+  6: "h3",
 };
 
 interface HeadingProps extends ComponentPropsWithoutRef<"h2"> {
@@ -32,7 +32,11 @@ export function Heading({ level, size, className, ...props }: HeadingProps) {
   const Tag = `h${level}` as const;
   return (
     <Tag
-      className={cn("text-foreground", sizes[size ?? defaultSize[level]], className)}
+      className={cn(
+        "font-display text-foreground",
+        sizes[size ?? defaultSize[level]],
+        className,
+      )}
       {...props}
     />
   );

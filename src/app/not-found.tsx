@@ -18,10 +18,10 @@ export default function NotFound() {
         <Heading level={1} id="not-found-title">
           Page not found
         </Heading>
-        <Text tone="muted" className="mt-4">
+        <Text tone="secondary" className="mt-group">
           The page you are looking for does not exist or has moved.
         </Text>
-        <ButtonLink href={routes.home} variant="secondary" className="mt-8">
+        <ButtonLink href={routes.home} variant="secondary" className="mt-cluster">
           Back to home
         </ButtonLink>
       </Container>

@@ -3,13 +3,14 @@ import { cn } from "@/lib/cn";
 
 const sizes = {
   lead: "text-lead",
-  base: "text-base",
-  sm: "text-sm",
+  body: "text-body",
+  sm: "text-body-sm",
 } as const;
 
 const tones = {
   default: "text-foreground",
-  muted: "text-muted-foreground",
+  secondary: "text-foreground-secondary",
+  muted: "text-foreground-muted",
 } as const;
 
 interface TextProps extends ComponentPropsWithoutRef<"p"> {
@@ -20,7 +21,7 @@ interface TextProps extends ComponentPropsWithoutRef<"p"> {
 
 export function Text({
   as: Tag = "p",
-  size = "base",
+  size = "body",
   tone = "default",
   className,
   ...props
