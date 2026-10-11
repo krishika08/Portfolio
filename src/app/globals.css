@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Foundation tokens
+   --------------------------------------------------------------------------
+   Values are deliberately neutral placeholders. The final palette, type
+   pairing and spacing rhythm are set in the Design & UX phase by editing
+   values here; component code consumes semantic names only.
+   ========================================================================== */
+
+/* -- Semantic colors (raw values; light is the default) ------------------ */
+:root {
+  color-scheme: light dark;
+
+  --background: #fbfbfa;
+  --foreground: #18181b;
+  --muted: #f0f0ee;
+  --muted-foreground: #55555e;
+  --border: #dcdcd8;
+  --accent: #1e3a5f;
+  --accent-foreground: #ffffff;
+  --interactive: #1e4f8a;
+  --interactive-hover: #143762;
+  --focus: #2563eb;
+
+  /* Motion. Durations are CSS variables so components and future
+     animation code share one scale. */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f0f11;
+    --foreground: #ececee;
+    --muted: #1b1b1f;
+    --muted-foreground: #a3a3ad;
+    --border: #2e2e34;
+    --accent: #c9d8ee;
+    --accent-foreground: #0f0f11;
+    --interactive: #9cc1f0;
+    --interactive-hover: #c4dbf7;
+    --focus: #7fb0ff;
+  }
+}
+
+/* -- Tailwind theme mapping (utilities: bg-background, text-muted-foreground …) */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-interactive: var(--interactive);
+  --color-interactive-hover: var(--interactive-hover);
+  --color-focus: var(--focus);
+
+  /* One loaded family (see layout.tsx). `display` aliases `sans` so a
+     dedicated display face can be introduced later without touching
+     components. Mono uses the system stack: no network cost. */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@theme {
+  /* Fluid type scale: interpolates between ~375px and ~1440px viewports.
+     The rem term keeps text responsive to user zoom. */
+  --text-display: clamp(2.5rem, 1.7rem + 3.4vw, 4.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.025em;
+  --text-h1: clamp(2rem, 1.55rem + 1.9vw, 3.25rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: clamp(1.625rem, 1.35rem + 1.15vw, 2.25rem);
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.015em;
+  --text-h3: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --text-h3--line-height: 1.25;
+  --text-h4: 1.125rem;
+  --text-h4--line-height: 1.35;
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+
+  /* Layout spacing on top of Tailwind's 0.25rem scale.
+     gutter:  page side padding (16px → 40px)
+     section: vertical rhythm between page sections */
+  --spacing-gutter: clamp(1rem, 0.65rem + 1.5vw, 2.5rem);
+  --spacing-section: clamp(4rem, 2.9rem + 4.7vw, 8rem);
+  --spacing-section-compact: clamp(2.5rem, 2rem + 2.2vw, 4rem);
+
+  /* Container widths (max-w-reading, max-w-content, max-w-wide). */
+  --container-reading: 42rem;
+  --container-content: 72rem;
+  --container-wide: 90rem;
+
+  /* Motion defaults used by Tailwind `transition-*` utilities. */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    line-height: 1.6;
+    /* Long words and URLs wrap instead of widening the page. */
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+/* ==========================================================================
+   Motion
+   Smooth scrolling only when the user has not asked for reduced motion.
+   Under reduced motion all transitions/animations are effectively removed,
+   so later motion work is safe by default. Use Tailwind `motion-safe:` for
+   non-essential motion in components.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
