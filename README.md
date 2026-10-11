@@ -15,7 +15,7 @@ npm run typecheck
 ```text
 src/
   app/                     routes, root layout, globals.css (design tokens), robots, sitemap, icon
-    projects/[slug]        project detail route (case-study projects only)
+    projects/[slug]        project case-study route (projects with caseStudy data)
     (internal)/foundation  dev-only design-system reference (404 in production)
   components/
     ui/                    Level 1 primitives: Container, Heading, Text, BaseLink, TextLink,
@@ -25,6 +25,7 @@ src/
                            ProjectPreview, ProjectLinks, ExperienceItem
     sections/              Level 3 home-page compositions: Hero, SelectedWork, EngineeringFocus,
                            Experience, Education, About, Contact
+    case-study/            project page composition: header, section, figure, gallery, points, pager
     layout/                app shell: SkipLink, SiteHeader (server) → SiteNav (client), SiteFooter
   config/                  site (URL, metadata defaults), routes, navigation (+ section ids)
   content/                 verified content only: profile, projects, experience, education, skills
@@ -56,6 +57,18 @@ src/content/*.ts  →  src/types/content.ts  →  src/lib/content.ts (selectors)
 - **Project detail rule:** `hasCaseStudy(project)` (in `lib/content.ts`) decides whether a project has a detail page, a sitemap entry and "Read case study" links. Add `caseStudy` content to a project and all three appear; every other slug returns 404.
 - **Project hierarchy** comes from `tier` (`flagship` / `supporting` / `additional`) and `order` — never from project names.
 - **Metadata ownership:** the root layout owns the defaults (title template, description, `metadataBase`, Open Graph base, icon). Each route calls `createPageMetadata({ title, description, path, image })` for its canonical URL and social preview; project pages use the project's `assets.cover`.
+
+## Case studies
+
+Every project with `caseStudy` data gets `/projects/[slug]` (static), a sitemap entry, "Read case study" links and a place in the previous/next pager. One page composition (`app/projects/[slug]/page.tsx`) renders every project; the components live in `components/case-study/`.
+
+- **Narrative order:** Overview → The problem → What it does → In the product → Architecture → Engineering decisions → Challenges → Outcomes → What I learned. A stage renders only when its data exists, and the stage numbers follow what is present.
+- **Data:** `overview` is required; `context`, `highlights`, `gallery`, `architecture` (summary + figure), `decisions`, `challenges`, `outcomes`, `learnings` and `sources` are optional. Wrap code identifiers in backticks to set them as code.
+- **Emphasis** comes from `tier`: the flagship gets the display-size title and a wide opening image.
+- **Evidence rule:** every statement must trace to the resume, owner-supplied material, or the project's own repository checked against its code. List the sources in `sources`; they are shown on the page. Omit a stage rather than fill it.
+- **Media:** real screens and diagrams only, in `public/images/projects/<slug>/`, with width and height. Diagrams need a `description` (a visible text equivalent). Figures never render wider than their source.
+
+Adding a project: add an entry to `content/projects.ts` with a `tier`, an `order` and a `caseStudy`. The homepage, project page, pager, sitemap and metadata pick it up with no code changes.
 
 ## Assets
 

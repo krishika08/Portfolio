@@ -16,9 +16,14 @@ export function getFlagshipProject(): Project | undefined {
   return getProjects().find((project) => project.tier === "flagship");
 }
 
-/** Every non-flagship project, in display order. */
+/** Projects with tier "supporting", in display order. */
 export function getSupportingProjects(): Project[] {
-  return getProjects().filter((project) => project.tier !== "flagship");
+  return getProjects().filter((project) => project.tier === "supporting");
+}
+
+/** Lower-emphasis projects (tier "additional"), in display order. */
+export function getAdditionalProjects(): Project[] {
+  return getProjects().filter((project) => project.tier === "additional");
 }
 
 export function getProjectBySlug(slug: string): Project | undefined {
@@ -43,6 +48,20 @@ export function getCaseStudyProjects(): Project[] {
 export function getCaseStudyProject(slug: string): Project | undefined {
   const project = getProjectBySlug(slug);
   return project && hasCaseStudy(project) ? project : undefined;
+}
+
+/**
+ * Previous and next projects with detail pages, in display order, wrapping
+ * around so every project page leads somewhere. Undefined when alone.
+ */
+export function getAdjacentCaseStudies(slug: string): { previous?: Project; next?: Project } {
+  const list = getCaseStudyProjects();
+  const index = list.findIndex((project) => project.slug === slug);
+  if (index === -1 || list.length < 2) return {};
+  return {
+    previous: list[(index - 1 + list.length) % list.length],
+    next: list[(index + 1) % list.length],
+  };
 }
 
 export function getExperience(): Experience[] {

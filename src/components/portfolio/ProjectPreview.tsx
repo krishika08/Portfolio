@@ -22,7 +22,8 @@ interface ProjectPreviewProps {
 /**
  * Project summary driven entirely by `Project` data. Emphasis follows
  * `project.tier`: the flagship gets an open, asymmetric editorial layout with
- * a technical detail row; other projects get a compact bordered card. Media,
+ * a technical detail row; supporting projects get a compact bordered card;
+ * additional projects get a quiet ruled row without media. Media,
  * links and the case-study entry point render only when present in the data;
  * without a cover, cards show the project's verified capabilities instead.
  */
@@ -77,6 +78,28 @@ export function ProjectPreview({
               ...(project.role ? [{ label: "Role", value: project.role }] : []),
             ]}
           />
+        </Grid>
+      </article>
+    );
+  }
+
+  if (project.tier === "additional") {
+    return (
+      <article aria-labelledby={titleId} className={cn("border-t border-border pt-cluster", className)}>
+        <Grid className="gap-y-group">
+          <div className="col-span-full flex flex-col gap-group md:col-span-3 lg:col-span-4">
+            {index !== undefined && <ProgressionMarker index={index} />}
+            <Heading level={headingLevel} size="h3" id={titleId}>
+              {project.name}
+            </Heading>
+          </div>
+          <div className="col-span-full flex flex-col gap-group md:col-span-5 lg:col-span-7 lg:col-start-6">
+            <Text tone="secondary" className="max-w-reading">
+              {project.summary}
+            </Text>
+            <TechnologyList items={project.technologies} label={`${project.name} technologies`} />
+            <ProjectLinks project={project} className="pt-tight" />
+          </div>
         </Grid>
       </article>
     );

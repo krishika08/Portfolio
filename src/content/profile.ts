@@ -12,7 +12,7 @@ export const profile: Profile = {
   interests: ["Backend engineering", "Distributed systems", "Reliable software", "Scalable software"],
   about: [
     "I’m a third-year Computer Science student at the University of Petroleum and Energy Studies, Dehradun, in the B.Tech class of 2028.",
-    "My work so far has been full-stack: production web applications during my internship at Crobstacle Ventures LLP, and projects built with Next.js, including VeyloPrep, which runs on the web and as a signed Android build.",
+    "My work so far has been full-stack: production web applications during my internship at Crobstacle Ventures LLP, and projects such as VeyloPrep, which runs on the web and as a signed Android build.",
     "I’m heading toward backend engineering and the systems behind reliable, scalable software, building from the fundamentals: data structures and algorithms, databases, operating systems and computer networks.",
   ],
   // Add only verified values; never placeholders.

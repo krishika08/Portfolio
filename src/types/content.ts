@@ -41,20 +41,42 @@ export interface ProjectLinks {
   repository?: string;
 }
 
+/** An image with its explanation. Diagrams need `description`: a text equivalent. */
+export interface CaseStudyFigure {
+  image: ImageAsset;
+  caption: string;
+  description?: string;
+}
+
+/** A titled point (decision, challenge) with its explanation. */
+export interface CaseStudyPoint {
+  title: string;
+  detail: string;
+}
+
 /**
- * Extended case-study content. Every field is optional so a case study can be
- * written incrementally. A project gets a detail page (/projects/[slug]), a
- * sitemap entry and "Read case study" links only when this exists.
+ * Case-study content. A project gets a detail page (/projects/[slug]), a
+ * sitemap entry and "Read case study" links only when this exists. Only
+ * `overview` is required; every other section renders only when present.
+ * Every statement must trace to a source listed in `sources`, the resume or
+ * owner-supplied material — omit a section rather than fill it.
  */
 export interface ProjectCaseStudy {
-  problem?: string;
-  approach?: string;
-  architecture?: string[];
-  decisions?: { title: string; detail: string }[];
-  challenges?: { title: string; detail: string }[];
+  /** What the project is and how it is built. First paragraph leads. */
+  overview: string[];
+  /** The problem it addresses, as stated in the project's own documentation. */
+  context?: string;
+  /** Verified capabilities grouped by theme. */
+  highlights?: { title: string; items: string[] }[];
+  /** Real product screens. */
+  gallery?: CaseStudyFigure[];
+  architecture?: { summary: string[]; figure?: CaseStudyFigure };
+  decisions?: CaseStudyPoint[];
+  challenges?: CaseStudyPoint[];
   outcomes?: string[];
   learnings?: string[];
-  media?: ImageAsset[];
+  /** Where the evidence on the page comes from (shown to readers). */
+  sources?: string[];
 }
 
 export interface Project {
@@ -66,6 +88,8 @@ export interface Project {
   /** Verified capabilities, used as evidence for skills and claims. */
   capabilities: string[];
   technologies: string[];
+  /** Where it runs, e.g. ["Web", "Android"]. */
+  platforms?: string[];
   role?: string;
   links: ProjectLinks;
   assets?: {

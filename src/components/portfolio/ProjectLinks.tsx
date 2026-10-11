@@ -41,7 +41,7 @@ export function ProjectLinks({ project, emphasis = "secondary", showCaseStudy = 
         </ButtonLink>
       )}
       {repository && (
-        <ButtonLink href={repository} newTab variant="text" size="sm">
+        <ButtonLink href={repository} newTab variant={caseStudy || live ? "text" : "secondary"} size="sm">
           Source{forProject}
           <Icon name="arrow-up-right" />
         </ButtonLink>
