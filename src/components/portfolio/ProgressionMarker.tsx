@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 interface ProgressionMarkerProps {
   /** 1-based position in a sequence; rendered zero-padded ("01"). */
   index: number;
-  /** Sequence length; renders "01/04" when set. */
+  /** Sequence length; renders "01 / 04" when set. */
   total?: number;
   /** Visible label after the counter, e.g. a section or stage name. */
   label?: string;
@@ -15,20 +15,21 @@ interface ProgressionMarkerProps {
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * The portfolio's chapter counter: two offset cobalt squares and a
- * condensed "01/04" index, marking progression through a sequence
- * (project chapters, case-study stages). The numbers are decorative and
- * hidden from assistive technology; the label is read normally.
+ * The portfolio's figure counter: a cobalt tick, then a mono "01 / 04" in
+ * the manner of drawing-sheet numbering. Marks progression through a
+ * sequence (project chapters, case-study stages). The numbers are
+ * decorative and hidden from assistive technology; the label is read
+ * normally.
  */
 export function ProgressionMarker({ index, total, label, current = false, className }: ProgressionMarkerProps) {
   return (
-    <div className={cn("flex items-center gap-tight", className)}>
-      <span aria-hidden className="chapter-squares" />
-      <span aria-hidden className={cn("font-display text-[1.375rem] leading-none", current ? "text-accent" : "text-foreground")}>
+    <div className={cn("flex items-center gap-tight font-mono text-meta tracking-[0.12em]", className)}>
+      <span aria-hidden className="h-3 w-px bg-accent" />
+      <span aria-hidden className={current ? "text-accent" : "text-foreground"}>
         {pad(index)}
-        {total !== undefined && <span className="text-foreground-muted">/{pad(total)}</span>}
+        {total !== undefined && <span className="text-foreground-muted"> / {pad(total)}</span>}
       </span>
-      {label && <span className="ml-micro font-mono text-eyebrow text-foreground-secondary uppercase">{label}</span>}
+      {label && <span className="ml-micro text-eyebrow text-foreground-secondary uppercase">{label}</span>}
     </div>
   );
 }

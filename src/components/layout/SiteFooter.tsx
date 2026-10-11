@@ -8,16 +8,16 @@ import { siteConfig } from "@/config/site";
 import { profile } from "@/content/profile";
 import { getSocialLinks } from "@/lib/content";
 
-// Concise footer: identity, section links, resume (when available) and
-// verified profiles, closed by an oversized wordmark. Rendered on every page.
+// Concise footer set as a drawing title block: identity, section links,
+// resume (when available) and verified profiles. Rendered on every page.
 export function SiteFooter() {
   return (
-    <footer className="relative isolate overflow-hidden border-t border-border-subtle bg-surface">
-      <Container className="pt-block">
+    <footer className="relative isolate border-t border-border-strong bg-surface">
+      <Container className="py-block">
         <Grid className="gap-y-cluster">
           <div className="col-span-full md:col-span-4 lg:col-span-6">
             <p className="flex items-center gap-tight font-display text-h2 text-foreground">
-              <span aria-hidden className="chapter-squares" />
+              <span aria-hidden className="h-6 w-px bg-accent" />
               {siteConfig.name}
             </p>
             <Text size="sm" tone="secondary" className="mt-tight">
@@ -28,11 +28,7 @@ export function SiteFooter() {
             <ul>
               {primaryNavigation.map((item) => (
                 <li key={item.href}>
-                  <TextLink
-                    href={item.href}
-                    variant="plain"
-                    className="inline-flex min-h-11 items-center font-display text-[1.125rem] tracking-[0.03em]"
-                  >
+                  <TextLink href={item.href} variant="plain" className="inline-flex min-h-11 items-center text-body-sm">
                     {item.label}
                   </TextLink>
                 </li>
@@ -48,17 +44,10 @@ export function SiteFooter() {
             <SocialLinks links={getSocialLinks()} variant="text" className="flex-col items-start gap-y-0!" />
           </div>
         </Grid>
-        <Text size="sm" tone="muted" className="mt-block">
+        <Text size="sm" tone="muted" className="mt-block border-t border-border pt-group">
           © {new Date().getFullYear()} {siteConfig.name}
         </Text>
       </Container>
-      {/* Oversized wordmark, cut off by the page edge. */}
-      <p
-        aria-hidden
-        className="mt-cluster -mb-[0.2em] text-center font-display text-[clamp(6rem,1rem+22vw,24rem)] leading-[0.8] text-transparent select-none [-webkit-text-stroke:1px_rgb(255_255_255/0.12)]"
-      >
-        {siteConfig.name}
-      </p>
     </footer>
   );
 }

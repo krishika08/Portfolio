@@ -27,11 +27,14 @@ export function CaseStudySection({ id, index, title, children, wide, tone = "pla
   return (
     <section
       aria-labelledby={id}
-      className={cn("border-t border-border-subtle py-section-compact", tone === "surface" && "bg-surface")}
+      className={cn(
+        "relative border-t border-border-subtle py-section-compact",
+        tone === "surface" && "border-y border-border bg-surface",
+      )}
     >
       <Container>
         <Grid className="gap-y-cluster">
-          <div className="col-span-full lg:col-span-4">
+          <div className="col-span-full lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:col-span-4 lg:self-start">
             <ProgressionMarker index={index} />
             <Heading level={2} size="h2" id={id} className="mt-group">
               {title}

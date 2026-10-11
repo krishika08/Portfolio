@@ -1,19 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Sans } from "next/font/google";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { MotionLayer } from "@/components/motion/MotionLayer";
 import { siteConfig } from "@/config/site";
 import { baseOpenGraph } from "@/lib/metadata";
 import "./globals.css";
 
-// Self-hosted by next/font: no runtime request to Google, and metric-matched
-// fallbacks limit layout shift. Anton (condensed display caps) has a single
-// weight; Geist and Geist Mono are variable.
-const display = Anton({
+// Three variable fonts (one file each, all weights), self-hosted by next/font:
+// no runtime request to Google, and metric-matched fallbacks limit layout shift.
+const display = Instrument_Sans({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-anton",
+  variable: "--font-instrument-sans",
   display: "swap",
 });
 
@@ -63,10 +62,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
-      <body className="flex min-h-dvh flex-col bg-background font-sans text-body text-foreground antialiased">
+      <body className="flex min-h-dvh flex-col font-sans text-body text-foreground antialiased">
         <SkipLink />
-        {/* Reading progress, driven by a CSS scroll timeline. */}
-        <div aria-hidden className="scroll-progress" />
+        {/* Reading progress, cursor reticle and grid spotlight (MotionLayer). */}
+        <MotionLayer />
         <SiteHeader />
         {/* overflow-x: clip keeps 3D reveals and tilts from widening the page
             without creating a scroll container. */}

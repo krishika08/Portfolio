@@ -1,0 +1,314 @@
+/* ==========================================================================
+   About: section-scoped styles (CSS Module; nothing here reaches other
+   sections).
+
+   Motion rules are gated on html.motion-ready, which MotionLayer sets only
+   when motion is allowed. Elements flagged data-reveal get data-visible
+   once they enter the viewport, and each plays once. Before that (and
+   without JavaScript, or under reduced motion) everything is visible.
+   ========================================================================== */
+
+/* -- The statement ------------------------------------------------------ */
+
+.statement {
+  margin: 0;
+  max-width: 40rem;
+}
+
+/* Primary clause: runs to the end of the last highlighted phrase. */
+.lead {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.1rem + 2.3vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+
+/* Supporting clause: the same sentence, one tier down, never faded. */
+.support {
+  display: block;
+  max-width: 34rem;
+  margin-top: clamp(1rem, 0.7rem + 1.2vw, 1.75rem);
+  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+  color: var(--foreground-secondary);
+  text-wrap: pretty;
+}
+
+/* A word, in its own mask, so it can rise out of it. */
+.w {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+
+.wi {
+  display: inline-block;
+}
+
+/* A highlighted phrase: lime, with a rule beneath that draws in. */
+.hl {
+  color: var(--signal);
+  background-image: linear-gradient(var(--signal), var(--signal));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% max(2px, 0.05em);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* -- The portrait ------------------------------------------------------- */
+
+.stageWrap {
+  /* Room for the offset frame and marker to the right and below. */
+  padding: 0 1.5rem 1.5rem 0;
+}
+
+.stage {
+  position: relative;
+  width: min(100%, 25rem);
+  aspect-ratio: 4 / 5;
+}
+
+/* A patch of graph paper the portrait is pinned to; fades out at the edges. */
+.paper {
+  position: absolute;
+  inset: -3.5rem;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(79 127 255 / 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(79 127 255 / 0.28) 1px, transparent 1px);
+  background-size: 1.5rem 1.5rem;
+  /* Full strength at the photograph's edge, fading to nothing outside it. */
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 3.5rem, #000 calc(100% - 3.5rem), transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 3.5rem, #000 calc(100% - 3.5rem), transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  transform: translateZ(-40px);
+}
+
+/* An offset outline, drawn rather than faded. */
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  transform: translate(1.125rem, 1.125rem) translateZ(-20px);
+}
+
+.frame rect {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  background: var(--surface-secondary);
+  clip-path: inset(0);
+}
+
+.photo img {
+  object-fit: cover;
+  object-position: 50% 24%;
+}
+
+/* A small registration square where the offset frame closes. */
+.marker {
+  position: absolute;
+  right: -1.125rem;
+  bottom: -1.125rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--accent);
+  transform: translateZ(30px);
+}
+
+/* -- Interests ---------------------------------------------------------- */
+
+.interests {
+  position: relative;
+  padding-top: 1.25rem;
+}
+
+/* The divider: a hairline with a short cobalt segment at its start. */
+.interests::before,
+.interests::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  transform-origin: 0 50%;
+}
+
+.interests::before {
+  top: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+.interests::after {
+  top: -1px;
+  width: 3rem;
+  height: 3px;
+  background: var(--accent);
+}
+
+/* -- Motion (once, on first sight) -------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Statement: words rise, then the highlights light up and underline. */
+  :global(.motion-ready) .statement:not([data-visible]) .wi {
+    transform: translateY(118%);
+  }
+
+  :global(.motion-ready) .statement[data-visible="true"] .wi {
+    animation: wordUp 950ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 32ms + 120ms);
+  }
+
+  :global(.motion-ready) .statement:not([data-visible]) .hl {
+    color: var(--foreground);
+    background-size: 0% max(2px, 0.05em);
+  }
+
+  :global(.motion-ready) .statement[data-visible="true"] .hl {
+    transition:
+      color 600ms ease,
+      background-size 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i) * 32ms + 650ms);
+  }
+
+  /* Portrait: revealed upward through a mask while the image settles. */
+  :global(.motion-ready) .stageWrap:not([data-visible]) .photo {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .photo img {
+    transform: scale(1.16);
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .photo {
+    animation: photoReveal 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .photo img {
+    animation: photoSettle 1800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Then the frame draws itself, the graph paper fades in, the marker lands. */
+  :global(.motion-ready) .stageWrap:not([data-visible]) .frame rect {
+    stroke-dashoffset: 1;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .frame rect {
+    animation: frameDraw 1500ms cubic-bezier(0.65, 0, 0.35, 1) 500ms both;
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .paper {
+    opacity: 0;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .paper {
+    animation: fadeIn 1800ms ease 300ms both;
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .marker {
+    opacity: 0;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .marker {
+    animation: markerLand 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 1700ms both;
+  }
+
+  /* Interests: the divider draws, then the line rises. */
+  :global(.motion-ready) .interests:not([data-visible])::before,
+  :global(.motion-ready) .interests:not([data-visible])::after {
+    transform: scaleX(0);
+  }
+
+  :global(.motion-ready) .interests:not([data-visible]) dl {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  :global(.motion-ready) .interests[data-visible="true"]::before {
+    animation: drawX 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  :global(.motion-ready) .interests[data-visible="true"]::after {
+    animation: drawX 900ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+  }
+
+  :global(.motion-ready) .interests[data-visible="true"] dl {
+    animation: lineRise 900ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both;
+  }
+}
+
+@keyframes wordUp {
+  from {
+    transform: translateY(118%);
+  }
+}
+
+@keyframes photoReveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes photoSettle {
+  from {
+    transform: scale(1.16);
+  }
+}
+
+@keyframes frameDraw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes markerLand {
+  from {
+    opacity: 0;
+    transform: translateZ(30px) scale(0.2);
+  }
+}
+
+@keyframes drawX {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes lineRise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}

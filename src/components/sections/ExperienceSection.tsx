@@ -1,25 +1,27 @@
 import { ExperienceItem } from "@/components/portfolio/ExperienceItem";
 import { SectionHeader } from "@/components/portfolio/SectionHeader";
-import { Watermark } from "@/components/portfolio/Watermark";
+import { SheetRule } from "@/components/portfolio/SheetRule";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { sectionIds } from "@/config/navigation";
 import { getExperience } from "@/lib/content";
 
-// Calendar-style rows, most recent first; `featured` roles carry more weight.
+// A timeline, most recent first: the line fills as the section scrolls
+// through view, and each role hangs from a node on it. `featured` roles
+// carry more weight.
 export function ExperienceSection() {
   return (
     <Section id={sectionIds.experience} aria-labelledby="experience-title" className="relative isolate">
-      <Watermark text="Experience" className="top-[calc(var(--spacing-section)-0.5rem)]" />
       <Container>
+        <SheetRule className="mb-block" />
         <SectionHeader
           id="experience-title"
           title="Experience"
           description="Internships in production web development and frontend engineering."
         />
-        <ol className="mt-block flex flex-col gap-block">
+        <ol data-progress className="timeline mt-block flex flex-col gap-block">
           {getExperience().map((role) => (
-            <li key={role.id}>
+            <li key={role.id} className="timeline-node relative pl-8 md:pl-12">
               <ExperienceItem experience={role} className="reveal" />
             </li>
           ))}

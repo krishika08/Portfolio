@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SplitText } from "@/components/motion/SplitText";
 import { ProgressionMarker } from "@/components/portfolio/ProgressionMarker";
 import { Grid } from "@/components/ui/Grid";
 import { Heading } from "@/components/ui/Heading";
@@ -45,14 +46,15 @@ export function SectionHeader({
       <ProgressionMarker index={index} label={eyebrow} className="mb-group" />
     ) : eyebrow ? (
       <p className="mb-group flex items-center gap-tight font-mono text-eyebrow text-foreground-secondary uppercase">
-        <span aria-hidden className="chapter-squares scale-75" />
+        <span aria-hidden className="h-3 w-px bg-accent" />
         {eyebrow}
       </p>
     ) : null;
 
+  // The title's words rise out of masks as the heading scrolls into view.
   const heading = (
-    <Heading level={level} id={id} size={level === 2 ? size : "h2"}>
-      {title}
+    <Heading level={level} id={id} size={level === 2 ? size : "h2"} data-split>
+      <SplitText text={title} />
     </Heading>
   );
 

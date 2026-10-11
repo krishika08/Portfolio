@@ -95,14 +95,14 @@ export function SiteNav({ name, homeHref, items, resumeHref, social }: SiteNavPr
       <Container className="flex h-(--header-height) items-center justify-between gap-group">
         <BaseLink
           href={homeHref}
-          className="group -mx-micro inline-flex min-h-11 items-center gap-tight rounded-sm px-micro font-display text-[1.375rem] leading-none tracking-[0.02em] text-foreground"
+          className="group -mx-micro inline-flex min-h-11 items-center gap-tight rounded-sm px-micro font-display text-[1.1875rem] leading-none font-semibold tracking-[-0.02em] text-foreground"
         >
-          {/* Monogram: the first letter on a cobalt square. */}
+          {/* Monogram: the first letter, drawn as a registration mark. */}
           <span
             aria-hidden
-            className="grid size-8 place-items-center rounded-xs bg-accent text-[1.125rem] text-accent-foreground transition-transform duration-(--duration-standard) group-hover:-rotate-6"
+            className="relative grid size-8 place-items-center rounded-xs border border-accent text-[1rem] text-accent transition-[background-color,color,rotate] duration-(--duration-standard) group-hover:rotate-90 group-hover:bg-accent group-hover:text-accent-foreground"
           >
-            {name.charAt(0)}
+            <span className="transition-[rotate] duration-(--duration-standard) group-hover:-rotate-90">{name.charAt(0)}</span>
           </span>
           {name}
         </BaseLink>
@@ -143,10 +143,10 @@ export function SiteNav({ name, homeHref, items, resumeHref, social }: SiteNavPr
                       aria-current={current}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        "flex items-center rounded-sm font-display tracking-[0.03em] text-foreground-secondary transition-colors hover:text-foreground",
-                        "decoration-accent decoration-2 underline-offset-[0.35em] aria-[current]:text-foreground aria-[current]:underline",
-                        "max-md:min-h-14 max-md:border-b max-md:border-border-subtle max-md:text-h2",
-                        "md:min-h-11 md:text-[1.0625rem]",
+                        "flex items-center rounded-sm text-foreground-secondary transition-colors hover:text-foreground",
+                        "decoration-accent decoration-2 underline-offset-[0.5em] aria-[current]:text-foreground aria-[current]:underline",
+                        "max-md:min-h-14 max-md:border-b max-md:border-border-subtle max-md:font-display max-md:text-h2 max-md:font-semibold",
+                        "md:min-h-11 md:text-[0.9375rem] md:font-medium",
                       )}
                     >
                       {item.label}

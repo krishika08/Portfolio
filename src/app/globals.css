@@ -1,18 +1,16 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Design tokens — Premium Editorial Engineering
+   Design tokens — Blueprint
    --------------------------------------------------------------------------
-   Raw semantic variables live on :root and are the CSS API: use them as
-   `var(--accent)` in plain CSS or inline styles. The @theme blocks map them
-   to Tailwind utilities (bg-surface, text-foreground-secondary, …).
-   `--color-*` variables are Tailwind-internal and only emitted when used,
-   so never reference them directly.
+   The portfolio is drawn like an engineering sheet: near-black paper, a
+   graph-paper grid, cobalt ink for anything live, dimension lines, figure
+   labels and a title block. Raw semantic variables live on :root and are
+   the CSS API (`var(--accent)`); the @theme blocks map them to Tailwind
+   utilities. `--color-*` variables are Tailwind-internal: never reference
+   them directly.
    ========================================================================== */
 
-/* Dark identity: near-black body, graphite surfaces, signal cobalt. The
-   page structure (column rules, condensed caps display type, watermarks,
-   numbered chapters) follows a motorsport-editorial reference. */
 :root {
   color-scheme: dark;
 
@@ -32,30 +30,36 @@
   /* ≥3:1 on every surface; use where a border identifies a control. */
   --border-strong: #616161;
 
-  /* Signal cobalt: links, primary actions, highlights, focus. 5.5:1 on
-     background; button text #0d0d0d on it 5.4:1. */
+  /* Cobalt ink: links, primary actions, highlights, focus, live drawing.
+     5.5:1 on background; button text #0d0d0d on it 5.4:1. */
   --accent: #4f7fff;
   --accent-hover: #7d9fff;
   --accent-foreground: #0d0d0d;
-  --accent-soft: rgb(79 127 255 / 0.14);
+  --accent-soft: rgb(79 127 255 / 0.12);
   --accent-glow: rgb(79 127 255 / 0.45);
   --focus: #4f7fff;
+
+  /* Supporting accent: one citrus-lime, used only for emphasised phrases in
+     prose and a few sparks in the hero K. Never for controls or structure.
+     16:1 on background. */
+  --signal: #d6f24a;
 
   /* Status (text-safe on every surface). */
   --success: #3ecf8e;
   --warning: #f5a524;
   --error: #ff6b5e;
 
-  /* Column rules and blueprint grid. */
-  --grid-line: rgb(255 255 255 / 0.05);
-  --grid-line-strong: rgb(255 255 255 / 0.08);
+  /* Graph paper: minor and major rules. */
+  --grid-minor: rgb(255 255 255 / 0.028);
+  --grid-major: rgb(255 255 255 / 0.055);
+  --grid-size: 1.5rem;
 
   /* -- Motion: four levels; see README. -------------------------------- */
   --duration-instant: 80ms; /* L1 pressed */
   --duration-fast: 150ms; /* L1 hover / focus */
   --duration-standard: 240ms; /* L2 navigation, state changes */
   --duration-slow: 420ms; /* L3 reveal */
-  --duration-signature: 900ms; /* L4 hero entrance */
+  --duration-signature: 1000ms; /* L4 hero entrance, reveals */
 
   /* -- Layout ------------------------------------------------------------ */
   --header-height: 3.5rem;
@@ -81,14 +85,16 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
   --color-focus: var(--focus);
+  --color-signal: var(--signal);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
 
-  /* Display: Anton (condensed caps). Body/UI: Geist. Metadata: Geist Mono.
+  /* Display: Instrument Sans. Body/UI: Geist. Annotations: Geist Mono.
      Loaded once each by next/font in layout.tsx. */
-  --font-display: var(--font-anton), Impact, "Arial Narrow Bold", ui-sans-serif, sans-serif;
+  --font-display: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -96,29 +102,29 @@
 @theme {
   /* -- Typography ---------------------------------------------------------
      Fluid sizes interpolate between 375px and 1440px viewports; the rem
-     term keeps them responsive to user zoom. Hierarchy comes from size,
-     spacing and placement first — headings use medium weight. */
-  --text-display: clamp(3.5rem, 1.6rem + 8vw, 9rem);
-  --text-display--line-height: 0.88;
-  --text-display--letter-spacing: 0;
-  --text-display--font-weight: 400;
-  /* Project chapter titles: between h1 and display. */
-  --text-chapter: clamp(3.5rem, 2rem + 5vw, 6.5rem);
-  --text-chapter--line-height: 0.9;
-  --text-chapter--letter-spacing: 0;
-  --text-chapter--font-weight: 400;
-  --text-h1: clamp(2.75rem, 1.8rem + 4vw, 5.5rem);
-  --text-h1--line-height: 0.92;
-  --text-h1--letter-spacing: 0;
-  --text-h1--font-weight: 400;
-  --text-h2: clamp(2.125rem, 1.6rem + 2.25vw, 3.75rem);
-  --text-h2--line-height: 0.96;
-  --text-h2--letter-spacing: 0.005em;
-  --text-h2--font-weight: 400;
-  --text-h3: clamp(1.375rem, 1.2rem + 0.75vw, 1.875rem);
-  --text-h3--line-height: 1.05;
-  --text-h3--letter-spacing: 0.01em;
-  --text-h3--font-weight: 400;
+     term keeps them responsive to user zoom. Display sizes are set tight
+     and heavy; annotations are small mono capitals. */
+  --text-display: clamp(3.25rem, 1.5rem + 7.4vw, 8.25rem);
+  --text-display--line-height: 0.92;
+  --text-display--letter-spacing: -0.05em;
+  --text-display--font-weight: 600;
+  /* Project chapter titles. */
+  --text-chapter: clamp(2.75rem, 1.6rem + 4.9vw, 6rem);
+  --text-chapter--line-height: 0.95;
+  --text-chapter--letter-spacing: -0.045em;
+  --text-chapter--font-weight: 600;
+  --text-h1: clamp(2.375rem, 1.6rem + 3.3vw, 4.5rem);
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.04em;
+  --text-h1--font-weight: 600;
+  --text-h2: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.03em;
+  --text-h2--font-weight: 600;
+  --text-h3: clamp(1.25rem, 1.15rem + 0.45vw, 1.625rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.015em;
+  --text-h3--font-weight: 600;
   --text-lead: clamp(1.0625rem, 1rem + 0.28vw, 1.25rem);
   --text-lead--line-height: 1.6;
   --text-body: 1rem;
@@ -132,13 +138,12 @@
   --text-meta: 0.75rem; /* Geist Mono */
   --text-meta--line-height: 1.5;
   --text-meta--letter-spacing: 0.02em;
-  --text-eyebrow: 0.75rem; /* Geist Mono, uppercase: labels, eyebrows */
+  --text-eyebrow: 0.6875rem; /* Geist Mono capitals: annotations */
   --text-eyebrow--line-height: 1.5;
-  --text-eyebrow--letter-spacing: 0.08em;
-  --text-button: 1.0625rem; /* Anton caps */
-  --text-button--line-height: 1;
-  --text-button--letter-spacing: 0.03em;
-  --text-button--font-weight: 400;
+  --text-eyebrow--letter-spacing: 0.14em;
+  --text-button: 0.9375rem;
+  --text-button--line-height: 1.2;
+  --text-button--font-weight: 500;
 
   /* -- Spacing ------------------------------------------------------------
      Semantic steps on top of Tailwind's 0.25rem scale (p-micro, gap-group,
@@ -150,7 +155,7 @@
   --spacing-group: 1rem; /* 16px: related items */
   --spacing-cluster: clamp(1.5rem, 1.32rem + 0.75vw, 2rem); /* blocks in a group */
   --spacing-block: clamp(2.5rem, 2.06rem + 1.88vw, 4rem); /* distinct groups */
-  --spacing-section: clamp(4rem, 2.6rem + 6vw, 8rem); /* between sections */
+  --spacing-section: clamp(4.5rem, 2.8rem + 7vw, 9rem); /* between sections */
   --spacing-section-compact: clamp(2.5rem, 2rem + 2.2vw, 4rem);
   --spacing-break: clamp(6rem, 3.9rem + 9vw, 12rem); /* major narrative break */
   --spacing-gutter: clamp(1rem, 0.65rem + 1.5vw, 2.5rem); /* page side padding */
@@ -206,31 +211,25 @@
     overflow-wrap: break-word;
   }
 
-  /* Column rules: thin full-height verticals behind all content (four
-     columns on phones, seven from lg). Bands with their own background
-     cover them. */
+  /* Graph paper behind everything: minor squares and a major rule every
+     five. Bands with their own background cover it. */
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image: linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-    background-size: calc(100% / 4) 100%;
-    background-position: calc(100% / 4) 0;
-  }
-
-  @media (width >= 64rem) {
-    body::before {
-      background-size: calc(100% / 7) 100%;
-      background-position: calc(100% / 7) 0;
-    }
-  }
-
-  /* Display type is always condensed caps. Anton ships one weight. */
-  .font-display {
-    text-transform: uppercase;
-    font-weight: 400;
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(var(--grid-minor) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+    background-size:
+      calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+      calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+      var(--grid-size) var(--grid-size),
+      var(--grid-size) var(--grid-size);
+    mask-image: linear-gradient(to bottom, black, rgb(0 0 0 / 0.55));
   }
 
   h1,
@@ -264,35 +263,109 @@
 }
 
 /* ==========================================================================
-   Effects
-   Every effect is transform/opacity/filter only (no layout work),
-   decorative layers are aria-hidden, and all motion stops under reduced
-   motion.
+   Blueprint components
    ========================================================================== */
 @layer components {
+  /* -- Cursor spotlight: cobalt grid lit around the pointer --------------- */
+  .grid-spotlight {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 600ms var(--ease-standard);
+    background-image:
+      linear-gradient(rgb(79 127 255 / 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(79 127 255 / 0.22) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+    mask-image: radial-gradient(
+      15rem circle at var(--spot-x, -100rem) var(--spot-y, -100rem),
+      black,
+      transparent
+    );
+  }
+
+  .grid-spotlight[data-active="true"] {
+    opacity: 1;
+  }
+
+  /* -- Crosshair cursor (decorative; the system cursor stays) ------------ */
+  .cursor-reticle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 70;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: -1.125rem 0 0 -1.125rem;
+    pointer-events: none;
+    border: 1px solid rgb(79 127 255 / 0.7);
+    border-radius: 9999px;
+    opacity: 0;
+    transition:
+      opacity 300ms var(--ease-standard),
+      width 300ms var(--ease-emphasized),
+      height 300ms var(--ease-emphasized),
+      margin 300ms var(--ease-emphasized),
+      background-color 300ms var(--ease-standard);
+  }
+
+  /* Four ticks: a drafting reticle. */
+  .cursor-reticle::before,
+  .cursor-reticle::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+  }
+
+  .cursor-reticle::before {
+    top: 50%;
+    left: -0.5rem;
+    right: -0.5rem;
+    height: 1px;
+    mask-image: linear-gradient(90deg, black 0 0.5rem, transparent 0.5rem calc(100% - 0.5rem), black calc(100% - 0.5rem));
+  }
+
+  .cursor-reticle::after {
+    left: 50%;
+    top: -0.5rem;
+    bottom: -0.5rem;
+    width: 1px;
+    mask-image: linear-gradient(black 0 0.5rem, transparent 0.5rem calc(100% - 0.5rem), black calc(100% - 0.5rem));
+  }
+
+  .cursor-reticle[data-visible="true"] {
+    opacity: 1;
+  }
+
+  .cursor-reticle[data-hover="true"] {
+    width: 3.75rem;
+    height: 3.75rem;
+    margin: -1.875rem 0 0 -1.875rem;
+    background-color: rgb(79 127 255 / 0.1);
+  }
+
   /* -- 3D tilt (driven by <Tilt>; inert without a mouse) ------------------ */
   .tilt {
     position: relative;
-    transform: perspective(1100px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+      scale(var(--tilt-scale, 1));
     transform-style: preserve-3d;
-    transition: transform 700ms var(--ease-emphasized);
+    transition: transform 800ms var(--ease-emphasized);
   }
 
   .tilt[data-tilting="true"] {
-    transition-duration: 120ms;
+    --tilt-scale: 1.015;
+    transition-duration: 150ms;
   }
 
   /* Layers lifted off (or pushed behind) the tilting plane for parallax. */
   .depth-1 {
-    transform: translateZ(30px);
+    transform: translateZ(40px);
   }
 
   .depth-2 {
-    transform: translateZ(70px);
-  }
-
-  .depth-back {
-    transform: translateZ(-90px) scale(1.09);
+    transform: translateZ(90px);
   }
 
   .tilt-glare {
@@ -305,8 +378,8 @@
     transition: opacity 400ms var(--ease-standard);
     background: radial-gradient(
       circle at var(--glare-x, 50%) var(--glare-y, 50%),
-      rgb(255 255 255 / 0.13),
-      transparent 45%
+      rgb(255 255 255 / 0.14),
+      transparent 50%
     );
   }
 
@@ -314,138 +387,147 @@
     opacity: 1;
   }
 
-  /* -- Photography: monochrome at rest, colour on interaction ------------ */
-  .mono-media img {
-    filter: grayscale(1) contrast(1.06);
-    transition: filter 600ms var(--ease-standard);
+  /* -- Magnetic controls (driven by MotionLayer) -------------------------- */
+  [data-magnetic] {
+    transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
+    transition: transform 500ms var(--ease-emphasized);
   }
 
-  .mono-media:hover img,
-  .group:hover .mono-media img,
-  .group:focus-within .mono-media img {
-    filter: none;
-  }
-
-  /* -- Blueprint grid: small squares, faded out from the centre ---------- */
-  .blueprint {
-    background-image:
-      linear-gradient(var(--grid-line-strong) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-line-strong) 1px, transparent 1px);
-    background-size: 2rem 2rem;
-    background-position: center;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-  }
-
-  /* -- Section watermark: giant ghost title behind a heading ------------- */
-  .watermark {
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    font-size: clamp(5rem, 1rem + 17vw, 17rem);
-    line-height: 0.8;
-    white-space: nowrap;
-    color: rgb(255 255 255 / 0.035);
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .watermark::before {
-    content: attr(data-text);
-  }
-
-  /* -- Checkerboard band (pit-lane flag) ---------------------------------- */
-  .checker {
-    background-image: repeating-conic-gradient(var(--surface-secondary) 0 25%, transparent 0 50%);
-    background-size: clamp(2.5rem, 2rem + 2vw, 3.5rem) clamp(2.5rem, 2rem + 2vw, 3.5rem);
-    mask-image: linear-gradient(to bottom, black, transparent);
-  }
-
-  /* -- Chapter marker: two offset cobalt squares -------------------------- */
-  .chapter-squares {
+  /* -- Drafting corner marks around a figure ------------------------------ */
+  .corner-marks {
     position: relative;
-    display: inline-block;
-    width: 1.125rem;
-    height: 1.125rem;
-    flex-shrink: 0;
   }
 
-  .chapter-squares::before,
-  .chapter-squares::after {
+  .corner-marks::before,
+  .corner-marks::after {
     content: "";
     position: absolute;
-    width: 50%;
-    height: 50%;
-    background: var(--accent);
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+    border-color: var(--accent);
   }
 
-  .chapter-squares::before {
-    top: 0;
+  .corner-marks::before {
+    top: -0.625rem;
+    left: -0.625rem;
+    border-top-width: 1px;
+    border-left-width: 1px;
+  }
+
+  .corner-marks::after {
+    right: -0.625rem;
+    bottom: -0.625rem;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+  }
+
+  /* -- Dimension line: |←——————→| with end ticks ------------------------- */
+  .dimension {
+    position: relative;
+    height: 1px;
+    background: var(--border-strong);
+    transform-origin: 0 50%;
+  }
+
+  .dimension::before,
+  .dimension::after {
+    content: "";
+    position: absolute;
+    top: -0.3125rem;
+    width: 1px;
+    height: 0.6875rem;
+    background: var(--border-strong);
+  }
+
+  .dimension::before {
     left: 0;
   }
 
-  .chapter-squares::after {
+  .dimension::after {
     right: 0;
-    bottom: 0;
-  }
-
-  /* -- Underline that draws in on hover/focus ----------------------------- */
-  .draw-underline {
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0% 1px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition:
-      background-size 350ms var(--ease-emphasized),
-      color var(--duration-fast) var(--ease-standard);
-  }
-
-  .draw-underline:hover,
-  .draw-underline:focus-visible,
-  .group:hover .draw-underline {
-    background-size: 100% 1px;
-  }
-
-  /* -- Hero composition ----------------------------------------------------
-     Phones: portrait, then identity, stats, facts, flagship.
-     md: stats and facts side by side.
-     lg: three columns: stats over identity | portrait | facts over flagship. */
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "stage" "intro" "stats" "facts" "flag";
-    column-gap: var(--spacing-grid);
-  }
-
-  @media (width >= 48rem) {
-    .hero-grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      grid-template-areas: "stage stage" "intro intro" "stats facts" "flag flag";
-    }
-  }
-
-  @media (width >= 64rem) {
-    .hero-grid {
-      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.1fr) minmax(0, 0.85fr);
-      grid-template-rows: 1fr auto;
-      grid-template-areas: "stats stage facts" "intro stage flag";
-    }
-  }
-
-  /* The giant K behind the portrait: a cobalt outline with a faint fill. */
-  .hero-k {
-    font-family: var(--font-display);
-    font-size: clamp(26rem, 8rem + 56vw, 72rem);
-    line-height: 0.74;
-    color: rgb(79 127 255 / 0.05);
-    -webkit-text-stroke: 2px rgb(79 127 255 / 0.4);
-    user-select: none;
   }
 
   /* -- 3D phone fan: resting (open) position per screen ------------------ */
   .fan-phone {
     transform: var(--fan-to);
+    transition: transform 1400ms var(--ease-emphasized);
   }
 
-  /* -- Scroll progress hairline (CSS scroll timeline) -------------------- */
+  /* -- 3D stage floor: a perspective grid under the phone fan ------------- */
+  .stage-floor {
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    bottom: -4%;
+    height: 52%;
+    transform: rotateX(72deg) translateZ(-120px);
+    transform-origin: 50% 100%;
+    background-image:
+      linear-gradient(rgb(79 127 255 / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(79 127 255 / 0.4) 1px, transparent 1px);
+    background-size: 2.25rem 2.25rem;
+    mask-image: radial-gradient(closest-side, black 25%, transparent);
+  }
+
+  /* -- Graph paper inside a panel ----------------------------------------- */
+  .graph-panel {
+    background-image:
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+    background-size: 1rem 1rem;
+    mask-image: radial-gradient(ellipse at 25% 25%, black, transparent 85%);
+  }
+
+  /* -- Timeline: a line that fills with scroll (--progress), nodes on it -- */
+  .timeline {
+    position: relative;
+  }
+
+  .timeline::before,
+  .timeline::after {
+    content: "";
+    position: absolute;
+    left: 0.4375rem;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    width: 1px;
+  }
+
+  .timeline::before {
+    background: var(--border);
+  }
+
+  .timeline::after {
+    background: var(--accent);
+    transform-origin: 50% 0;
+    transform: scaleY(var(--progress, 1));
+    box-shadow: 0 0 14px var(--accent-glow);
+  }
+
+  .timeline-node::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 0.9375rem;
+    height: 0.9375rem;
+    border: 1px solid var(--accent);
+    border-radius: 9999px;
+    background: var(--background);
+  }
+
+  .timeline-node:first-child::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 5px var(--accent-soft);
+  }
+
+  /* -- 3D fan: stacked until revealed ------------------------------------- */
+  .motion-ready [data-fan]:not([data-visible]) .fan-phone {
+    transform: var(--fan-from);
+  }
+
+  /* -- Scroll progress hairline ------------------------------------------- */
   .scroll-progress {
     position: fixed;
     inset: 0 0 auto;
@@ -453,8 +535,19 @@
     height: 2px;
     background: var(--accent);
     transform-origin: 0 50%;
-    transform: scaleX(0);
+    transform: scaleX(var(--scroll, 0));
     pointer-events: none;
+  }
+
+  /* -- Hero K fallback (shown only when WebGL is unavailable) ------------- */
+  .k-fallback {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(20rem, 10rem + 30vw, 40rem);
+    line-height: 0.75;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgb(79 127 255 / 0.45);
+    user-select: none;
   }
 }
 
@@ -462,18 +555,26 @@
    Motion
    L1 feedback / L2 transition: Tailwind `transition-*` utilities, which
      default to --duration-fast and --ease-standard.
-   L3 reveal: the `reveal` utility (CSS scroll-driven, no JavaScript):
-     content rises and tips back into the page plane in 3D.
-   L4 signature: the hero entrance, the manifesto word reveal, section
-     watermark drift, the 3D phone fan and pointer tilt.
-   Reduced motion: everything here is opt-in to `no-preference`, and the
-   final rule neutralises every transition and animation.
+   L3 reveal: elements with `.reveal`, `[data-split]` or `[data-draw]`
+     animate in when they enter the viewport. MotionLayer adds
+     `html.motion-ready` and marks entries with `data-visible`; without
+     JavaScript or under reduced motion nothing is ever hidden.
+   L4 signature: the WebGL K, hero entrance, count-up figures, 3D phone fan,
+     pointer tilt, magnetic controls, cursor reticle and grid spotlight.
+   Reduced motion: all of it is off; the last rule neutralises every
+   transition and animation.
    ========================================================================== */
 
-@keyframes reveal {
+@keyframes reveal-in {
   from {
     opacity: 0;
-    transform: perspective(1200px) translateY(3rem) rotateX(16deg) scale(0.97);
+    transform: perspective(1000px) translateY(3rem) rotateX(14deg) scale(0.97);
+  }
+}
+
+@keyframes word-up {
+  from {
+    transform: translateY(110%) rotate(4deg);
   }
 }
 
@@ -481,158 +582,109 @@
   from {
     opacity: 0;
     transform: translateY(1.5rem);
-    filter: blur(6px);
+    filter: blur(8px);
   }
 }
 
-@keyframes line-up {
+/* Transform only: the hero portrait is the page's LCP element, so it is
+   never hidden by an opacity fade. */
+@keyframes rise-up {
   from {
-    transform: translateY(105%);
+    transform: translateY(3.5rem) scale(0.94);
   }
 }
 
-/* Transform only: the portrait is the hero's LCP element, so it is never
-   hidden by an opacity fade. */
-@keyframes stage-in {
+@keyframes draw-x {
   from {
-    transform: translateY(4rem) scale(0.94);
+    transform: scaleX(0);
   }
 }
 
-@keyframes watermark-in {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-}
-
-@keyframes drift {
-  from {
-    transform: translateX(6%);
-  }
-  to {
-    transform: translateX(-6%);
-  }
-}
-
-@keyframes word-in {
-  from {
-    color: rgb(255 255 255 / 0.16);
-  }
-}
-
-@keyframes fan-open {
-  from {
-    transform: var(--fan-from);
-  }
-}
-
-@keyframes glow-pulse {
+@keyframes float {
   50% {
-    opacity: 0.6;
-    transform: scale(1.08);
+    transform: translateY(-0.6rem);
   }
 }
 
-@keyframes progress {
-  to {
-    transform: scaleX(1);
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
   }
 }
 
-@utility reveal {
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      transform-origin: 50% 0;
-      animation: reveal linear both;
-      animation-timeline: view();
-      /* A fixed distance (not a % of the element) so tall blocks are fully
-         visible once their top is 9rem into the viewport. */
-      animation-range: entry 0% entry 9rem;
-    }
-  }
+/* Hidden only once MotionLayer is running (never without JS). */
+.motion-ready .reveal:not([data-visible]),
+.motion-ready [data-draw]:not([data-visible]) {
+  opacity: 0;
 }
 
-/* Hero entrance: one-shot, staggered by --delay. */
-@utility enter {
-  @media (prefers-reduced-motion: no-preference) {
-    animation: rise var(--duration-signature) var(--ease-emphasized) both;
-    animation-delay: var(--delay, 0ms);
-  }
+.motion-ready .reveal[data-visible="true"] {
+  transform-origin: 50% 0;
+  animation: reveal-in var(--duration-signature) var(--ease-emphasized) both;
+  animation-delay: var(--delay, 0ms);
 }
 
-/* A display line that slides up out of a mask: .line-mask > .enter-line. */
-@utility line-mask {
-  display: block;
+.motion-ready [data-draw][data-visible="true"] {
+  animation: draw-x 1200ms var(--ease-emphasized) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Split headings: each word rises out of its own mask. */
+[data-split] .word {
+  display: inline-block;
   overflow: clip;
-  /* Room for the comma and full stop without clipping. */
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: top;
 }
 
-@utility enter-line {
-  display: block;
-  @media (prefers-reduced-motion: no-preference) {
-    animation: line-up 1100ms var(--ease-emphasized) both;
-    animation-delay: var(--delay, 0ms);
-  }
+[data-split] .word > span {
+  display: inline-block;
 }
 
-@utility enter-stage {
-  @media (prefers-reduced-motion: no-preference) {
-    animation: stage-in 1400ms var(--ease-emphasized) both;
-    animation-delay: var(--delay, 0ms);
-  }
+.motion-ready [data-split]:not([data-visible]) .word > span {
+  transform: translateY(110%);
 }
 
-@utility enter-watermark {
-  @media (prefers-reduced-motion: no-preference) {
-    animation: watermark-in 1800ms var(--ease-emphasized) both;
-    animation-delay: var(--delay, 0ms);
-  }
-}
-
-/* Slow horizontal drift tied to the element's passage through the viewport. */
-@utility drift {
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      animation: drift linear both;
-      animation-timeline: view();
-    }
-  }
-}
-
-@utility glow-pulse {
-  @media (prefers-reduced-motion: no-preference) {
-    animation: glow-pulse 7s ease-in-out infinite;
-  }
-}
-
-/* Manifesto: each word brightens as the paragraph scrolls through view.
-   Words carry --w (0 to 1, their position in the paragraph). Browsers
-   without scroll-driven animations show the text at full strength. */
-.manifesto {
-  view-timeline-name: --manifesto;
+.motion-ready [data-split][data-visible="true"] .word > span {
+  animation: word-up 900ms var(--ease-emphasized) both;
+  animation-delay: calc(var(--delay, 0ms) + var(--i, 0) * 55ms);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .manifesto-word {
-      animation: word-in linear both;
-      animation-timeline: --manifesto;
-      animation-range: cover calc(10% + var(--w) * 30%) cover calc(14% + var(--w) * 30%);
-    }
+  /* Hero entrance: one-shot on load, staggered by --delay. CSS only, so it
+     never depends on JavaScript. */
+  .enter {
+    animation: rise var(--duration-signature) var(--ease-emphasized) both;
+    animation-delay: var(--delay, 0ms);
+  }
 
-    .fan-phone {
-      animation: fan-open linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 40%;
-    }
+  .enter-rise {
+    animation: rise-up 1400ms var(--ease-emphasized) 150ms both;
+  }
 
-    .scroll-progress {
-      animation: progress linear both;
-      animation-timeline: scroll(root);
-    }
+  .enter-words .word > span {
+    animation: word-up 1100ms var(--ease-emphasized) both;
+    animation-delay: calc(var(--delay, 0ms) + var(--i, 0) * 80ms);
+  }
+
+  .float {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0ms);
+  }
+
+  .pulse-ring::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid var(--accent);
+    animation: pulse-ring 2.4s var(--ease-standard) infinite;
   }
 
   html {
@@ -651,7 +703,13 @@
     scroll-behavior: auto !important;
   }
 
-  .tilt {
+  .tilt,
+  [data-magnetic] {
     transform: none !important;
+  }
+
+  .cursor-reticle,
+  .grid-spotlight {
+    display: none;
   }
 }

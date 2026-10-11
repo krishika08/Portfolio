@@ -23,7 +23,7 @@ export function CaseStudyFigure({ figure, sizes, expandable = false, tilt = fals
   return (
     // Never wider than the source image, so nothing is upscaled.
     <figure className={className} style={{ maxWidth: figure.image.width }}>
-      {tilt ? <Tilt className="rounded-md">{media}</Tilt> : media}
+      {tilt ? <Tilt className="corner-marks rounded-md">{media}</Tilt> : media}
       <figcaption className="mt-group flex flex-col gap-tight">
         <span className="text-body-sm text-foreground">{figure.caption}</span>
         {figure.description && (

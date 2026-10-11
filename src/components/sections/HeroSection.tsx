@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
+import { HeroK } from "@/components/motion/HeroK";
+import { SplitText } from "@/components/motion/SplitText";
 import { CtaGroup } from "@/components/portfolio/CtaGroup";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -10,45 +12,29 @@ import { TextLink } from "@/components/ui/TextLink";
 import { Tilt } from "@/components/ui/Tilt";
 import { sectionHref, sectionIds } from "@/config/navigation";
 import { routes } from "@/config/routes";
-import { achievements, education } from "@/content/education";
+import { education } from "@/content/education";
 import { profile } from "@/content/profile";
-import { cn } from "@/lib/cn";
-import { getCoreTechnologies, getExperience, getFlagshipProject, getSocialLinks, hasCaseStudy } from "@/lib/content";
-
-interface Stat {
-  label: string;
-  value: string;
-  unit?: string;
-}
+import { getExperience, getFlagshipProject, getSocialLinks, hasCaseStudy } from "@/lib/content";
 
 interface Fact {
   label: string;
   value: ReactNode;
 }
 
-/** Stagger for the one-shot entrance (see the `enter*` utilities). */
+/** Stagger for the one-shot entrance (see `.enter` in globals.css). */
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as CSSProperties;
 
-// Full-height identity: headline numbers at the left, the owner's portrait
-// standing in front of the K watermark at the centre, verified facts at the
-// right, and name, intro and actions at the bottom left. Every value is
-// derived from content data.
+// Typography-led identity on a drafting sheet: the name and role in masked,
+// rising type; the owner's portrait standing in front of a WebGL K that
+// assembles from particles; the primary path into Selected Work; and the
+// verified facts as a title block along the bottom. Every value comes from
+// content data.
 export function HeroSection() {
   const flagship = getFlagshipProject();
-  const roles = getExperience();
-  const [latestRole] = roles;
+  const [latestRole] = getExperience();
   const [degree] = education;
-  const badges = achievements.find((item) => item.highlight)?.highlight;
   const profiles = getSocialLinks().filter((link) => link.id !== "email");
   const portrait = profile.portraits?.hero;
-  const internships = roles.filter((role) => /\bintern\b/i.test(role.role)).length;
-
-  const [score, scale] = degree?.result?.value.split("/") ?? [];
-  const stats: Stat[] = [
-    ...(degree?.result && score ? [{ label: degree.result.label, value: score, unit: scale && `/${scale}` }] : []),
-    ...(badges ? [{ label: badges.label, value: badges.value }] : []),
-    ...(internships > 0 ? [{ label: internships === 1 ? "Internship" : "Internships", value: String(internships) }] : []),
-  ];
 
   const facts: Fact[] = [
     ...(degree
@@ -58,6 +44,7 @@ export function HeroSection() {
             value: (
               <>
                 {degree.degree}, {degree.shortName ?? degree.institution} ·{" "}
+                {/* Keep the year range on one line. */}
                 <span className="whitespace-nowrap">
                   {degree.dates.start}–{degree.dates.end}
                 </span>
@@ -68,152 +55,112 @@ export function HeroSection() {
       : []),
     ...(latestRole ? [{ label: "Experience", value: `${latestRole.role}, ${latestRole.organization}` }] : []),
     { label: "Direction", value: profile.direction },
+    ...(flagship
+      ? [
+          {
+            label: "Flagship project",
+            value: (
+              <TextLink
+                href={hasCaseStudy(flagship) ? routes.project(flagship.slug) : sectionHref(sectionIds.work)}
+                variant="plain"
+                className="group/link inline-flex min-h-6 items-center gap-micro"
+              >
+                {flagship.name}
+                <Icon
+                  name="arrow-right"
+                  className="transition-transform duration-(--duration-standard) group-hover/link:translate-x-1"
+                />
+              </TextLink>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
-    <Section
-      spacing="none"
-      aria-labelledby="hero-title"
-      className="relative isolate overflow-hidden border-b border-border"
-    >
-      {/* Blueprint squares and a cobalt glow behind the portrait. */}
-      <div aria-hidden className="blueprint absolute inset-0 -z-10" />
-      <div
-        aria-hidden
-        className="glow-pulse absolute top-[18%] left-1/2 -z-10 size-[38rem] max-w-[120vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--accent-glow),transparent)] opacity-40 blur-2xl"
-      />
-
-      <Container className="hero-grid min-h-[calc(100svh-var(--header-height))] gap-y-cluster pt-cluster pb-cluster lg:max-h-[64rem] lg:gap-y-0 lg:pt-block">
-        {/* Identity: name, intro and actions. First in the DOM. */}
-        <div className="[grid-area:intro] self-end lg:pb-tight">
-          <h1 id="hero-title" className="font-display text-[clamp(3rem,1.2rem+4vw,4.75rem)] leading-[0.9] text-foreground">
-            <span className="line-mask">
-              <span className="enter-line" style={delay(250)}>
-                {profile.name},
+    <Section spacing="none" aria-labelledby="hero-title" className="relative isolate overflow-hidden">
+      <Container className="flex min-h-[calc(100svh-var(--header-height))] flex-col pt-cluster pb-block md:pt-block">
+        <div className="grid flex-1 grid-cols-1 items-center gap-y-block lg:grid-cols-12 lg:gap-x-grid">
+          {/* Identity. First in the DOM; below the stage on small screens. */}
+          <div className="relative z-20 lg:col-span-7 lg:col-start-1 lg:row-start-1">
+            <h1 id="hero-title" className="enter-words max-w-[7.4em] font-display text-display text-foreground">
+              <span className="block">
+                <SplitText text={`${profile.name},`} />
               </span>
-            </span>{" "}
-            <span className="line-mask">
-              <span className="enter-line text-accent" style={delay(380)}>
-                {profile.role.toLowerCase()}.
+              <span className="block text-accent">
+                <SplitText text={`${profile.role.toLowerCase()}.`} start={1} />
               </span>
-            </span>
-          </h1>
-          <Text tone="secondary" className="enter mt-cluster max-w-[26rem]" style={delay(600)}>
-            {profile.intro}
-          </Text>
-          <div className="enter mt-cluster" style={delay(720)}>
-            <CtaGroup>
-              <ButtonLink href={sectionHref(sectionIds.work)}>
-                View selected work
-                <Icon name="arrow-down" />
-              </ButtonLink>
-              {profile.resume && (
-                <ButtonLink href={profile.resume} newTab variant="secondary">
-                  Resume
+            </h1>
+            <Text tone="secondary" size="lead" className="enter mt-cluster max-w-reading" style={delay(700)}>
+              {profile.intro}
+            </Text>
+            <div className="enter mt-cluster" style={delay(820)}>
+              <CtaGroup>
+                <ButtonLink href={sectionHref(sectionIds.work)}>
+                  View selected work
+                  <Icon name="arrow-down" />
                 </ButtonLink>
-              )}
-              {profiles.length > 0 && (
-                // Profile links wrap together as one unit on narrow screens.
-                <span className="flex gap-x-group">
-                  {profiles.map((link) => (
-                    <ButtonLink key={link.id} href={link.href} newTab variant="text">
-                      {link.label}
-                      <Icon name="arrow-up-right" />
-                    </ButtonLink>
-                  ))}
-                </span>
-              )}
-            </CtaGroup>
-          </div>
-        </div>
-
-        {/* Headline numbers. */}
-        {stats.length > 0 && (
-          <dl className="grid grid-cols-3 gap-group [grid-area:stats] max-lg:border-t max-lg:border-border max-lg:pt-group lg:flex lg:flex-col lg:justify-center lg:gap-group lg:pb-cluster">
-            {stats.map((stat, i) => (
-              <div key={stat.label} className="enter flex flex-col-reverse" style={delay(800 + i * 110)}>
-                <dt className="mt-micro text-body-sm text-foreground-secondary">{stat.label}</dt>
-                <dd className="font-display text-[clamp(2.25rem,1.7rem+1.8vw,3.25rem)] leading-[0.9] text-foreground">
-                  {stat.value}
-                  {stat.unit && <span className="text-[0.45em] text-foreground-muted">{stat.unit}</span>}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        )}
-
-        {/* Portrait stage: K watermark behind, portrait, core technologies in front. */}
-        {portrait && (
-          <div className="relative flex items-end justify-center [grid-area:stage] max-lg:min-h-[24rem] lg:-mb-cluster">
-            <div className="enter-stage w-full" style={delay(120)}>
-              <Tilt max={7} glare={false} className="mono-media mx-auto flex w-full max-w-[17rem] justify-center sm:max-w-[19rem] lg:max-w-[28rem]">
-                <span aria-hidden className="depth-back pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
-                  <span className="hero-k enter-watermark block">K</span>
-                </span>
-                <div className="depth-1 relative drop-shadow-[0_30px_40px_rgb(0_0_0/0.6)]">
-                  <Image
-                    src={portrait.src}
-                    alt={portrait.alt}
-                    width={portrait.width}
-                    height={portrait.height}
-                    sizes="(min-width: 1024px) 28rem, (min-width: 640px) 19rem, 17rem"
-                    preload
-                    className="h-auto w-full"
-                  />
-                </div>
-                <TechOrbit />
-              </Tilt>
+                {profile.resume && (
+                  <ButtonLink href={profile.resume} newTab variant="secondary">
+                    Resume
+                  </ButtonLink>
+                )}
+                {profiles.length > 0 && (
+                  // Profile links wrap together as one unit on narrow screens.
+                  <span className="flex gap-x-group">
+                    {profiles.map((link) => (
+                      <ButtonLink key={link.id} href={link.href} newTab variant="text">
+                        {link.label}
+                        <Icon name="arrow-up-right" />
+                      </ButtonLink>
+                    ))}
+                  </span>
+                )}
+              </CtaGroup>
             </div>
           </div>
-        )}
 
-        {/* Verified facts. */}
-        <dl className="flex flex-col gap-group [grid-area:facts] max-md:border-t max-md:border-border max-md:pt-group lg:justify-center lg:gap-cluster lg:text-right">
+          {/* Stage: the K behind, the portrait in front. */}
+          {portrait && (
+            <div className="relative h-[min(26rem,62svh)] max-lg:order-first lg:col-span-6 lg:col-start-7 lg:row-start-1 lg:h-[min(36rem,66svh)] lg:self-end">
+              <div
+                aria-hidden
+                className="absolute inset-x-[-10%] top-[6%] bottom-0 -z-10 bg-[radial-gradient(closest-side,rgb(79_127_255/0.18),transparent)]"
+              />
+              <HeroK className="absolute -inset-x-[12%] -top-[18%] -bottom-[6%] -z-10 lg:-inset-x-[8%] lg:-top-[22%]" />
+              <div className="enter-rise absolute inset-x-0 bottom-0 flex justify-center">
+                <Tilt max={6} glare={false} className="w-[min(72%,17rem)] origin-bottom lg:w-[min(66%,23rem)]">
+                  <div className="depth-1 relative drop-shadow-[0_32px_40px_rgb(0_0_0/0.65)]">
+                    <Image
+                      src={portrait.src}
+                      alt={portrait.alt}
+                      width={portrait.width}
+                      height={portrait.height}
+                      sizes="(min-width: 1024px) 24rem, 17rem"
+                      preload
+                      className="h-auto w-full"
+                    />
+                  </div>
+                </Tilt>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Title block: the verified facts, ruled like a drawing's border. */}
+        <dl className="grid grid-cols-1 gap-y-group border-t border-border-strong pt-group sm:grid-cols-2 lg:grid-cols-4 lg:gap-0">
           {facts.map((fact, i) => (
-            <div key={fact.label} className="enter" style={delay(860 + i * 110)}>
+            <div
+              key={fact.label}
+              className="enter min-w-0 lg:border-l lg:border-border lg:px-group lg:first:border-l-0 lg:first:pl-0"
+              style={delay(950 + i * 90)}
+            >
               <dt className="font-mono text-eyebrow text-foreground-muted uppercase">{fact.label}</dt>
-              <dd className="mt-micro text-body-sm text-foreground lg:ml-auto lg:max-w-[18rem]">{fact.value}</dd>
+              <dd className="mt-micro text-body-sm text-foreground">{fact.value}</dd>
             </div>
           ))}
         </dl>
-
-        {/* Direct route to the flagship. */}
-        {flagship && (
-          <div className="enter [grid-area:flag] self-end max-lg:border-t max-lg:border-border max-lg:pt-group lg:pb-tight lg:text-right" style={delay(1100)}>
-            <p className="font-mono text-eyebrow text-foreground-muted uppercase">Flagship project</p>
-            <TextLink
-              href={hasCaseStudy(flagship) ? routes.project(flagship.slug) : sectionHref(sectionIds.work)}
-              variant="plain"
-              className="group mt-micro inline-flex min-h-11 items-center gap-tight font-display text-h2 hover:no-underline"
-            >
-              <span className="draw-underline">{flagship.name}</span>
-              <Icon name="arrow-right" className="text-[0.6em] transition-transform group-hover:translate-x-1" />
-            </TextLink>
-          </div>
-        )}
       </Container>
     </Section>
-  );
-}
-
-/** The most-used technologies, floating in front of the portrait (decorative; listed in Engineering focus). */
-function TechOrbit() {
-  const positions = ["top-[14%] -left-[6%]", "top-[42%] -right-[10%]", "bottom-[16%] -left-[2%]"];
-  return (
-    <ul aria-hidden className="depth-2 pointer-events-none absolute inset-0">
-      {getCoreTechnologies(positions.length).map((name, i) => (
-        <li
-          key={name}
-          className={cn(
-            "enter absolute flex items-center gap-tight rounded-sm border border-border bg-surface/85 px-2.5 py-1.5 font-mono text-meta text-foreground shadow-elevated backdrop-blur-sm",
-            positions[i],
-          )}
-          style={delay(1200 + i * 140)}
-        >
-          <span className="size-1.5 bg-accent" />
-          {name}
-        </li>
-      ))}
-    </ul>
   );
 }
