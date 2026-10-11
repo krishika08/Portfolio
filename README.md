@@ -15,13 +15,14 @@ npm run typecheck
 ```text
 src/
   app/                     routes, root layout, globals.css (design tokens), robots, sitemap, icon
+    projects/[slug]        project detail route (case-study projects only)
     (internal)/foundation  dev-only design-system reference (404 in production)
   components/
     ui/                    Level 1 primitives: Container, Heading, Text, BaseLink, TextLink,
                            Button/ButtonLink, Icon, Divider, Grid, Media, Section
     portfolio/             Level 2 primitives: SectionHeader, ProgressionMarker, Metadata,
                            CtaGroup, TechnologyList, SocialLinks, CapabilityCluster,
-                           ProjectPreview, ExperienceItem
+                           ProjectPreview, ProjectLinks, ExperienceItem
     layout/                app shell: SkipLink, SiteHeader (server) → SiteNav (client), SiteFooter
   config/                  site (URL, metadata defaults), routes, navigation (+ section ids)
   content/                 verified content only: profile, projects, experience, education, skills
@@ -30,7 +31,40 @@ src/
   types/content.ts         content model
 ```
 
-Level 3 section compositions (Hero, Selected Work, Experience, About, Contact) are built in later phases from these primitives.
+Level 3 compositions (Hero, Selected Work, Experience, About, Contact, the project case study) are page-specific and go in `src/components/sections/` (created when the first one is built). They compose Level 1/2 primitives and receive data from `src/lib/content.ts`; don't fold them into generic configurable components.
+
+## Architecture
+
+```text
+src/content/*.ts  →  src/types/content.ts  →  src/lib/content.ts (selectors)  →  pages / sections  →  primitives
+(verified facts)     (domain model)           (ordering, lookup, evidence)       (composition)        (presentation)
+```
+
+- **Server-first.** Every page and primitive is a Server Component. The only client code is `SiteNav` + `useScrollState` (menu, scroll state, active section). No global state, CMS, database or API.
+- **Routes**
+
+  | Route | Source | Notes |
+  |---|---|---|
+  | `/` | `app/page.tsx` | Placeholder until the home sections are built |
+  | `/projects/[slug]` | `app/projects/[slug]/page.tsx` | Static (`generateStaticParams`, `dynamicParams = false`) |
+  | `/foundation` | `app/(internal)/foundation` | Dev only; 404 in production |
+  | `/robots.txt`, `/sitemap.xml`, `/icon.svg` | metadata routes | |
+
+  No `/projects` index route. Unknown paths render `app/not-found.tsx` (auto `noindex`).
+- **Project detail rule:** `hasCaseStudy(project)` (in `lib/content.ts`) decides whether a project has a detail page, a sitemap entry and "Read case study" links. Add `caseStudy` content to a project and all three appear; every other slug returns 404.
+- **Project hierarchy** comes from `tier` (`flagship` / `supporting` / `additional`) and `order` — never from project names.
+- **Metadata ownership:** the root layout owns the defaults (title template, description, `metadataBase`, Open Graph base, icon). Each route calls `createPageMetadata({ title, description, path, image })` for its canonical URL and social preview; project pages use the project's `assets.cover`.
+
+## Assets
+
+| What | Location | Referenced from |
+|---|---|---|
+| Project images | `public/images/projects/<slug>/…` | `content/projects.ts` → `assets.cover` (`ImageAsset`: src, alt, width, height) |
+| Profile image | `public/images/profile/…` | added with the About section |
+| Resume | `public/resume.pdf` (stable URL `/resume.pdf`; replace the file to update) | `content/profile.ts` → `resume: "/resume.pdf"` |
+| Site icon | `src/app/icon.svg` | metadata route |
+
+No assets are committed yet: none have been supplied. The resume CTA, social links and project media appear automatically once real files/values are added. Never add placeholder images or documents.
 
 ## Content rules
 

@@ -13,9 +13,24 @@ export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
 }
 
-/** Projects that have case-study content and therefore a detail route. */
+/**
+ * The single rule for project detail pages: a project has a route at
+ * /projects/[slug] (and is linked and listed in the sitemap) only when it
+ * has case-study content.
+ */
+export function hasCaseStudy(project: Project): boolean {
+  return project.caseStudy !== undefined;
+}
+
+/** Projects that have a detail route, in display order. */
 export function getCaseStudyProjects(): Project[] {
-  return getProjects().filter((project) => project.caseStudy !== undefined);
+  return getProjects().filter(hasCaseStudy);
+}
+
+/** The project for a detail route, or undefined when the slug has no page. */
+export function getCaseStudyProject(slug: string): Project | undefined {
+  const project = getProjectBySlug(slug);
+  return project && hasCaseStudy(project) ? project : undefined;
 }
 
 export function getExperience(): Experience[] {

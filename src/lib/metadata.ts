@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import type { ImageAsset } from "@/types/content";
 
 /** Shared Open Graph fields. Next.js replaces (not merges) `openGraph` per route. */
 export const baseOpenGraph = {
@@ -14,6 +15,8 @@ interface PageMetadataOptions {
   description?: string;
   /** Route path, used for the canonical URL, e.g. "/" or "/projects/veyloprep". */
   path: string;
+  /** Social preview image (e.g. a project cover). Local paths resolve against the site URL. */
+  image?: ImageAsset;
   noIndex?: boolean;
 }
 
@@ -22,15 +25,20 @@ export function createPageMetadata({
   title,
   description = siteConfig.description,
   path,
+  image,
   noIndex = false,
 }: PageMetadataOptions): Metadata {
   const fullTitle = title ? `${title} — ${siteConfig.name}` : siteConfig.title;
+  const images = image
+    ? [{ url: image.src, width: image.width, height: image.height, alt: image.alt }]
+    : undefined;
 
   return {
     ...(title && { title }),
     description,
     alternates: { canonical: path },
-    openGraph: { ...baseOpenGraph, title: fullTitle, description, url: path },
+    openGraph: { ...baseOpenGraph, title: fullTitle, description, url: path, ...(images && { images }) },
+    ...(images && { twitter: { card: "summary_large_image", images } }),
     ...(noIndex && { robots: { index: false, follow: false } }),
   };
 }

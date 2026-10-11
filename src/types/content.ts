@@ -29,8 +29,12 @@ export interface ImageAsset {
 
 // ── Projects ───────────────────────────────────────────────────────────────
 
-/** Presentation emphasis. Components switch on this, never on project names. */
-export type ProjectTier = "flagship" | "supporting";
+/**
+ * Presentation emphasis. Components switch on this, never on project names.
+ * flagship: the single lead project · supporting: secondary projects ·
+ * additional: lower-emphasis projects (add only with verified content).
+ */
+export type ProjectTier = "flagship" | "supporting" | "additional";
 
 export interface ProjectLinks {
   live?: string;
@@ -39,7 +43,8 @@ export interface ProjectLinks {
 
 /**
  * Extended case-study content. Every field is optional so a case study can be
- * written incrementally. A project has a detail page only when this exists.
+ * written incrementally. A project gets a detail page (/projects/[slug]), a
+ * sitemap entry and "Read case study" links only when this exists.
  */
 export interface ProjectCaseStudy {
   problem?: string;

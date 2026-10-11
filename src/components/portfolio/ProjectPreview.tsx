@@ -1,14 +1,11 @@
-import { CtaGroup } from "@/components/portfolio/CtaGroup";
 import { Metadata } from "@/components/portfolio/Metadata";
 import { ProgressionMarker } from "@/components/portfolio/ProgressionMarker";
+import { ProjectLinks } from "@/components/portfolio/ProjectLinks";
 import { TechnologyList } from "@/components/portfolio/TechnologyList";
-import { ButtonLink } from "@/components/ui/Button";
 import { Grid } from "@/components/ui/Grid";
 import { Heading } from "@/components/ui/Heading";
-import { Icon } from "@/components/ui/Icon";
 import { Media } from "@/components/ui/Media";
 import { Text } from "@/components/ui/Text";
-import { routes } from "@/config/routes";
 import { cn } from "@/lib/cn";
 import type { Project } from "@/types/content";
 
@@ -50,7 +47,7 @@ export function ProjectPreview({
       </Text>
       {project.role && <Metadata items={[{ label: "Role", value: project.role }]} />}
       <TechnologyList items={project.technologies} label={`${project.name} technologies`} />
-      <ProjectLinks project={project} flagship={flagship} />
+      <ProjectLinks project={project} emphasis={flagship ? "primary" : "secondary"} className="mt-tight" />
     </div>
   );
 
@@ -85,37 +82,5 @@ export function ProjectPreview({
       {cover && <Media image={cover} sizes="(min-width: 1024px) 40vw, 100vw" />}
       {body}
     </article>
-  );
-}
-
-function ProjectLinks({ project, flagship }: { project: Project; flagship: boolean }) {
-  const { live, repository } = project.links;
-  const hasCaseStudy = project.caseStudy !== undefined;
-  if (!live && !repository && !hasCaseStudy) return null;
-
-  // Visually short labels; the project name completes the accessible name.
-  const forProject = <span className="sr-only">: {project.name}</span>;
-
-  return (
-    <CtaGroup className="mt-tight">
-      {hasCaseStudy && (
-        <ButtonLink href={routes.project(project.slug)} variant={flagship ? "primary" : "secondary"} size="sm">
-          Read case study{forProject}
-          <Icon name="arrow-right" />
-        </ButtonLink>
-      )}
-      {live && (
-        <ButtonLink href={live} newTab variant={hasCaseStudy ? "text" : "secondary"} size="sm">
-          Live site{forProject}
-          <Icon name="arrow-up-right" />
-        </ButtonLink>
-      )}
-      {repository && (
-        <ButtonLink href={repository} newTab variant="text" size="sm">
-          Source{forProject}
-          <Icon name="arrow-up-right" />
-        </ButtonLink>
-      )}
-    </CtaGroup>
   );
 }

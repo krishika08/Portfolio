@@ -12,15 +12,19 @@ const ratios = {
 
 interface MediaProps {
   image: ImageAsset;
-  /** Frame ratio; space is reserved before the image loads (no layout shift). */
-  ratio?: keyof typeof ratios;
+  /**
+   * Frame ratio; space is reserved before the image loads (no layout shift).
+   * "intrinsic" uses the image's own width/height instead of a frame — for
+   * screenshots that must not be cropped.
+   */
+  ratio?: keyof typeof ratios | "intrinsic";
   /**
    * Rendered width hint for responsive srcset selection, e.g.
    * "(min-width: 1024px) 58vw, 100vw". Required so the browser does not
    * download an oversized image.
    */
   sizes: string;
-  /** cover crops to fill the frame; contain shows the whole image (screenshots). */
+  /** cover crops to fill the frame; contain shows the whole image. Ignored for "intrinsic". */
   fit?: "cover" | "contain";
   /** Preload only for the single above-the-fold image of a page. */
   preload?: boolean;
@@ -38,23 +42,33 @@ export function Media({
   caption,
   className,
 }: MediaProps) {
-  const frame = (
-    <div
-      className={cn(
-        "relative overflow-hidden rounded-md border border-border-subtle bg-surface-secondary",
-        ratios[ratio],
-      )}
-    >
-      <Image
-        src={image.src}
-        alt={image.alt}
-        fill
-        sizes={sizes}
-        preload={preload}
-        className={fit === "cover" ? "object-cover" : "object-contain"}
-      />
-    </div>
-  );
+  const frameClass = "relative overflow-hidden rounded-md border border-border-subtle bg-surface-secondary";
+
+  const frame =
+    ratio === "intrinsic" ? (
+      <div className={frameClass}>
+        <Image
+          src={image.src}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
+          sizes={sizes}
+          preload={preload}
+          className="h-auto w-full"
+        />
+      </div>
+    ) : (
+      <div className={cn(frameClass, ratios[ratio])}>
+        <Image
+          src={image.src}
+          alt={image.alt}
+          fill
+          sizes={sizes}
+          preload={preload}
+          className={fit === "cover" ? "object-cover" : "object-contain"}
+        />
+      </div>
+    );
 
   if (!caption) return <div className={className}>{frame}</div>;
 

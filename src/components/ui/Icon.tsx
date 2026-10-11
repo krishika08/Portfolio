@@ -4,6 +4,7 @@ import { cn } from "@/lib/cn";
 // Small inline icon set (no icon library). 24×24 grid, 1.75 stroke,
 // currentColor. Brand marks are filled paths.
 const paths = {
+  "arrow-left": <path d="M19 12H5M11 6l-6 6 6 6" />,
   "arrow-right": <path d="M5 12h14M13 6l6 6-6 6" />,
   "arrow-up-right": <path d="M7 17 17 7M8 7h9v9" />,
   menu: <path d="M4 8h16M4 16h16" />,
