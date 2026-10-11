@@ -31,7 +31,7 @@ export function ProgressionMarker({ index, total, label, current = false, classN
         aria-hidden
         className={cn("h-px w-6", current ? "bg-accent" : "bg-border-strong")}
       />
-      {label && <span className="tracking-[0.08em] text-foreground-secondary uppercase">{label}</span>}
+      {label && <span className="text-eyebrow text-foreground-secondary uppercase">{label}</span>}
     </div>
   );
 }

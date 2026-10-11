@@ -32,7 +32,7 @@ export function Metadata({ items, layout = "inline", className }: MetadataProps)
     <dl className={cn(layouts[layout], className)}>
       {items.map((item) => (
         <div key={item.label} className="min-w-0">
-          <dt className="font-mono text-meta tracking-[0.08em] text-foreground-muted uppercase">
+          <dt className="font-mono text-eyebrow text-foreground-muted uppercase">
             {item.label}
           </dt>
           <dd className="mt-micro text-body-sm text-foreground">{item.value}</dd>

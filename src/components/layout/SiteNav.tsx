@@ -95,7 +95,7 @@ export function SiteNav({ name, homeHref, items, resumeHref, social }: SiteNavPr
       <Container className="flex h-(--header-height) items-center justify-between gap-group">
         <BaseLink
           href={homeHref}
-          className="-mx-micro rounded-sm px-micro font-display text-[1.0625rem] font-medium tracking-[-0.01em] text-foreground"
+          className="-mx-micro inline-flex min-h-11 items-center rounded-sm px-micro font-display text-[1.0625rem] font-medium tracking-[-0.01em] text-foreground"
         >
           {name}
         </BaseLink>

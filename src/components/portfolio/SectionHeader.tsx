@@ -40,7 +40,7 @@ export function SectionHeader({
     index !== undefined ? (
       <ProgressionMarker index={index} label={eyebrow} className="mb-group" />
     ) : eyebrow ? (
-      <p className="mb-group font-mono text-meta tracking-[0.08em] text-foreground-secondary uppercase">
+      <p className="mb-group font-mono text-eyebrow text-foreground-secondary uppercase">
         {eyebrow}
       </p>
     ) : null;

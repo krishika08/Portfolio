@@ -47,7 +47,7 @@ Raw semantic variables on `:root` are the CSS API (`var(--accent)`); `@theme` ma
 | Group | Tokens / utilities |
 |---|---|
 | Color | `background` `surface` `surface-secondary` `foreground` `foreground-secondary` `foreground-muted` `border-subtle` `border` `border-strong` `accent` `accent-hover` `accent-foreground` `focus` `success` `warning` `error` |
-| Type | `text-display` `text-h1..h3` (Instrument Sans via `font-display`), `text-lead` `text-body` `text-body-sm` `text-label` `text-button` (Geist), `text-meta` (Geist Mono via `font-mono`) |
+| Type | `text-display` `text-h1..h3` (Instrument Sans via `font-display`), `text-lead` `text-body` `text-body-sm` `text-label` `text-button` (Geist), `text-meta`, `text-eyebrow` (uppercase labels) (Geist Mono via `font-mono`) |
 | Spacing | `micro` `tight` `group` `cluster` `block` `section` `section-compact` `break`, plus `gutter` and `grid` (e.g. `gap-group`, `py-section`, `px-gutter`) |
 | Layout | `max-w-reading` (672px) · `max-w-content` (1280px incl. gutters ≈ 1200px content) · `max-w-wide` (1440px) · `<Grid>` 4 → 8 (md) → 12 (lg) columns |
 | Shape | `rounded-sm` 6px · `rounded-md` 8px · `rounded-lg` 12px (maximum) |

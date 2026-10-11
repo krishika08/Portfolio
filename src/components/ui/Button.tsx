@@ -7,8 +7,10 @@ import { cn } from "@/lib/cn";
 //   secondary — supporting actions (GitHub, Project details)
 //   text      — low-emphasis actions (Read case study, View source)
 const variants = {
+  // The transparent border becomes visible in forced-colors (high contrast)
+  // mode, where background colours are removed.
   primary:
-    "bg-foreground text-surface hover:bg-accent active:bg-accent-hover",
+    "border border-transparent bg-foreground text-surface hover:bg-accent active:bg-accent-hover",
   secondary:
     "border border-border-strong bg-transparent text-foreground hover:border-foreground hover:bg-surface active:bg-surface-secondary",
   text: "text-foreground underline-offset-4 decoration-1 hover:text-accent hover:underline active:text-accent-hover",

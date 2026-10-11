@@ -119,6 +119,9 @@
   --text-meta: 0.75rem; /* Geist Mono */
   --text-meta--line-height: 1.5;
   --text-meta--letter-spacing: 0.02em;
+  --text-eyebrow: 0.75rem; /* Geist Mono, uppercase: labels, eyebrows */
+  --text-eyebrow--line-height: 1.5;
+  --text-eyebrow--letter-spacing: 0.08em;
   --text-button: 0.9375rem;
   --text-button--line-height: 1.2;
   --text-button--font-weight: 500;
