@@ -25,7 +25,15 @@ export function HeroSection() {
       ? [
           {
             label: "Education",
-            value: `${degree.degree}, ${degree.shortName ?? degree.institution} · ${degree.dates.start}–${degree.dates.end}`,
+            value: (
+              <>
+                {degree.degree}, {degree.shortName ?? degree.institution} ·{" "}
+                {/* Keep the year range on one line. */}
+                <span className="whitespace-nowrap">
+                  {degree.dates.start}–{degree.dates.end}
+                </span>
+              </>
+            ),
           },
         ]
       : []),

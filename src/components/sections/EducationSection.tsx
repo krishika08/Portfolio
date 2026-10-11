@@ -29,10 +29,12 @@ export function EducationSection() {
             <ul className="mt-group space-y-cluster">
               {education.map((item) => (
                 <li key={item.id} className="border-t border-border pt-group">
-                  <p className="font-display text-h3 text-foreground">{item.institution}</p>
+                  <p className="font-display text-h3 text-foreground">
+                    {item.institution}
+                    {item.location && `, ${item.location}`}
+                  </p>
                   <Text tone="secondary" className="mt-micro">
                     {item.degree}
-                    {item.location && `, ${item.location}`}
                   </Text>
                   <Metadata
                     className="mt-group"

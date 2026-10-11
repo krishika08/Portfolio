@@ -20,7 +20,7 @@ export function EngineeringFocusSection() {
           <SectionHeader
             id="focus-title"
             title="Engineering focus"
-            description="Skills grouped by capability. Each lists where it has been used, across projects, internships and certifications."
+            description="Skills grouped by capability. Where a skill has been used in a project, internship or certification, that evidence is listed beside it."
             className="col-span-full lg:col-span-4"
           />
           <div className="col-span-full grid gap-x-grid gap-y-block md:grid-cols-2 lg:col-span-8 lg:col-start-5">
