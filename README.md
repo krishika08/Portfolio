@@ -64,7 +64,7 @@ Every project with `caseStudy` data gets `/projects/[slug]` (static), a sitemap 
 
 - **Narrative order:** Overview → The problem → What it does → In the product → Architecture → Engineering decisions → Challenges → Outcomes → What I learned. A stage renders only when its data exists, and the stage numbers follow what is present.
 - **Data:** `overview` is required; `context`, `highlights`, `gallery`, `architecture` (summary + figure), `decisions`, `challenges`, `outcomes`, `learnings` and `sources` are optional. Wrap code identifiers in backticks to set them as code.
-- **Emphasis** comes from `tier`: the flagship gets the display-size title and a wide opening image.
+- **Emphasis** comes from `tier`: the flagship gets the display-size title. Opening images and figures render at most at their source width (never upscaled).
 - **Evidence rule:** every statement must trace to the resume, owner-supplied material, or the project's own repository checked against its code. List the sources in `sources`; they are shown on the page. Omit a stage rather than fill it.
 - **Media:** real screens and diagrams only, in `public/images/projects/<slug>/`, with width and height. Diagrams need a `description` (a visible text equivalent). Figures never render wider than their source.
 

@@ -142,7 +142,7 @@ export const projects: Project[] = [
         },
         {
           title: "Settling up",
-          items: ["Balances recalculated automatically", "Simplified settlement transfers", "One-tap settle up"],
+          items: ["Balances recalculated automatically", "Simplified settlement transfers", "Settle up from the balances screen"],
         },
         {
           title: "Platform",
@@ -189,7 +189,7 @@ export const projects: Project[] = [
       ],
       architecture: {
         summary: [
-          "The Next.js App Router pages sit on a `services/` layer of ten modules that hold most data access, each returning the same `{ success, data, error }` shape.",
+          "The Next.js App Router pages sit on a `services/` layer of ten modules that hold most data access. Service functions return a result with a `success` flag, carrying `data` on success and an `error` message on failure.",
           "Supabase provides email and password authentication, the PostgREST data API, realtime subscriptions and PostgreSQL with row-level security policies per table.",
           "Receipt scanning is the server-side path: the browser posts the image to `POST /api/scan-receipt`, which calls the Gemini API with a key that exists only on the server.",
         ],
@@ -219,7 +219,7 @@ export const projects: Project[] = [
         {
           title: "One shape for data access",
           detail:
-            "Data access is organised into ten service modules. Each returns `{ success, data, error }`, so pages handle results and failures the same way everywhere.",
+            "Data access is organised into ten service modules whose functions return a result with a `success` flag, carrying `data` on success and an `error` message on failure, so pages can handle results and failures consistently.",
         },
         {
           title: "The AI key stays on the server",

@@ -153,7 +153,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   if (!project?.caseStudy) notFound();
 
   const cover = project.assets?.cover;
-  const flagship = project.tier === "flagship";
   const { sources } = project.caseStudy;
 
   return (
@@ -161,13 +160,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <CaseStudyHeader project={project} />
 
       {cover && (
-        <Container width={flagship ? "wide" : "content"} className="pb-section-compact">
-          <Media
-            image={cover}
-            ratio="intrinsic"
-            sizes={flagship ? "(min-width: 1440px) 1376px, 100vw" : "(min-width: 1280px) 1200px, 100vw"}
-            preload
-          />
+        <Container className="pb-section-compact">
+          {/* Never wider than the source, so the opening image is not upscaled. */}
+          <div style={{ maxWidth: cover.width }}>
+            <Media
+              image={cover}
+              ratio="intrinsic"
+              sizes={`(min-width: ${cover.width + 80}px) ${cover.width}px, 100vw`}
+              preload
+            />
+          </div>
         </Container>
       )}
 
