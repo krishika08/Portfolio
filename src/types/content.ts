@@ -184,6 +184,11 @@ export interface Profile {
   };
   /** Path in `/public` or absolute URL to the resume PDF. */
   resume?: string;
+  /** Real, owner-supplied portraits. `hero` may be a transparent cutout. */
+  portraits?: {
+    hero?: ImageAsset;
+    about?: ImageAsset;
+  };
 }
 
 // ── Navigation ─────────────────────────────────────────────────────────────

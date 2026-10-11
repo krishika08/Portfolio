@@ -6,9 +6,10 @@ import { ExperienceSection } from "@/components/sections/ExperienceSection";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { SelectedWorkSection } from "@/components/sections/SelectedWorkSection";
 import { routes } from "@/config/routes";
+import { profile } from "@/content/profile";
 import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata = createPageMetadata({ path: routes.home });
+export const metadata = createPageMetadata({ path: routes.home, image: profile.portraits?.about });
 
 // Recruiter journey: identity → proof → capability → experience →
 // credentials → context → contact. Every section is a Server Component.

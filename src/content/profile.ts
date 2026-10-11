@@ -25,4 +25,18 @@ export const profile: Profile = {
   },
   // Pending: add the file at public/resume.pdf, then set resume: "/resume.pdf".
   resume: undefined,
+  portraits: {
+    hero: {
+      src: "/images/profile/portrait-hero.png",
+      alt: "Krishika in a black suit and white shirt.",
+      width: 612,
+      height: 872,
+    },
+    about: {
+      src: "/images/profile/portrait-about.png",
+      alt: "Krishika in a navy blazer.",
+      width: 1254,
+      height: 1254,
+    },
+  },
 };

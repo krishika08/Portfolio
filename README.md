@@ -75,11 +75,11 @@ Adding a project: add an entry to `content/projects.ts` with a `tier`, an `order
 | What | Location | Referenced from |
 |---|---|---|
 | Project images | `public/images/projects/<slug>/…` | `content/projects.ts` → `assets.cover` (`ImageAsset`: src, alt, width, height) |
-| Profile image | `public/images/profile/…` | added with the About section |
+| Portraits | `public/images/profile/portrait-hero.png` (transparent cutout, hero) · `portrait-about.png` (About; also the homepage social image) | `content/profile.ts` → `portraits` |
 | Resume | `public/resume.pdf` (stable URL `/resume.pdf`; replace the file to update) | `content/profile.ts` → `resume: "/resume.pdf"` |
 | Site icon | `src/app/icon.svg` | metadata route |
 
-Committed: VeyloPrep and Split-Sync covers (real product captures supplied by the owner). Pending: the resume PDF and an email address — the Resume CTAs and the email contact row appear automatically once real values are added to `content/profile.ts`. Projects without a cover show their verified capabilities instead of an image. Never add placeholder images or documents.
+Committed: owner-supplied portraits, and real product captures and diagrams for VeyloPrep and Split-Sync. Pending: the resume PDF and an email address — the Resume CTAs and the email contact row appear automatically once real values are added to `content/profile.ts`. Projects without a cover show their verified capabilities instead of an image. Never add placeholder images or documents.
 
 ## Content rules
 

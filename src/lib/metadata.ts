@@ -38,7 +38,11 @@ export function createPageMetadata({
     description,
     alternates: { canonical: path },
     openGraph: { ...baseOpenGraph, title: fullTitle, description, url: path, ...(images && { images }) },
-    ...(images && { twitter: { card: "summary_large_image", images } }),
+    // Wide images get the large card; square ones (e.g. a portrait) the
+    // compact card, which would otherwise crop them through the middle.
+    ...(image && {
+      twitter: { card: image.width / image.height >= 1.5 ? "summary_large_image" : "summary", images },
+    }),
     ...(noIndex && { robots: { index: false, follow: false } }),
   };
 }
