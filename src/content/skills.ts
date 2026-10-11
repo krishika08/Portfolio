@@ -1,40 +1,36 @@
 import type { SkillCategory } from "@/types/content";
 
+// Verified skills grouped by capability. Evidence for each skill is derived
+// from project, experience and achievement data (see resolveCapabilities).
+
 export const skillCategories: SkillCategory[] = [
   {
-    id: "languages",
-    label: "Languages",
-    skills: ["Java", "Python", "C", "SQL", "JavaScript", "TypeScript"],
+    id: "full-stack",
+    label: "Full-stack web engineering",
+    skills: ["Next.js", "React.js", "TypeScript", "JavaScript", "REST APIs"],
   },
   {
-    id: "frameworks",
-    label: "Frameworks & Technologies",
-    skills: ["Next.js", "React.js", "REST APIs"],
-  },
-  {
-    id: "databases",
-    label: "Databases",
-    skills: ["MySQL", "PostgreSQL", "MongoDB", "Supabase"],
-  },
-  {
-    id: "cloud-devops",
-    label: "Cloud & DevOps",
-    skills: [
-      "Google Cloud Platform",
-      "Oracle Cloud Infrastructure Foundations",
-      "Git",
-      "GitHub",
-    ],
+    id: "backend-data",
+    label: "Backend & data",
+    skills: ["PostgreSQL", "MySQL", "MongoDB", "Supabase", "SQL"],
   },
   {
     id: "foundations",
-    label: "Foundations",
+    label: "Engineering foundations",
     skills: [
+      "Java",
+      "Python",
+      "C",
       "Data Structures & Algorithms",
       "OOP",
       "DBMS",
       "Operating Systems",
       "Computer Networks",
     ],
+  },
+  {
+    id: "cloud-tooling",
+    label: "Cloud & tooling",
+    skills: ["Google Cloud Platform", "Oracle Cloud Infrastructure Foundations", "Git", "GitHub"],
   },
 ];

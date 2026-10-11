@@ -1,25 +1,27 @@
-import { Container } from "@/components/ui/Container";
-import { Heading } from "@/components/ui/Heading";
-import { Section } from "@/components/ui/Section";
-import { Text } from "@/components/ui/Text";
+import { AboutSection } from "@/components/sections/AboutSection";
+import { ContactSection } from "@/components/sections/ContactSection";
+import { EducationSection } from "@/components/sections/EducationSection";
+import { EngineeringFocusSection } from "@/components/sections/EngineeringFocusSection";
+import { ExperienceSection } from "@/components/sections/ExperienceSection";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { SelectedWorkSection } from "@/components/sections/SelectedWorkSection";
 import { routes } from "@/config/routes";
-import { profile } from "@/content/profile";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({ path: routes.home });
 
-// Foundation placeholder. The homepage sections are built in later phases.
+// Recruiter journey: identity → proof → capability → experience →
+// credentials → context → contact. Every section is a Server Component.
 export default function HomePage() {
   return (
-    <Section aria-labelledby="page-title">
-      <Container>
-        <Heading level={1} id="page-title">
-          {profile.name}
-        </Heading>
-        <Text size="lead" tone="secondary" className="mt-4 max-w-reading">
-          {profile.positioning}
-        </Text>
-      </Container>
-    </Section>
+    <>
+      <HeroSection />
+      <SelectedWorkSection />
+      <EngineeringFocusSection />
+      <ExperienceSection />
+      <EducationSection />
+      <AboutSection />
+      <ContactSection />
+    </>
   );
 }

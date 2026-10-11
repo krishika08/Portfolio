@@ -23,6 +23,8 @@ src/
     portfolio/             Level 2 primitives: SectionHeader, ProgressionMarker, Metadata,
                            CtaGroup, TechnologyList, SocialLinks, CapabilityCluster,
                            ProjectPreview, ProjectLinks, ExperienceItem
+    sections/              Level 3 home-page compositions: Hero, SelectedWork, EngineeringFocus,
+                           Experience, Education, About, Contact
     layout/                app shell: SkipLink, SiteHeader (server) → SiteNav (client), SiteFooter
   config/                  site (URL, metadata defaults), routes, navigation (+ section ids)
   content/                 verified content only: profile, projects, experience, education, skills
@@ -31,7 +33,7 @@ src/
   types/content.ts         content model
 ```
 
-Level 3 compositions (Hero, Selected Work, Experience, About, Contact, the project case study) are page-specific and go in `src/components/sections/` (created when the first one is built). They compose Level 1/2 primitives and receive data from `src/lib/content.ts`; don't fold them into generic configurable components.
+Level 3 compositions live in `src/components/sections/` (one file per home-page section; a future case-study composition goes here too). They are page-specific, compose Level 1/2 primitives and read data through `src/lib/content.ts`; don't fold them into generic configurable components. Every section uses an id from `sectionIds` (`config/navigation.ts`), which the navigation and in-page links share.
 
 ## Architecture
 
@@ -45,7 +47,7 @@ src/content/*.ts  →  src/types/content.ts  →  src/lib/content.ts (selectors)
 
   | Route | Source | Notes |
   |---|---|---|
-  | `/` | `app/page.tsx` | Placeholder until the home sections are built |
+  | `/` | `app/page.tsx` | Home: Hero → Selected Work → Engineering Focus → Experience → Education & achievements → About → Contact |
   | `/projects/[slug]` | `app/projects/[slug]/page.tsx` | Static (`generateStaticParams`, `dynamicParams = false`) |
   | `/foundation` | `app/(internal)/foundation` | Dev only; 404 in production |
   | `/robots.txt`, `/sitemap.xml`, `/icon.svg` | metadata routes | |
@@ -64,7 +66,7 @@ src/content/*.ts  →  src/types/content.ts  →  src/lib/content.ts (selectors)
 | Resume | `public/resume.pdf` (stable URL `/resume.pdf`; replace the file to update) | `content/profile.ts` → `resume: "/resume.pdf"` |
 | Site icon | `src/app/icon.svg` | metadata route |
 
-No assets are committed yet: none have been supplied. The resume CTA, social links and project media appear automatically once real files/values are added. Never add placeholder images or documents.
+Committed: VeyloPrep and Split-Sync covers (real product captures supplied by the owner). Pending: the resume PDF and an email address — the Resume CTAs and the email contact row appear automatically once real values are added to `content/profile.ts`. Projects without a cover show their verified capabilities instead of an image. Never add placeholder images or documents.
 
 ## Content rules
 
@@ -72,7 +74,8 @@ No assets are committed yet: none have been supplied. The resume CTA, social lin
 - Only verified information. Leave optional fields `undefined` — never placeholder text, metrics or links.
 - Contact details, social profiles and the resume are set in `content/profile.ts`; navigation, footer and `SocialLinks` pick them up automatically.
 - A project gets a detail route (`routes.project(slug)`) and a sitemap entry only once it has `caseStudy` content.
-- Skill evidence is derived from project/experience `technologies` (`resolveCapabilities`). No ratings, bars or scores.
+- Skill evidence is derived from project/experience `technologies` and achievement `relatedSkills` (`resolveCapabilities`). No ratings, bars or scores.
+- Experience emphasis comes from `featured`; project emphasis from `tier`. Never branch on names.
 
 ## Design tokens (`src/app/globals.css`)
 

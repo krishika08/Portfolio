@@ -1,7 +1,7 @@
 import type { Experience } from "@/types/content";
 
-// Contributions restate resume-supported areas only. Final wording is
-// written in the Recruiter Experience phase; do not add new claims here.
+// Contributions are written only from resume-verified points. Do not add
+// metrics, scope or responsibilities that the resume does not state.
 
 export const experience: Experience[] = [
   {
@@ -10,15 +10,14 @@ export const experience: Experience[] = [
     role: "Website Development Intern",
     dates: { start: "2026-06", end: "2026-08" },
     contributions: [
-      "Production web applications",
-      "Frontend, backend and performance debugging",
-      "Reliability improvements",
-      "Responsive development",
-      "Cross-functional collaboration",
-      "Git-based workflows",
+      "Worked on production web applications across the frontend and backend.",
+      "Diagnosed and resolved frontend, backend and performance issues.",
+      "Contributed reliability improvements and responsive development.",
+      "Collaborated cross-functionally through Git-based workflows.",
     ],
     technologies: ["Next.js", "React", "TypeScript", "PostgreSQL", "Tailwind CSS"],
     order: 1,
+    featured: true,
   },
   {
     id: "aas-welfare-society",
@@ -26,12 +25,9 @@ export const experience: Experience[] = [
     role: "Frontend Development Intern",
     dates: { start: "2025-06", end: "2025-07" },
     contributions: [
-      "Mobile-first responsive UI",
-      "Accessible layouts",
-      "Cross-browser compatibility",
-      "Contact workflows",
-      "Volunteer registration workflows",
-      "Usability improvements",
+      "Built mobile-first, responsive interfaces with accessible layouts.",
+      "Worked on cross-browser compatibility and usability improvements.",
+      "Implemented validated contact workflows and volunteer registration workflows.",
     ],
     technologies: [],
     order: 2,

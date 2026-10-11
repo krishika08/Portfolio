@@ -88,6 +88,8 @@ export interface Experience {
   technologies: string[];
   /** Ascending display order. */
   order: number;
+  /** Primary professional experience; presented with stronger emphasis. */
+  featured?: boolean;
 }
 
 // ── Education & achievements ───────────────────────────────────────────────
@@ -95,6 +97,8 @@ export interface Experience {
 export interface Education {
   id: string;
   institution: string;
+  /** Common abbreviation, e.g. "UPES". */
+  shortName?: string;
   location?: string;
   degree: string;
   /** Years, e.g. { start: "2024", end: "2028" }. */
@@ -106,18 +110,21 @@ export interface Education {
 export interface Achievement {
   id: string;
   title: string;
-  organization: string;
-  date: YearMonth;
+  organization?: string;
+  /** Year ("2025") or month ("2025-12"); omit when unverified. */
+  date?: string;
   details?: string;
   url?: string;
+  /** Skill names (from content/skills.ts) this achievement is evidence for. */
+  relatedSkills?: string[];
 }
 
 // ── Skills ─────────────────────────────────────────────────────────────────
 
 /**
- * Skills are plain names grouped by category: no ratings or levels.
- * Evidence is derived from project and experience `technologies`
- * (see `getSkillEvidence`) so it cannot drift from the source data.
+ * Skills are plain names grouped by capability: no ratings or levels.
+ * Evidence is derived from project/experience `technologies` and achievement
+ * `relatedSkills` (see `getSkillEvidence`) so it cannot drift from the data.
  */
 export interface SkillCategory {
   id: string;
@@ -129,9 +136,19 @@ export interface SkillCategory {
 
 export interface Profile {
   name: string;
-  /** Approved professional positioning statement. */
+  /** Short role label, e.g. "Software engineer". */
+  role: string;
+  /** Approved professional positioning statement (used for metadata). */
   positioning: string;
+  /** Hero introduction, composed from the approved positioning. */
+  intro: string;
   focus: string;
+  /** Growth direction, stated as direction rather than expertise. */
+  direction: string;
+  /** Stated engineering interests, not claimed expertise. */
+  interests: string[];
+  /** About section paragraphs. */
+  about: string[];
   /** Single source for contact details. Undefined until verified. */
   contact: {
     email?: string;

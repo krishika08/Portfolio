@@ -12,3 +12,8 @@ export function isFileHref(href: string): boolean {
   const path = href.split(/[?#]/)[0] ?? "";
   return /\.(?:pdf|docx?|txt|zip|png|jpe?g|webp|avif|gif|svg)$/i.test(path);
 }
+
+/** Readable form of a link for display: "https://www.x.com/a/" → "x.com/a", "mailto:a@b" → "a@b". */
+export function displayHref(href: string): string {
+  return href.replace(/^mailto:/, "").replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, "");
+}
