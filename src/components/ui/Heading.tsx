@@ -4,6 +4,7 @@ import { cn } from "@/lib/cn";
 // Weight, tracking and leading come from the text-* tokens.
 const sizes = {
   display: "text-display",
+  chapter: "text-chapter",
   h1: "text-h1",
   h2: "text-h2",
   h3: "text-h3",

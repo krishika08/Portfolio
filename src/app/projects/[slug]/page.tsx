@@ -12,6 +12,7 @@ import { Metadata } from "@/components/portfolio/Metadata";
 import { ProjectLinks } from "@/components/portfolio/ProjectLinks";
 import { Container } from "@/components/ui/Container";
 import { Media } from "@/components/ui/Media";
+import { Tilt } from "@/components/ui/Tilt";
 import { Text } from "@/components/ui/Text";
 import { routes } from "@/config/routes";
 import { getCaseStudyProject, getCaseStudyProjects } from "@/lib/content";
@@ -85,12 +86,12 @@ function stagesFor(caseStudy: ProjectCaseStudy): Stage[] {
       children: (
         <div className="grid gap-x-grid gap-y-cluster sm:grid-cols-2 xl:grid-cols-3">
           {highlights.map((group) => (
-            <div key={group.title} className="border-t border-border pt-group">
+            <div key={group.title} className="reveal border-t border-accent pt-group">
               <h3 className="font-mono text-eyebrow text-foreground-secondary uppercase">{group.title}</h3>
               <ul className="mt-group space-y-tight text-body text-foreground">
                 {group.items.map((item) => (
                   <li key={item} className="flex gap-tight">
-                    <span aria-hidden className="mt-[0.8em] h-px w-3 shrink-0 bg-border-strong" />
+                    <span aria-hidden className="mt-[0.7em] size-1.5 shrink-0 bg-accent" />
                     {item}
                   </li>
                 ))}
@@ -140,7 +141,7 @@ function TextList({ items }: { items: string[] }) {
     <ul className="max-w-reading space-y-tight text-body text-foreground-secondary">
       {items.map((item) => (
         <li key={item} className="flex gap-tight">
-          <span aria-hidden className="mt-[0.8em] h-px w-3 shrink-0 bg-border-strong" />
+          <span aria-hidden className="mt-[0.7em] size-1.5 shrink-0 bg-accent" />
           {item}
         </li>
       ))}
@@ -162,14 +163,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       {cover && (
         <Container className="pb-section-compact">
           {/* Never wider than the source, so the opening image is not upscaled. */}
-          <div style={{ maxWidth: cover.width }}>
+          <Tilt max={4} className="rounded-md" style={{ maxWidth: cover.width }}>
             <Media
               image={cover}
               ratio="intrinsic"
               sizes={`(min-width: ${cover.width + 80}px) ${cover.width}px, 100vw`}
               preload
             />
-          </div>
+          </Tilt>
         </Container>
       )}
 

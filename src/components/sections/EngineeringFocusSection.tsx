@@ -1,5 +1,6 @@
 import { CapabilityCluster } from "@/components/portfolio/CapabilityCluster";
 import { SectionHeader } from "@/components/portfolio/SectionHeader";
+import { Watermark } from "@/components/portfolio/Watermark";
 import { Container } from "@/components/ui/Container";
 import { Grid } from "@/components/ui/Grid";
 import { Section } from "@/components/ui/Section";
@@ -7,19 +8,22 @@ import { sectionIds } from "@/config/navigation";
 import { getCapabilityClusters } from "@/lib/content";
 
 // Capability → technologies → evidence. Evidence is derived from project,
-// experience and achievement data; nothing is self-rated.
+// experience and achievement data; nothing is self-rated. Set on the
+// graphite band for rhythm between the dark sections.
 export function EngineeringFocusSection() {
   return (
     <Section
       id={sectionIds.focus}
       aria-labelledby="focus-title"
-      className="border-y border-border-subtle bg-surface"
+      className="relative isolate border-y border-border-subtle bg-surface"
     >
+      <Watermark text="Engineering focus" className="top-[calc(var(--spacing-section)-0.5rem)]" />
       <Container>
         <Grid className="gap-y-block">
           <SectionHeader
             id="focus-title"
             title="Engineering focus"
+            size="h2"
             description="Skills grouped by capability. Where a skill has been used in a project, internship or certification, that evidence is listed beside it."
             className="col-span-full lg:col-span-4"
           />

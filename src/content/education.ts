@@ -20,6 +20,7 @@ export const achievements: Achievement[] = [
     title: "Google Cloud Study Jams 2025",
     details: "Completed 20 Google Skill Boost badges.",
     relatedSkills: ["Google Cloud Platform"],
+    highlight: { value: "20", label: "Google Skill Boost badges" },
   },
   {
     id: "oci-foundations-associate",

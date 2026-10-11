@@ -24,6 +24,7 @@ export function CaseStudyGallery({ figures }: { figures: Figure[] }) {
         >
           <CaseStudyFigure
             figure={figure}
+            tilt
             sizes={portrait ? "(min-width: 640px) 30vw, 20rem" : "(min-width: 768px) 45vw, 100vw"}
           />
         </li>

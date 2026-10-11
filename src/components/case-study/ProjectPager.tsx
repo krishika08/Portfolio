@@ -14,7 +14,7 @@ export function ProjectPager({ slug }: { slug: string }) {
   const { previous, next } = getAdjacentCaseStudies(slug);
 
   return (
-    <nav aria-label="More projects" className="border-t border-foreground">
+    <nav aria-label="More projects" className="border-t border-accent bg-surface">
       <Container className="py-block">
         {(previous || next) && (
           <Grid className="gap-y-cluster">
@@ -41,17 +41,17 @@ function PagerLink({ project, direction }: { project: Project; direction: "previ
     <BaseLink
       href={routes.project(project.slug)}
       className={cn(
-        "group col-span-full flex flex-col gap-tight rounded-sm border-t border-border pt-group md:col-span-4 lg:col-span-5",
+        "group col-span-full flex flex-col gap-tight rounded-sm border-t border-border pt-group transition-colors hover:border-accent md:col-span-4 lg:col-span-5",
         next && "md:col-start-5 md:items-end md:text-right lg:col-start-8",
       )}
     >
       <span className="font-mono text-eyebrow text-foreground-muted uppercase">
         {next ? "Next project" : "Previous project"}
       </span>{" "}
-      <span className="flex items-center gap-tight font-display text-h2 text-foreground transition-colors group-hover:text-accent">
-        {!next && <Icon name="arrow-left" className="text-[0.6em]" />}
+      <span className="flex items-center gap-tight font-display text-h1 text-foreground transition-colors group-hover:text-accent">
+        {!next && <Icon name="arrow-left" className="text-[0.5em] transition-transform group-hover:-translate-x-1" />}
         {project.name}
-        {next && <Icon name="arrow-right" className="text-[0.6em]" />}
+        {next && <Icon name="arrow-right" className="text-[0.5em] transition-transform group-hover:translate-x-1" />}
       </span>
     </BaseLink>
   );

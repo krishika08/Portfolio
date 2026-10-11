@@ -72,6 +72,24 @@ export function getExperience(): Experience[] {
 const normalizeTech = (name: string) => name.toLowerCase().replace(/\.js$/, "").trim();
 
 /**
+ * The technologies used most across projects and roles, most-used first
+ * (ties keep first-seen order). Derived from source data.
+ */
+export function getCoreTechnologies(limit: number): string[] {
+  const counts = new Map<string, { name: string; count: number }>();
+  for (const name of [...getProjects(), ...getExperience()].flatMap((item) => item.technologies)) {
+    const key = normalizeTech(name);
+    const entry = counts.get(key);
+    if (entry) entry.count += 1;
+    else counts.set(key, { name, count: 1 });
+  }
+  return [...counts.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit)
+    .map((entry) => entry.name);
+}
+
+/**
  * Projects, roles and achievements that evidence the given skill: project
  * and role `technologies`, and achievement `relatedSkills`. Derived from
  * source data so skill evidence cannot be fabricated.

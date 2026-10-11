@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Instrument_Sans } from "next/font/google";
+import { Anton, Geist, Geist_Mono } from "next/font/google";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
@@ -7,11 +7,13 @@ import { siteConfig } from "@/config/site";
 import { baseOpenGraph } from "@/lib/metadata";
 import "./globals.css";
 
-// Three variable fonts (one file each, all weights), self-hosted by next/font:
-// no runtime request to Google, and metric-matched fallbacks limit layout shift.
-const display = Instrument_Sans({
+// Self-hosted by next/font: no runtime request to Google, and metric-matched
+// fallbacks limit layout shift. Anton (condensed display caps) has a single
+// weight; Geist and Geist Mono are variable.
+const display = Anton({
   subsets: ["latin"],
-  variable: "--font-instrument-sans",
+  weight: "400",
+  variable: "--font-anton",
   display: "swap",
 });
 
@@ -54,8 +56,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light",
-  themeColor: "#f7f6f2",
+  colorScheme: "dark",
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -63,8 +65,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body className="flex min-h-dvh flex-col bg-background font-sans text-body text-foreground antialiased">
         <SkipLink />
+        {/* Reading progress, driven by a CSS scroll timeline. */}
+        <div aria-hidden className="scroll-progress" />
         <SiteHeader />
-        <main id="main" tabIndex={-1} className="flex-1 outline-none">
+        {/* overflow-x: clip keeps 3D reveals and tilts from widening the page
+            without creating a scroll container. */}
+        <main id="main" tabIndex={-1} className="flex-1 overflow-x-clip outline-none">
           {children}
         </main>
         <SiteFooter />

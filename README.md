@@ -19,10 +19,11 @@ src/
     (internal)/foundation  dev-only design-system reference (404 in production)
   components/
     ui/                    Level 1 primitives: Container, Heading, Text, BaseLink, TextLink,
-                           Button/ButtonLink, Icon, Divider, Grid, Media, Section
+                           Button/ButtonLink, Icon, Divider, Grid, Media, Section, Tilt (client)
     portfolio/             Level 2 primitives: SectionHeader, ProgressionMarker, Metadata,
                            CtaGroup, TechnologyList, SocialLinks, CapabilityCluster,
-                           ProjectPreview, ProjectLinks, ExperienceItem
+                           ProjectPreview, ProjectLinks, ExperienceItem, PhoneFan,
+                           Manifesto, Watermark
     sections/              Level 3 home-page compositions: Hero, SelectedWork, EngineeringFocus,
                            Experience, Education, About, Contact
     case-study/            project page composition: header, section, figure, gallery, points, pager
@@ -96,17 +97,17 @@ Raw semantic variables on `:root` are the CSS API (`var(--accent)`); `@theme` ma
 
 | Group | Tokens / utilities |
 |---|---|
-| Color | `background` `surface` `surface-secondary` `foreground` `foreground-secondary` `foreground-muted` `border-subtle` `border` `border-strong` `accent` `accent-hover` `accent-foreground` `focus` `success` `warning` `error` |
-| Type | `text-display` `text-h1..h3` (Instrument Sans via `font-display`), `text-lead` `text-body` `text-body-sm` `text-label` `text-button` (Geist), `text-meta`, `text-eyebrow` (uppercase labels) (Geist Mono via `font-mono`) |
+| Color | `background` #0a0a0a · `surface` #111111 · `surface-secondary` #181818 · `foreground` `foreground-secondary` `foreground-muted` · `border-subtle` `border` `border-strong` · `accent` #4f7fff (cobalt) `accent-hover` `accent-foreground` #0d0d0d · `focus` `success` `warning` `error` |
+| Type | `text-display` `text-chapter` `text-h1..h3` (Anton via `font-display`, always uppercase), `text-lead` `text-body` `text-body-sm` `text-label` (Geist), `text-button` (Anton), `text-meta`, `text-eyebrow` (uppercase labels) (Geist Mono via `font-mono`) |
 | Spacing | `micro` `tight` `group` `cluster` `block` `section` `section-compact` `break`, plus `gutter` and `grid` (e.g. `gap-group`, `py-section`, `px-gutter`) |
 | Layout | `max-w-reading` (672px) · `max-w-content` (1280px incl. gutters ≈ 1200px content) · `max-w-wide` (1440px) · `<Grid>` 4 → 8 (md) → 12 (lg) columns |
 | Shape | `rounded-sm` 6px · `rounded-md` 8px · `rounded-lg` 12px (maximum) |
-| Elevation | none · `shadow-subtle` · `shadow-elevated` |
-| Motion | `--duration-instant/fast/standard/slow`, `ease-standard`, `ease-emphasized` |
+| Elevation | none · `shadow-subtle` · `shadow-elevated` · `shadow-glow` (cobalt, hover) |
+| Motion | `--duration-instant/fast/standard/slow/signature`, `ease-standard`, `ease-emphasized` |
 
 Spacing keys must not reuse a `--container-*` name: Tailwind resolves `max-w-*`/`w-*` against both namespaces.
 
-Accent cobalt is a signal (links, active/focus states, markers) — not a decorative background. `foreground-muted` is darkened from the reference `#858585` to `#6b6b6b` so it passes WCAG AA on every surface.
+The look is dark and motorsport-editorial: near-black body, graphite bands, condensed caps display type, thin full-height column rules (`body::before`), giant ghost section titles (`<Watermark>`), a cobalt K behind the hero portrait, monochrome photography that turns to colour on hover (`<Media mono>`, `.mono-media`), numbered chapters with cobalt squares (`<ProgressionMarker>`) and a checkerboard band before Contact. Cobalt is the single signal colour: primary actions, links, highlights and focus. `foreground-muted` is `#858585` rather than the reference `#808080`, which is 4.49:1 on `#181818` (below AA).
 
 ## Conventions
 
@@ -117,7 +118,7 @@ Accent cobalt is a signal (links, active/focus states, markers) — not a decora
 - **Cards** are for project previews and compact grouped information, not for every block.
 - **Images:** use `<Media>` with a ratio and an explicit `sizes`; `preload` only for one above-the-fold image. Provide real `alt` text (empty only if decorative). Add remote hosts to `images.remotePatterns` when needed.
 - **Code blocks:** give scrollable `<pre>` elements `tabIndex={0}` and an accessible name.
-- **Client components:** only where interactivity requires it (currently `SiteNav`). Pass server-resolved data in as props.
+- **Client components:** only where interactivity requires it (currently `SiteNav` and `Tilt`). Pass server-resolved data in as props; `Tilt` renders Server Component children as passed.
 - **Responsive:** mobile-first Tailwind breakpoints (sm 640, md 768, lg 1024, xl 1280). Recompose layouts per breakpoint instead of shrinking them. Validated at 375, 480, 640, 768, 1024, 1280, 1440, 1920 and 2560px.
 
 ## Motion
@@ -126,14 +127,14 @@ Accent cobalt is a signal (links, active/focus states, markers) — not a decora
 |---|---|---|
 | 1 Feedback | hover, focus, pressed | `transition-*` utilities (150ms default, 80ms on press) |
 | 2 Transition | header state, menu open | `duration-(--duration-standard)`, `starting:` for entry |
-| 3 Reveal | subtle content entry | `reveal` utility — CSS scroll-driven, no JavaScript |
-| 4 Signature | rare; justify individually | — |
+| 3 Reveal | content entry | `reveal` utility: content rises and tips back into the page plane in 3D (CSS scroll-driven, no JavaScript) |
+| 4 Signature | hero and showcase moments | `enter`/`enter-line`/`enter-stage` one-shot hero entrance; `<Manifesto>` word-by-word scroll reveal; `drift` on watermarks; `<PhoneFan>` 3D fan that opens on scroll; `<Tilt>` pointer-driven 3D tilt with parallax layers (`depth-1`, `depth-2`, `depth-back`); reading-progress hairline (CSS scroll timeline) |
 
-Under `prefers-reduced-motion: reduce`, smooth scrolling and reveals are disabled and every transition/animation duration is neutralised globally.
+Everything is CSS transforms/opacity plus one small pointer handler (`Tilt`); no animation or 3D libraries. Under `prefers-reduced-motion: reduce`, entrances, reveals, scroll-linked effects and tilt are disabled and every transition/animation duration is neutralised globally. `Tilt` also ignores touch and pen input.
 
 ## Navigation
 
-Compact sticky header: quiet at the top of the page, then a surface with a subtle border once scrolled. Items: Work, Experience, About, Contact (home-page anchors using `sectionIds`), plus Resume and social icons once they are verified. The active state is set with `aria-current` (`location` for sections, `page` for routes such as `/projects/*`). On mobile it becomes a non-modal disclosure panel: Escape, clicking outside, choosing a link, focus leaving the header and resizing to desktop all close it.
+Compact sticky header with a cobalt K monogram: transparent at the top of the page, then a blurred translucent bar with a subtle border once scrolled. On mobile the menu toggle is a cobalt square. Items: Work, Experience, About, Contact (home-page anchors using `sectionIds`), plus Resume and social icons once they are verified. The active state is set with `aria-current` (`location` for sections, `page` for routes such as `/projects/*`). On mobile it becomes a non-modal disclosure panel: Escape, clicking outside, choosing a link, focus leaving the header and resizing to desktop all close it.
 
 ## SEO
 

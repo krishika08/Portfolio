@@ -15,6 +15,7 @@ export const profile: Profile = {
     "My work so far has been full-stack: production web applications during my internship at Crobstacle Ventures LLP, and projects such as VeyloPrep, which runs on the web and as a signed Android build.",
     "I’m heading toward backend engineering and the systems behind reliable, scalable software, building from the fundamentals: data structures and algorithms, databases, operating systems and computer networks.",
   ],
+  emphasis: ["backend engineering", "reliable, scalable software"],
   // Add only verified values; never placeholders.
   contact: {
     email: undefined,

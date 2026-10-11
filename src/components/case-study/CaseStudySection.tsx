@@ -14,7 +14,7 @@ interface CaseStudySectionProps {
   children?: ReactNode;
   /** Full-width content below (figures, galleries). */
   wide?: ReactNode;
-  /** "surface" sets the section on the white band for a visual break. */
+  /** "surface" sets the section on the graphite band for a visual break. */
   tone?: "plain" | "surface";
 }
 
@@ -31,9 +31,9 @@ export function CaseStudySection({ id, index, title, children, wide, tone = "pla
     >
       <Container>
         <Grid className="gap-y-cluster">
-          <div className="col-span-full lg:col-span-3">
+          <div className="col-span-full lg:col-span-4">
             <ProgressionMarker index={index} />
-            <Heading level={2} size="h3" id={id} className="mt-group">
+            <Heading level={2} size="h2" id={id} className="mt-group">
               {title}
             </Heading>
           </div>

@@ -87,16 +87,23 @@ export function SiteNav({ name, homeHref, items, resumeHref, social }: SiteNavPr
       onBlur={onBlur}
       data-raised={scrolled || open}
       className={cn(
-        "sticky top-0 z-40 border-b border-transparent bg-background",
-        "transition-[background-color,border-color] duration-(--duration-standard)",
-        "data-[raised=true]:border-border-subtle data-[raised=true]:bg-surface",
+        "sticky top-0 z-40 border-b border-transparent bg-background/0",
+        "transition-[background-color,border-color,backdrop-filter] duration-(--duration-standard)",
+        "data-[raised=true]:border-border-subtle data-[raised=true]:bg-background/80 data-[raised=true]:backdrop-blur-md",
       )}
     >
       <Container className="flex h-(--header-height) items-center justify-between gap-group">
         <BaseLink
           href={homeHref}
-          className="-mx-micro inline-flex min-h-11 items-center rounded-sm px-micro font-display text-[1.0625rem] font-medium tracking-[-0.01em] text-foreground"
+          className="group -mx-micro inline-flex min-h-11 items-center gap-tight rounded-sm px-micro font-display text-[1.375rem] leading-none tracking-[0.02em] text-foreground"
         >
+          {/* Monogram: the first letter on a cobalt square. */}
+          <span
+            aria-hidden
+            className="grid size-8 place-items-center rounded-xs bg-accent text-[1.125rem] text-accent-foreground transition-transform duration-(--duration-standard) group-hover:-rotate-6"
+          >
+            {name.charAt(0)}
+          </span>
           {name}
         </BaseLink>
 
@@ -107,7 +114,7 @@ export function SiteNav({ name, homeHref, items, resumeHref, social }: SiteNavPr
             aria-expanded={open}
             aria-controls={MENU_ID}
             onClick={() => setOpen((value) => !value)}
-            className="-mr-2.5 inline-flex size-11 items-center justify-center rounded-sm text-2xl text-foreground md:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-sm bg-accent text-2xl text-accent-foreground transition-colors hover:bg-accent-hover md:hidden"
           >
             <Icon name={open ? "close" : "menu"} />
             <span className="sr-only">Menu</span>
@@ -136,10 +143,10 @@ export function SiteNav({ name, homeHref, items, resumeHref, social }: SiteNavPr
                       aria-current={current}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        "flex items-center rounded-sm text-foreground-secondary transition-colors hover:text-foreground",
-                        "decoration-accent decoration-2 underline-offset-[0.4em] aria-[current]:text-foreground aria-[current]:underline",
-                        "max-md:min-h-12 max-md:border-b max-md:border-border-subtle max-md:text-lead",
-                        "md:min-h-11 md:text-label",
+                        "flex items-center rounded-sm font-display tracking-[0.03em] text-foreground-secondary transition-colors hover:text-foreground",
+                        "decoration-accent decoration-2 underline-offset-[0.35em] aria-[current]:text-foreground aria-[current]:underline",
+                        "max-md:min-h-14 max-md:border-b max-md:border-border-subtle max-md:text-h2",
+                        "md:min-h-11 md:text-[1.0625rem]",
                       )}
                     >
                       {item.label}

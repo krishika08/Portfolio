@@ -7,7 +7,7 @@ import { Text } from "@/components/ui/Text";
 import { sectionIds } from "@/config/navigation";
 import { achievements, education } from "@/content/education";
 
-const groupHeading = "font-mono text-eyebrow text-foreground-secondary uppercase";
+const groupHeading = "flex items-center gap-tight font-mono text-eyebrow text-foreground-secondary uppercase";
 
 // Supporting credibility: compact, list-based, no certificate wall.
 export function EducationSection() {
@@ -16,20 +16,23 @@ export function EducationSection() {
       id={sectionIds.education}
       spacing="compact"
       aria-labelledby="education-title"
-      className="border-t border-border-subtle"
+      className="relative isolate border-t border-border-subtle"
     >
       <Container>
         <Grid className="gap-y-cluster">
-          <Heading level={2} id="education-title" className="col-span-full lg:col-span-4">
+          <Heading level={2} size="h2" id="education-title" className="col-span-full lg:col-span-4">
             Education & achievements
           </Heading>
 
           <div className="col-span-full lg:col-span-4 lg:col-start-5">
-            <h3 className={groupHeading}>Education</h3>
+            <h3 className={groupHeading}>
+              <span aria-hidden className="chapter-squares scale-75" />
+              Education
+            </h3>
             <ul className="mt-group space-y-cluster">
               {education.map((item) => (
-                <li key={item.id} className="border-t border-border pt-group">
-                  <p className="font-display text-h3 text-foreground">
+                <li key={item.id} className="reveal border-t border-accent pt-group">
+                  <p className="font-display text-h2 text-foreground">
                     {item.institution}
                     {item.location && `, ${item.location}`}
                   </p>
@@ -49,11 +52,16 @@ export function EducationSection() {
           </div>
 
           <div className="col-span-full lg:col-span-4 lg:col-start-9">
-            <h3 className={groupHeading}>Certifications & achievements</h3>
+            <h3 className={groupHeading}>
+              <span aria-hidden className="chapter-squares scale-75" />
+              Certifications & achievements
+            </h3>
             <ul className="mt-group">
               {achievements.map((item) => (
-                <li key={item.id} className="border-t border-border py-group">
-                  <p className="text-body font-medium text-foreground">{item.title}</p>
+                <li key={item.id} className="group border-t border-border py-group transition-colors hover:border-accent">
+                  <p className="font-display text-[1.25rem] leading-tight tracking-[0.02em] text-foreground transition-colors group-hover:text-accent">
+                    {item.title}
+                  </p>
                   {(item.organization || item.date) && (
                     <p className="mt-micro font-mono text-meta text-foreground-muted">
                       {[item.organization, item.date].filter(Boolean).join(" · ")}

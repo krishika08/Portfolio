@@ -141,6 +141,8 @@ export interface Achievement {
   url?: string;
   /** Skill names (from content/skills.ts) this achievement is evidence for. */
   relatedSkills?: string[];
+  /** A headline figure already stated in `details`, for the hero stat column. */
+  highlight?: { value: string; label: string };
 }
 
 // ── Skills ─────────────────────────────────────────────────────────────────
@@ -171,8 +173,10 @@ export interface Profile {
   direction: string;
   /** Stated engineering interests, not claimed expertise. */
   interests: string[];
-  /** About section paragraphs. */
+  /** About section paragraphs. The last one is set as the manifesto. */
   about: string[];
+  /** Exact phrases from `about` set in the accent colour. */
+  emphasis?: string[];
   /** Single source for contact details. Undefined until verified. */
   contact: {
     email?: string;

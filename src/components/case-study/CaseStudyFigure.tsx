@@ -1,6 +1,7 @@
 import { BaseLink } from "@/components/ui/BaseLink";
 import { Icon } from "@/components/ui/Icon";
 import { Media } from "@/components/ui/Media";
+import { Tilt } from "@/components/ui/Tilt";
 import type { CaseStudyFigure as Figure } from "@/types/content";
 
 interface CaseStudyFigureProps {
@@ -8,6 +9,8 @@ interface CaseStudyFigureProps {
   sizes: string;
   /** Adds a link to the full-size file — for diagrams whose detail is small on phones. */
   expandable?: boolean;
+  /** Pointer-driven 3D tilt on the image. */
+  tilt?: boolean;
   className?: string;
 }
 
@@ -15,11 +18,12 @@ interface CaseStudyFigureProps {
  * A real image with its caption and, for diagrams, a visible text
  * equivalent so the content never depends on reading the image.
  */
-export function CaseStudyFigure({ figure, sizes, expandable = false, className }: CaseStudyFigureProps) {
+export function CaseStudyFigure({ figure, sizes, expandable = false, tilt = false, className }: CaseStudyFigureProps) {
+  const media = <Media image={figure.image} ratio="intrinsic" sizes={sizes} />;
   return (
     // Never wider than the source image, so nothing is upscaled.
     <figure className={className} style={{ maxWidth: figure.image.width }}>
-      <Media image={figure.image} ratio="intrinsic" sizes={sizes} />
+      {tilt ? <Tilt className="rounded-md">{media}</Tilt> : media}
       <figcaption className="mt-group flex flex-col gap-tight">
         <span className="text-body-sm text-foreground">{figure.caption}</span>
         {figure.description && (

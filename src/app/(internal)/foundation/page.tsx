@@ -53,10 +53,10 @@ const colors = [
 ] as const;
 
 const typeScale = [
-  { token: "display", className: "font-display text-display", family: "Instrument Sans" },
-  { token: "h1", className: "font-display text-h1", family: "Instrument Sans" },
-  { token: "h2", className: "font-display text-h2", family: "Instrument Sans" },
-  { token: "h3", className: "font-display text-h3", family: "Instrument Sans" },
+  { token: "display", className: "font-display text-display", family: "Anton" },
+  { token: "h1", className: "font-display text-h1", family: "Anton" },
+  { token: "h2", className: "font-display text-h2", family: "Anton" },
+  { token: "h3", className: "font-display text-h3", family: "Anton" },
   { token: "lead", className: "text-lead", family: "Geist" },
   { token: "body", className: "text-body", family: "Geist" },
   { token: "body-sm", className: "text-body-sm", family: "Geist" },

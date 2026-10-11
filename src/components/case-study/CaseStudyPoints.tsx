@@ -12,9 +12,9 @@ export function CaseStudyPoints({ points }: { points: CaseStudyPoint[] }) {
       {points.map((point, i) => (
         <li
           key={point.title}
-          className="reveal grid gap-tight border-t border-border py-cluster first:border-t-0 first:pt-0 md:grid-cols-[3rem_1fr]"
+          className="reveal group grid gap-tight border-t border-border py-cluster transition-colors first:border-t-0 first:pt-0 hover:border-accent md:grid-cols-[3rem_1fr]"
         >
-          <span aria-hidden className="font-mono text-meta text-foreground-muted md:pt-1.5">
+          <span aria-hidden className="font-display text-h3 text-accent">
             {pad(i + 1)}
           </span>
           <div>

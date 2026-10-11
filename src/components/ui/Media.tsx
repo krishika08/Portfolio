@@ -28,6 +28,8 @@ interface MediaProps {
   fit?: "cover" | "contain";
   /** Preload only for the single above-the-fold image of a page. */
   preload?: boolean;
+  /** Monochrome at rest, full colour on hover (or when its card is hovered or focused). */
+  mono?: boolean;
   caption?: string;
   className?: string;
 }
@@ -39,10 +41,14 @@ export function Media({
   sizes,
   fit = "cover",
   preload = false,
+  mono = false,
   caption,
   className,
 }: MediaProps) {
-  const frameClass = "relative overflow-hidden rounded-md border border-border-subtle bg-surface-secondary";
+  const frameClass = cn(
+    "relative overflow-hidden rounded-md border border-border-subtle bg-surface-secondary",
+    mono && "mono-media",
+  );
 
   const frame =
     ratio === "intrinsic" ? (

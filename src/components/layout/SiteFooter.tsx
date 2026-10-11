@@ -9,15 +9,18 @@ import { profile } from "@/content/profile";
 import { getSocialLinks } from "@/lib/content";
 
 // Concise footer: identity, section links, resume (when available) and
-// verified profiles. Rendered on every page.
+// verified profiles, closed by an oversized wordmark. Rendered on every page.
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border-subtle">
-      <Container className="py-block">
+    <footer className="relative isolate overflow-hidden border-t border-border-subtle bg-surface">
+      <Container className="pt-block">
         <Grid className="gap-y-cluster">
           <div className="col-span-full md:col-span-4 lg:col-span-6">
-            <p className="font-display text-h3 text-foreground">{siteConfig.name}</p>
-            <Text size="sm" tone="secondary" className="mt-micro">
+            <p className="flex items-center gap-tight font-display text-h2 text-foreground">
+              <span aria-hidden className="chapter-squares" />
+              {siteConfig.name}
+            </p>
+            <Text size="sm" tone="secondary" className="mt-tight">
               {profile.role}
             </Text>
           </div>
@@ -25,7 +28,11 @@ export function SiteFooter() {
             <ul>
               {primaryNavigation.map((item) => (
                 <li key={item.href}>
-                  <TextLink href={item.href} variant="plain" className="inline-flex min-h-11 items-center text-body-sm">
+                  <TextLink
+                    href={item.href}
+                    variant="plain"
+                    className="inline-flex min-h-11 items-center font-display text-[1.125rem] tracking-[0.03em]"
+                  >
                     {item.label}
                   </TextLink>
                 </li>
@@ -45,6 +52,13 @@ export function SiteFooter() {
           © {new Date().getFullYear()} {siteConfig.name}
         </Text>
       </Container>
+      {/* Oversized wordmark, cut off by the page edge. */}
+      <p
+        aria-hidden
+        className="mt-cluster -mb-[0.2em] text-center font-display text-[clamp(6rem,1rem+22vw,24rem)] leading-[0.8] text-transparent select-none [-webkit-text-stroke:1px_rgb(255_255_255/0.12)]"
+      >
+        {siteConfig.name}
+      </p>
     </footer>
   );
 }
