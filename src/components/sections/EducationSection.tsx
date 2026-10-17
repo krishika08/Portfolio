@@ -25,7 +25,7 @@ export function EducationSection() {
       className="relative isolate border-t border-border-subtle"
     >
       <Container>
-        <SheetRule className="mb-block" />
+        <SheetRule section={sectionIds.education} className="mb-block" />
         <Grid className="gap-y-cluster">
           <Heading level={2} size="h2" id="education-title" className="col-span-full lg:col-span-4">
             Education & achievements

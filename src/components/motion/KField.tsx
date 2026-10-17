@@ -173,11 +173,9 @@ const POINT_FS = `
   void main() {
     float r = length(gl_PointCoord - 0.5);
     float a = (1.0 - smoothstep(0.05, 0.5, r)) * vAlpha;
-    vec3 cobalt = vec3(0.31, 0.5, 1.0);
-    vec3 white = vec3(0.9, 0.94, 1.0);
-    vec3 signal = vec3(0.84, 0.95, 0.29);
-    vec3 c = mix(cobalt, white, step(0.86, vTint));
-    c = mix(c, signal, step(0.95, vTint));
+    vec3 accent = vec3(0.431, 0.906, 0.718);
+    vec3 white = vec3(0.96, 0.98, 0.97);
+    vec3 c = mix(accent, white, step(0.86, vTint));
     gl_FragColor = vec4(c * a, a);
   }
 `;
@@ -202,7 +200,7 @@ const LINE_FS = `
   varying float vFade;
   void main() {
     float a = 0.42 * vFade;
-    gl_FragColor = vec4(vec3(0.31, 0.5, 1.0) * a, a);
+    gl_FragColor = vec4(vec3(0.431, 0.906, 0.718) * a, a);
   }
 `;
 

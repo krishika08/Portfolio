@@ -1,43 +1,282 @@
 /* ==========================================================================
-   About: section-scoped styles (CSS Module; nothing here reaches other
-   sections).
+   About: monochrome editorial spread (section-scoped CSS Module).
 
-   Motion rules are gated on html.motion-ready, which MotionLayer sets only
-   when motion is allowed. Elements flagged data-reveal get data-visible
-   once they enter the viewport, and each plays once. Before that (and
-   without JavaScript, or under reduced motion) everything is visible.
+   Colour: one warm off-white for every piece of text; hierarchy comes from
+   scale, weight, spacing and opacity of that same ink. The only non-neutral
+   mark in the section is a single mint registration square.
+
+   Motion is gated on html.motion-ready, which MotionLayer sets only when
+   motion is allowed. Elements flagged data-reveal receive data-visible when
+   they enter the viewport and play once. Before that, without JavaScript, or
+   under reduced motion, everything is simply visible.
    ========================================================================== */
+
+.about {
+  /* Offset of the layered planes behind the portrait. */
+  --off: clamp(0.75rem, 0.1rem + 3.2vw, 3rem);
+  /* The portrait's chamfered corner. */
+  --cut: clamp(2rem, 1rem + 4vw, 4.5rem);
+}
+
+/* Soft key light behind the portrait; the neutral ink, never a colour. */
+.light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(55% 55% at 22% 64%, rgb(var(--ink-rgb) / 0.07), transparent 72%);
+}
+
+/* -- Heading band: oversized title beside the introduction -------------- */
+
+.band {
+  display: grid;
+  gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+}
+
+.head {
+  min-width: 0;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.tick {
+  width: 1px;
+  height: 0.75rem;
+  background: var(--hair-strong);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(5.25rem, 2.2rem + 14.5vw, 15rem);
+  font-weight: 600;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+}
+
+/* The title rises out of its own mask. Room for ascender and overshoot. */
+.titleMask {
+  display: block;
+  overflow: clip;
+  padding: 0.08em 0.04em 0.1em 0;
+  margin: -0.08em 0 -0.1em;
+}
+
+.titleIn {
+  display: block;
+}
+
+.intro {
+  display: grid;
+  gap: 1rem;
+  max-width: 31rem;
+}
+
+.intro p {
+  margin: 0;
+}
+
+/* -- The spread: portrait plate and the statement ----------------------- */
+
+.spread {
+  display: grid;
+  gap: clamp(2.5rem, 2rem + 3vw, 4rem) 0;
+  margin-top: clamp(2rem, 1rem + 3vw, 3.5rem);
+}
+
+.copy {
+  min-width: 0;
+}
+
+/* -- The portrait ------------------------------------------------------- */
+
+.stageWrap {
+  position: relative;
+  /* The planes behind the print protrude into the page margin and below it. */
+  padding-bottom: var(--off);
+}
+
+.stage {
+  position: relative;
+  width: min(100%, 31rem);
+  aspect-ratio: 4 / 5;
+}
+
+/* A grained charcoal plate behind the print, shifted down and to the left,
+   ruled with a fine grid. */
+.slab {
+  position: absolute;
+  inset: 0;
+  background-color: var(--surface);
+  border: 1px solid rgb(var(--ink-rgb) / 0.1);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 180px 180px;
+  background-blend-mode: soft-light;
+  transform: translate(calc(var(--off) * -1.15), calc(var(--off) * 1.15)) translateZ(-50px);
+}
+
+.slab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(var(--ink-rgb) / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--ink-rgb) / 0.07) 1px, transparent 1px);
+  background-size: 1.5rem 1.5rem;
+}
+
+/* A fine outline shifted the other way; drawn, not faded. */
+.outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  transform: translate(calc(var(--off) * 0.55), calc(var(--off) * -0.55)) translateZ(-25px);
+}
+
+.outline rect {
+  fill: none;
+  stroke: var(--hair-strong);
+  stroke-width: 1.25;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* The print: the photograph with a chamfered top-right corner. */
+.print {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 32px 38px rgb(0 0 0 / 0.55));
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #1b1b1b;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, 0 100%);
+}
+
+.photo img {
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+
+/* The section's only coloured mark: a registration square off the corner. */
+.marker {
+  position: absolute;
+  right: calc(var(--off) * -0.55);
+  bottom: calc(var(--off) * -0.55);
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--accent);
+  transform: translateZ(30px);
+}
+
+/* Drafting guides: long hairlines running off the print's corners. */
+.guide {
+  position: absolute;
+  pointer-events: none;
+  background: var(--hair);
+}
+
+/* They live inside the print's own frame, so they stay locked to its edges. */
+.guideTop,
+.guideBottom {
+  left: -60vw;
+  width: calc(60vw + 100% + var(--off));
+  height: 1px;
+  mask-image: linear-gradient(to right, transparent, #000 45%);
+  transform-origin: 100% 50%;
+}
+
+.guideTop {
+  top: 0;
+}
+
+.guideBottom {
+  bottom: 0;
+}
+
+.guideLeft,
+.guideRight {
+  width: 1px;
+  top: -4.5rem;
+  height: calc(100% + 9rem);
+  mask-image: linear-gradient(to bottom, transparent, #000 4.5rem, #000 calc(100% - 4.5rem), transparent);
+  transform-origin: 50% 50%;
+}
+
+.guideLeft {
+  left: 0;
+}
+
+.guideRight {
+  right: 0;
+}
 
 /* -- The statement ------------------------------------------------------ */
 
 .statement {
   margin: 0;
-  max-width: 40rem;
+  max-width: 44rem;
 }
 
-/* Primary clause: runs to the end of the last highlighted phrase. */
+/* Primary clause. Emphasis is weight alone: the phrases are heavier, the
+   colour is the same ink. */
 .lead {
   display: block;
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 1.1rem + 2.3vw, 3.25rem);
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
-  color: var(--foreground);
+  font-size: clamp(1.75rem, 1rem + 2.2vw, 3.125rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: var(--ink);
   text-wrap: balance;
 }
 
-/* Supporting clause: the same sentence, one tier down, never faded. */
+.hl {
+  font-weight: 700;
+}
+
+/* Supporting clause: a pull-note, indented and ruled. */
 .support {
   display: block;
-  max-width: 34rem;
-  margin-top: clamp(1rem, 0.7rem + 1.2vw, 1.75rem);
-  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);
-  font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: -0.012em;
-  color: var(--foreground-secondary);
+  position: relative;
+  max-width: 30rem;
+  margin-top: clamp(1.75rem, 1rem + 2vw, 3rem);
+  padding-left: 1.25rem;
+  font-size: clamp(1.0625rem, 0.95rem + 0.45vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
   text-wrap: pretty;
+}
+
+.support::before {
+  content: "";
+  position: absolute;
+  top: 0.4em;
+  bottom: 0.4em;
+  left: 0;
+  width: 1px;
+  background: var(--hair-strong);
+  transform-origin: 50% 0;
 }
 
 /* A word, in its own mask, so it can rise out of it. */
@@ -53,179 +292,195 @@
   display: inline-block;
 }
 
-/* A highlighted phrase: lime, with a rule beneath that draws in. */
-.hl {
-  color: var(--signal);
-  background-image: linear-gradient(var(--signal), var(--signal));
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 100% max(2px, 0.05em);
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
-/* -- The portrait ------------------------------------------------------- */
-
-.stageWrap {
-  /* Room for the offset frame and marker to the right and below. */
-  padding: 0 1.5rem 1.5rem 0;
-}
-
-.stage {
-  position: relative;
-  width: min(100%, 25rem);
-  aspect-ratio: 4 / 5;
-}
-
-/* A patch of graph paper the portrait is pinned to; fades out at the edges. */
-.paper {
-  position: absolute;
-  inset: -3.5rem;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgb(79 127 255 / 0.28) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(79 127 255 / 0.28) 1px, transparent 1px);
-  background-size: 1.5rem 1.5rem;
-  /* Full strength at the photograph's edge, fading to nothing outside it. */
-  mask-image:
-    linear-gradient(to right, transparent 0, #000 3.5rem, #000 calc(100% - 3.5rem), transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 3.5rem, #000 calc(100% - 3.5rem), transparent 100%);
-  mask-composite: intersect;
-  -webkit-mask-composite: source-in;
-  transform: translateZ(-40px);
-}
-
-/* An offset outline, drawn rather than faded. */
-.frame {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  transform: translate(1.125rem, 1.125rem) translateZ(-20px);
-}
-
-.frame rect {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
-
-.photo {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: 0.375rem;
-  background: var(--surface-secondary);
-  clip-path: inset(0);
-}
-
-.photo img {
-  object-fit: cover;
-  object-position: 50% 24%;
-}
-
-/* A small registration square where the offset frame closes. */
-.marker {
-  position: absolute;
-  right: -1.125rem;
-  bottom: -1.125rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  background: var(--accent);
-  transform: translateZ(30px);
-}
-
-/* -- Interests ---------------------------------------------------------- */
+/* -- Interests: an editorial strip -------------------------------------- */
 
 .interests {
   position: relative;
-  padding-top: 1.25rem;
-}
-
-/* The divider: a hairline with a short cobalt segment at its start. */
-.interests::before,
-.interests::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  transform-origin: 0 50%;
+  margin-top: clamp(3.5rem, 2rem + 5vw, 7rem);
+  padding-top: 1.5rem;
 }
 
 .interests::before {
+  content: "";
+  position: absolute;
   top: 0;
+  left: 0;
   right: 0;
   height: 1px;
-  background: var(--border-strong);
+  background: var(--hair-strong);
+  transform-origin: 0 50%;
 }
 
-.interests::after {
-  top: -1px;
-  width: 3rem;
-  height: 3px;
-  background: var(--accent);
+.interests dl {
+  display: grid;
+  gap: 0.875rem 3rem;
+  margin: 0;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.items {
+  display: block;
+  margin: 0;
+  font-size: clamp(1.1875rem, 0.95rem + 1vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.item {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.sep {
+  color: var(--ink-3);
+}
+
+/* -- Tablets: a larger print, so the single column is not left half-empty. */
+
+@media (min-width: 40rem) and (max-width: 63.99rem) {
+  .stage {
+    width: min(100%, 38rem);
+  }
+}
+
+/* -- Layout from large tablets up --------------------------------------- */
+
+@media (min-width: 64rem) {
+  .band {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 0.65rem + 1.5vw, 2rem);
+    align-items: end;
+  }
+
+  .head {
+    grid-column: 1 / span 7;
+  }
+
+  .intro {
+    grid-column: 9 / span 4;
+    padding-bottom: 0.5rem;
+  }
+
+  .spread {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 0.65rem + 1.5vw, 2rem);
+    align-items: start;
+  }
+
+  .stageWrap {
+    grid-column: 1 / span 5;
+  }
+
+  .copy {
+    grid-column: 7 / span 6;
+    padding-top: clamp(2rem, 0.5rem + 4vw, 5rem);
+  }
+
+  .support {
+    margin-left: clamp(1.5rem, 0rem + 4vw, 4rem);
+  }
+
+  /* The strip: label above, the four items spread across the full measure
+     with their original separators between them. */
+  .items {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+  }
 }
 
 /* -- Motion (once, on first sight) -------------------------------------- */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Statement: words rise, then the highlights light up and underline. */
-  :global(.motion-ready) .statement:not([data-visible]) .wi {
-    transform: translateY(118%);
+  /* Title and label. */
+  :global(.motion-ready) .head:not([data-visible]) .titleIn {
+    transform: translateY(108%);
   }
 
-  :global(.motion-ready) .statement[data-visible="true"] .wi {
-    animation: wordUp 950ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: calc(var(--i) * 32ms + 120ms);
-  }
-
-  :global(.motion-ready) .statement:not([data-visible]) .hl {
-    color: var(--foreground);
-    background-size: 0% max(2px, 0.05em);
-  }
-
-  :global(.motion-ready) .statement[data-visible="true"] .hl {
-    transition:
-      color 600ms ease,
-      background-size 1000ms cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: calc(var(--i) * 32ms + 650ms);
-  }
-
-  /* Portrait: revealed upward through a mask while the image settles. */
-  :global(.motion-ready) .stageWrap:not([data-visible]) .photo {
-    clip-path: inset(100% 0 0 0);
-  }
-
-  :global(.motion-ready) .stageWrap:not([data-visible]) .photo img {
-    transform: scale(1.16);
-  }
-
-  :global(.motion-ready) .stageWrap[data-visible="true"] .photo {
-    animation: photoReveal 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  :global(.motion-ready) .stageWrap[data-visible="true"] .photo img {
-    animation: photoSettle 1800ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  /* Then the frame draws itself, the graph paper fades in, the marker lands. */
-  :global(.motion-ready) .stageWrap:not([data-visible]) .frame rect {
-    stroke-dashoffset: 1;
-  }
-
-  :global(.motion-ready) .stageWrap[data-visible="true"] .frame rect {
-    animation: frameDraw 1500ms cubic-bezier(0.65, 0, 0.35, 1) 500ms both;
-  }
-
-  :global(.motion-ready) .stageWrap:not([data-visible]) .paper {
+  :global(.motion-ready) .head:not([data-visible]) .eyebrow {
     opacity: 0;
   }
 
-  :global(.motion-ready) .stageWrap[data-visible="true"] .paper {
-    animation: fadeIn 1800ms ease 300ms both;
+  :global(.motion-ready) .head[data-visible="true"] .titleIn {
+    animation: rise 1200ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+  }
+
+  :global(.motion-ready) .head[data-visible="true"] .eyebrow {
+    animation: fadeIn 900ms ease 60ms both;
+  }
+
+  /* Introduction. */
+  :global(.motion-ready) .intro:not([data-visible]) {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  :global(.motion-ready) .intro[data-visible="true"] {
+    animation: lift 1000ms cubic-bezier(0.16, 1, 0.3, 1) 380ms both;
+  }
+
+  /* Portrait: wiped in from the left; the plate slides out beneath it. */
+  :global(.motion-ready) .stageWrap:not([data-visible]) .photo {
+    clip-path: polygon(0 0, 0 0, 0 var(--cut), 0 100%, 0 100%);
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .photo img {
+    scale: 1.14;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .photo {
+    animation: photoWipe 1400ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .photo img {
+    animation: photoSettle 1900ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both;
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .slab {
+    opacity: 0;
+    translate: calc(var(--off) * 1.6) 0;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .slab {
+    animation: slabIn 1500ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .outline rect {
+    stroke-dashoffset: 1;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .outline rect {
+    animation: draw 1600ms cubic-bezier(0.65, 0, 0.35, 1) 700ms both;
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .guideTop,
+  :global(.motion-ready) .stageWrap:not([data-visible]) .guideBottom {
+    transform: scaleX(0);
+  }
+
+  :global(.motion-ready) .stageWrap:not([data-visible]) .guideLeft,
+  :global(.motion-ready) .stageWrap:not([data-visible]) .guideRight {
+    transform: scaleY(0);
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .guideTop,
+  :global(.motion-ready) .stageWrap[data-visible="true"] .guideBottom {
+    animation: growX 1600ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+  }
+
+  :global(.motion-ready) .stageWrap[data-visible="true"] .guideLeft,
+  :global(.motion-ready) .stageWrap[data-visible="true"] .guideRight {
+    animation: growY 1600ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both;
   }
 
   :global(.motion-ready) .stageWrap:not([data-visible]) .marker {
@@ -236,54 +491,53 @@
     animation: markerLand 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 1700ms both;
   }
 
-  /* Interests: the divider draws, then the line rises. */
-  :global(.motion-ready) .interests:not([data-visible])::before,
-  :global(.motion-ready) .interests:not([data-visible])::after {
+  /* Statement: words rise through masks, then the pull-note's rule draws. */
+  :global(.motion-ready) .statement:not([data-visible]) .wi {
+    transform: translateY(118%);
+  }
+
+  :global(.motion-ready) .statement[data-visible="true"] .wi {
+    animation: rise 950ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 32ms + 420ms);
+  }
+
+  :global(.motion-ready) .statement:not([data-visible]) .support::before {
+    transform: scaleY(0);
+  }
+
+  :global(.motion-ready) .statement[data-visible="true"] .support::before {
+    animation: growY 1200ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--n) * 32ms + 500ms) both;
+  }
+
+  /* Interests: the rule draws, then the items settle in order. */
+  :global(.motion-ready) .interests:not([data-visible])::before {
     transform: scaleX(0);
   }
 
-  :global(.motion-ready) .interests:not([data-visible]) dl {
+  :global(.motion-ready) .interests:not([data-visible]) .label,
+  :global(.motion-ready) .interests:not([data-visible]) .item,
+  :global(.motion-ready) .interests:not([data-visible]) .sep {
     opacity: 0;
-    transform: translateY(0.75rem);
   }
 
   :global(.motion-ready) .interests[data-visible="true"]::before {
-    animation: drawX 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: growX 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  :global(.motion-ready) .interests[data-visible="true"]::after {
-    animation: drawX 900ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+  :global(.motion-ready) .interests[data-visible="true"] .label {
+    animation: fadeIn 800ms ease 300ms both;
   }
 
-  :global(.motion-ready) .interests[data-visible="true"] dl {
-    animation: lineRise 900ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both;
+  :global(.motion-ready) .interests[data-visible="true"] .item,
+  :global(.motion-ready) .interests[data-visible="true"] .sep {
+    animation: lift 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 420ms);
   }
 }
 
-@keyframes wordUp {
+@keyframes rise {
   from {
-    transform: translateY(118%);
-  }
-}
-
-@keyframes photoReveal {
-  from {
-    clip-path: inset(100% 0 0 0);
-  }
-  to {
-    clip-path: inset(0);
-  }
-}
-
-@keyframes photoSettle {
-  from {
-    transform: scale(1.16);
-  }
-}
-
-@keyframes frameDraw {
-  from {
-    stroke-dashoffset: 1;
+    transform: translateY(108%);
   }
 }
 
@@ -293,22 +547,56 @@
   }
 }
 
-@keyframes markerLand {
+@keyframes lift {
   from {
     opacity: 0;
-    transform: translateZ(30px) scale(0.2);
+    transform: translateY(1rem);
   }
 }
 
-@keyframes drawX {
+@keyframes photoWipe {
+  from {
+    clip-path: polygon(0 0, 0 0, 0 var(--cut), 0 100%, 0 100%);
+  }
+  to {
+    clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, 0 100%);
+  }
+}
+
+@keyframes photoSettle {
+  from {
+    scale: 1.14;
+  }
+}
+
+@keyframes slabIn {
+  from {
+    opacity: 0;
+    translate: calc(var(--off) * 1.6) 0;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes growX {
   from {
     transform: scaleX(0);
   }
 }
 
-@keyframes lineRise {
+@keyframes growY {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes markerLand {
   from {
     opacity: 0;
-    transform: translateY(0.75rem);
+    transform: translateZ(30px) scale(0.2);
   }
 }

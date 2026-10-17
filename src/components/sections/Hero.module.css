@@ -1,0 +1,814 @@
+/* ==========================================================================
+   Hero (section-scoped CSS Module).
+
+   The composition is sized from the viewport's height as well as its width,
+   so it neither clips on a short laptop screen nor drifts in the middle of a
+   tall monitor: the hero is one screen tall minus a "peek", so the next
+   section's numbered rule is already in view at the fold.
+
+   Left: eyebrow, the name and role in an editorial serif, the introduction,
+   the way into Selected Work. Right: an arched window onto the opening's
+   landscape, with its dial above the peaks, and the portrait standing in
+   front of it. Below: the verified facts as a ruled title block.
+
+   Everything is legible and complete with motion off: the entrance and the
+   window's parallax only add to a finished, static composition.
+   ========================================================================== */
+
+.inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* One screen minus the header and a peek of what follows; capped on tall screens. */
+  min-height: clamp(34rem, calc(100svh - var(--header-height) - 3.5rem), 60rem);
+  padding-top: clamp(0.75rem, 2.5vh, 2rem);
+  padding-bottom: clamp(1.25rem, 3vh, 2.25rem);
+}
+
+.grid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.75rem, 4vh, 2.75rem) 0;
+}
+
+/* -- Identity ------------------------------------------------------------------ */
+
+.copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0 0 clamp(1rem, 2.6vh, 1.75rem);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-hero-serif), Georgia, "Times New Roman", serif;
+  font-size: clamp(2.75rem, 12.5vw, 5rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  /* Serif display type stays sharp: no shadow, no filter. */
+  font-kerning: normal;
+  font-optical-sizing: auto;
+}
+
+/* Each line is its own mask (room for the comma and the g's descender). */
+.line {
+  display: block;
+  overflow: clip;
+  padding: 0.06em 0 0.2em;
+  margin: -0.06em 0 -0.2em;
+}
+
+.lineIn {
+  display: inline-block;
+}
+
+.role {
+  text-transform: capitalize;
+  color: var(--ink-2);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.intro {
+  max-width: 33rem;
+  margin: clamp(1.25rem, 3vh, 1.875rem) 0 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-top: clamp(1.5rem, 3.6vh, 2.25rem);
+}
+
+.primary {
+  padding-inline: 1.375rem;
+}
+
+.social {
+  margin-left: -0.5rem;
+}
+
+/* -- The stage: the window, its light, the portrait ------------------------------ */
+
+/* Phones: the name and the way in first, the window beneath, compact enough
+   that both are in the first screen. */
+.stage {
+  position: relative;
+  isolation: isolate;
+  height: min(22rem, 42svh);
+  min-width: 0;
+}
+
+.layers {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+}
+
+/* The window's light on the wall around it. */
+.glow {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: min(130%, 44rem);
+  height: 96%;
+  translate: -50% 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.09), transparent);
+}
+
+/* The opening in the wall: a semicircle over straight jambs. */
+.arch {
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  height: 91%;
+  aspect-ratio: 0.88;
+  max-width: 100%;
+  translate: -50% 0;
+  border-radius: 9999px 9999px 0 0;
+  /* A thin moulding a little outside the opening. */
+  box-shadow:
+    0 0 0 1px rgb(var(--ink-rgb) / 0.2),
+    0 0 0 0.6rem rgb(var(--ink-rgb) / 0.012),
+    0 0 0 calc(0.6rem + 1px) rgb(var(--ink-rgb) / 0.07);
+}
+
+/* The depth of the wall, and a hairline of light on its inner edge. */
+.arch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--accent-rgb) / 0.22),
+    inset 0 0 2.5rem 0.25rem rgb(0 0 0 / 0.55);
+}
+
+.view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    radial-gradient(70% 34% at 50% 64%, rgb(var(--accent-rgb) / 0.14), transparent 70%),
+    linear-gradient(180deg, #0b0e0e 0%, #0d1413 48%, #10201c 64%, #080a0d 100%);
+}
+
+/* The view moves a little with the pointer, as it would through a window:
+   the farther a layer, the more it shifts against the frame (HeroParallax
+   sets --px / --py; the frame and the portrait stay still). */
+.stars,
+.halo,
+.range,
+.horizon {
+  transition: translate 900ms var(--ease-emphasized);
+}
+
+.stars {
+  position: absolute;
+  inset: 0 -4% 30% -4%;
+  width: 108%;
+  height: 70%;
+  translate: calc(var(--px, 0) * 0.7rem) calc(var(--py, 0) * 0.35rem);
+}
+
+/* A square at the top of the opening: centred on the centre of its curve. */
+.halo {
+  position: absolute;
+  inset: 0 0 auto;
+  aspect-ratio: 1;
+  translate: calc(var(--px, 0) * 0.5rem) calc(var(--py, 0) * 0.25rem);
+}
+
+.dial {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 86%;
+  aspect-ratio: 1;
+  overflow: visible;
+  pointer-events: none;
+  translate: -50% -50%;
+}
+
+.dial :is(circle, path) {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.dialDashed {
+  stroke: rgb(var(--ink-rgb) / 0.24);
+  stroke-width: 1;
+  stroke-dasharray: 2 8;
+}
+
+.dialHair {
+  stroke: rgb(var(--ink-rgb) / 0.24);
+  stroke-width: 1;
+}
+
+.dialFaint {
+  stroke: rgb(var(--ink-rgb) / 0.1);
+  stroke-width: 1;
+}
+
+.dialTick {
+  stroke: rgb(var(--ink-rgb) / 0.3);
+  stroke-width: 1;
+}
+
+.dialTickMajor {
+  stroke: rgb(var(--ink-rgb) / 0.62);
+  stroke-width: 1.25;
+}
+
+.dialAxis {
+  stroke: rgb(var(--ink-rgb) / 0.42);
+  stroke-width: 1;
+}
+
+/* A short mint arc keeps travelling the ring. Non-scaling strokes dash in
+   screen pixels, so the gap simply has to exceed the circumference. */
+.dialArc {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 130px 9000px;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.dialSpin {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+/* Light on the horizon, behind the far ridge. */
+.horizon {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 48%;
+  height: 22%;
+  background: radial-gradient(50% 50% at 50% 60%, rgb(var(--accent-rgb) / 0.2), transparent);
+  translate: calc(var(--px, 0) * 0.45rem) 0;
+}
+
+.range {
+  position: absolute;
+  left: -6%;
+  bottom: 0;
+  width: 112%;
+  height: 64%;
+  overflow: visible;
+  translate: calc(var(--px, 0) * 0.25rem) 0;
+}
+
+.ridge {
+  transition: translate 900ms var(--ease-emphasized);
+}
+
+.ridge[data-depth="0"] {
+  translate: calc(var(--px, 0) * 9px) 0;
+}
+
+.ridge[data-depth="1"] {
+  translate: calc(var(--px, 0) * 5px) 0;
+}
+
+.land {
+  fill: #151c1b;
+}
+
+.ridge[data-depth="1"] .land {
+  fill: #0f1312;
+}
+
+.ridge[data-depth="2"] .land {
+  fill: #0b0c0c;
+}
+
+.crest {
+  fill: none;
+  stroke: rgb(var(--ink-rgb) / 0.3);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ridge[data-depth="0"] .crest {
+  stroke: rgb(var(--ink-rgb) / 0.26);
+}
+
+.ridge[data-depth="2"] .crest {
+  stroke: rgb(var(--ink-rgb) / 0.4);
+}
+
+.contour {
+  fill: none;
+  stroke: rgb(var(--ink-rgb) / 0.07);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The window's light falling forward across the floor. */
+.spill {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(36rem, 120%);
+  height: 9%;
+  translate: -50% 0;
+  pointer-events: none;
+  clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
+  background: linear-gradient(rgb(var(--accent-rgb) / 0.09), transparent);
+}
+
+/* A pool of light the figure stands in, with a hairline ring on it. */
+.floor {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -6%;
+  height: 19%;
+  pointer-events: none;
+}
+
+.floor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.22), rgb(var(--accent-rgb) / 0.07) 55%, transparent);
+  filter: blur(5px);
+}
+
+.floor::after {
+  content: "";
+  position: absolute;
+  inset: 26% 14%;
+  border: 1px solid rgb(var(--accent-rgb) / 0.32);
+  border-radius: 50%;
+  mask-image: linear-gradient(to bottom, transparent, #000 45%, #000);
+}
+
+/* The portrait stands in front of the window and does not move with the pointer. */
+.portrait {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 1;
+  height: 71%;
+  aspect-ratio: 612 / 872;
+  max-width: 92%;
+  translate: -50% 0;
+}
+
+/* Backlit by the window: a hairline of mint along the silhouette and the
+   deep shadow underneath. Nothing is drawn over the face. */
+.photo {
+  position: relative;
+  height: 100%;
+  filter: drop-shadow(0 0 1px rgb(var(--accent-rgb) / 0.45)) drop-shadow(0 0 14px rgb(var(--accent-rgb) / 0.12))
+    drop-shadow(0 28px 36px rgb(0 0 0 / 0.6));
+}
+
+/* The cut-out has a flat lower edge; it dissolves into the floor's light. */
+.photo img {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  object-fit: contain;
+  object-position: bottom;
+  mask-image: linear-gradient(to bottom, #000 0, #000 72%, rgb(0 0 0 / 0.5) 89%, transparent 100%);
+}
+
+/* -- The scroll cue (from laptop widths) ------------------------------------------- */
+
+.scroll {
+  position: absolute;
+  right: 0;
+  bottom: 9%;
+  z-index: 2;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.375rem;
+  color: var(--ink-2);
+}
+
+.scrollRing {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--hair-strong);
+  border-radius: 9999px;
+  font-size: 1rem;
+  transition:
+    border-color 240ms var(--ease-standard),
+    color 240ms var(--ease-standard),
+    background-color 240ms var(--ease-standard);
+}
+
+.scrollLabel {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+@media (hover: hover) {
+  .scroll:hover .scrollRing {
+    border-color: var(--accent);
+    background: rgb(var(--accent-rgb) / 0.08);
+    color: var(--accent);
+  }
+}
+
+.scroll:focus-visible .scrollRing {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* -- Facts: the title block --------------------------------------------------------- */
+
+.block {
+  margin-top: clamp(1.5rem, 3.5vh, 2.25rem);
+}
+
+.number {
+  margin-bottom: 0.625rem;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding-top: 0;
+  border-top: 1px solid var(--hair-strong);
+}
+
+.fact {
+  position: relative;
+  min-width: 0;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--hair);
+}
+
+.fact:last-child {
+  border-bottom: 0;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* A short mint rule grows in front of the label when its cell is pointed at. */
+.label::before {
+  content: "";
+  width: 0.75rem;
+  height: 1px;
+  background: var(--hair-strong);
+  transition:
+    width 400ms var(--ease-emphasized),
+    background-color 240ms var(--ease-standard);
+}
+
+.value {
+  margin: 0.4rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+
+/* The flagship cell is the way in: a small real preview, the name, an arrow. */
+.flagship {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.thumb {
+  position: relative;
+  flex: none;
+  width: 5.5rem;
+  aspect-ratio: 1024 / 501;
+  overflow: hidden;
+  border: 1px solid var(--hair-strong);
+  border-radius: 0.25rem;
+  background: #000;
+  transition:
+    border-color 300ms var(--ease-standard),
+    scale 600ms var(--ease-emphasized);
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.flagName {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 500;
+}
+
+.flagName svg {
+  transition: translate 300ms var(--ease-emphasized);
+}
+
+@media (hover: hover) {
+  .fact:hover .label::before {
+    width: 1.5rem;
+    background: var(--accent);
+  }
+
+  .flagship:hover .thumb {
+    border-color: var(--accent);
+    scale: 1.05;
+  }
+
+  .flagship:hover .flagName svg {
+    translate: 0.25rem 0;
+  }
+}
+
+.flagship:focus-visible .thumb {
+  border-color: var(--accent);
+}
+
+/* -- From tablets up ------------------------------------------------------------------ */
+
+/* The narrowest phones: the eyebrow stays on one line. */
+@media (max-width: 23.99rem) {
+  .eyebrow {
+    letter-spacing: 0.17em;
+  }
+
+  .eyebrow::before {
+    display: none;
+  }
+}
+
+@media (min-width: 40rem) {
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+
+  .fact:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
+/* -- Tablets and up: copy left, the window right ---------------------------------------- */
+
+@media (min-width: 48rem) {
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--spacing-grid);
+    row-gap: 0;
+  }
+
+  .copy {
+    grid-column: 1 / span 7;
+    grid-row: 1;
+  }
+
+  .title {
+    font-size: clamp(3.25rem, 9vw, 5.5rem);
+  }
+
+  /* A tall, narrow window beside the copy. */
+  .stage {
+    grid-column: 8 / span 5;
+    grid-row: 1;
+    height: min(34rem, 58svh);
+  }
+}
+
+@media (min-width: 64rem) {
+  .copy {
+    grid-column: 1 / span 6;
+  }
+
+  .title {
+    /* Width and height both limit it: the three lines always fit the screen. */
+    font-size: clamp(3.5rem, min(7vw, 10.5svh), 7.25rem);
+  }
+
+  .stage {
+    grid-column: 7 / span 6;
+    align-self: stretch;
+    height: auto;
+    min-height: 28rem;
+  }
+
+  .scroll {
+    display: flex;
+  }
+
+  .facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 0;
+  }
+
+  .fact {
+    padding: 0.875rem 1.25rem 0;
+    border-bottom: 0;
+    border-left: 1px solid var(--hair);
+  }
+
+  .fact:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+/* -- Motion ------------------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The entrance, in order: the window settles (the portrait rises, see
+     .enter-rise), the eyebrow, the three lines of the name, the
+     introduction, the actions, the facts. Short, and nothing blurs. */
+  .in {
+    animation: heroIn 800ms var(--ease-emphasized) var(--d, 0ms) both;
+  }
+
+  .lineIn {
+    animation: lineUp 1000ms var(--ease-emphasized) calc(var(--d, 0ms) + var(--i, 0) * 90ms) both;
+  }
+
+  :is(.arch, .glow, .spill, .floor) {
+    animation: settle 1300ms ease both;
+  }
+
+  .dial {
+    animation: dialIn 1800ms var(--ease-emphasized) 150ms both;
+  }
+
+  /* Turning this slowly, 12 steps a second is indistinguishable from smooth, and
+     repaints the SVG a fifth as often. */
+  .dialSpin {
+    animation: spin 160s steps(1920) infinite;
+  }
+
+  .dialArc {
+    animation: spin 34s steps(408) infinite;
+  }
+
+  .scrollRing svg {
+    animation: nudge 2400ms var(--ease-emphasized) 2s infinite;
+  }
+
+  /* With the opening: the window is already there when it opens onto the
+     page (the opening's halo lands on this dial), so the stage does not enter
+     again; the copy waits behind the opening, then follows it quickly. */
+  :global(html[data-intro]) :is(.arch, .glow, .spill, .floor) {
+    animation: none;
+  }
+
+  :global(html[data-intro="play"]) :is(.in, .lineIn, .dial) {
+    animation: none;
+  }
+
+  :global(html[data-intro="play"]) .dial {
+    opacity: 0;
+  }
+
+  :global(html:is([data-intro="exiting"], [data-intro="done"])) .dial {
+    animation: none;
+  }
+
+  :global(html:is([data-intro="exiting"], [data-intro="done"])) .in {
+    animation-delay: calc(var(--d, 0ms) * 0.3 + 140ms);
+  }
+
+  :global(html:is([data-intro="exiting"], [data-intro="done"])) .lineIn {
+    animation-delay: calc(var(--d, 0ms) * 0.3 + var(--i, 0) * 70ms + 140ms);
+  }
+}
+
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    translate: 0 0.875rem;
+  }
+}
+
+@keyframes lineUp {
+  from {
+    translate: 0 106%;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialIn {
+  from {
+    opacity: 0;
+    scale: 0.88;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes nudge {
+  0%,
+  60%,
+  100% {
+    translate: 0 0;
+  }
+  30% {
+    translate: 0 0.25rem;
+  }
+}
+
+/* -- Depth on scroll ------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .depthCopy {
+      animation: copyAway linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 75svh;
+    }
+
+    .depthStage {
+      animation: stageAway linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 75svh;
+    }
+  }
+}
+
+@keyframes copyAway {
+  to {
+    translate: 0 -2.25rem;
+    opacity: 0.3;
+  }
+}
+
+@keyframes stageAway {
+  to {
+    translate: 0 3rem;
+    scale: 0.965;
+    opacity: 0.55;
+  }
+}

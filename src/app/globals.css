@@ -4,8 +4,12 @@
    Design tokens — Blueprint
    --------------------------------------------------------------------------
    The portfolio is drawn like an engineering sheet: near-black paper, a
-   graph-paper grid, cobalt ink for anything live, dimension lines, figure
-   labels and a title block. Raw semantic variables live on :root and are
+   graph-paper grid, mint ink for anything live, dimension lines, figure
+   labels and a title block. Five colours: near-black #080A0D (ground), soft
+   white #F5F3FA (type), mint #6EE7B7 (the one accent), charcoal #24252B
+   (surfaces) and muted grey #A8AAB2 (secondary type). Mint is reserved for
+   marks, lines, controls, active states and focus; product screenshots keep
+   their own colours. Raw semantic variables live on :root and are
    the CSS API (`var(--accent)`); the @theme blocks map them to Tailwind
    utilities. `--color-*` variables are Tailwind-internal: never reference
    them directly.
@@ -15,34 +19,42 @@
   color-scheme: dark;
 
   /* -- Color ------------------------------------------------------------ */
-  --background: #0a0a0a; /* body */
-  --surface: #111111; /* cards, alternating bands */
-  --surface-secondary: #181818; /* media and diagram surfaces */
+  --background: #080a0d; /* near-black: body */
+  /* Charcoal #24252B is the card and media surface. Full-width bands use a
+     step between charcoal and the background (a 55% mix, no new hue), so a
+     band never reads as a grey slab. */
+  --surface: #17191e; /* cards, alternating bands */
+  --surface-secondary: #24252b; /* charcoal: media, chips, diagram surfaces */
 
-  --foreground: #f5f5f3; /* 18.4:1 on background */
-  --foreground-secondary: #a3a3a3; /* ≥7:1 on every surface */
-  /* Reference muted #808080 is 4.49:1 on #181818 (below AA); #858585 passes
-     AA on every surface (≥4.8:1). */
-  --foreground-muted: #858585;
+  --foreground: #f5f3fa; /* soft white: 18:1 on background, 13.9:1 on charcoal */
+  --foreground-secondary: var(--ink-2); /* 8.6:1 on background, 6.6:1 on charcoal */
+  --foreground-muted: var(--ink-3); /* ≥5.1:1 on every surface */
 
-  --border-subtle: #1c1c1c;
-  --border: #2a2a2a;
+  --border-subtle: #1a1c21;
+  --border: #2c2e35;
   /* ≥3:1 on every surface; use where a border identifies a control. */
-  --border-strong: #616161;
+  --border-strong: #7a7b83;
 
-  /* Cobalt ink: links, primary actions, highlights, focus, live drawing.
-     5.5:1 on background; button text #0d0d0d on it 5.4:1. */
-  --accent: #4f7fff;
-  --accent-hover: #7d9fff;
-  --accent-foreground: #0d0d0d;
-  --accent-soft: rgb(79 127 255 / 0.12);
-  --accent-glow: rgb(79 127 255 / 0.45);
-  --focus: #4f7fff;
+  /* Mint ink: primary actions, active states, focus, hairlines and live
+     drawing. 13:1 on the background; button text #080A0D on it 13:1.
+     --accent-rgb exists for translucent uses: rgb(var(--accent-rgb) / 0.2). */
+  --accent: #6ee7b7;
+  --accent-rgb: 110 231 183;
+  --accent-hover: #a7f3d0;
+  --accent-foreground: #080a0d;
+  --accent-soft: rgb(var(--accent-rgb) / 0.12);
+  --accent-glow: rgb(var(--accent-rgb) / 0.4);
+  --focus: #6ee7b7;
 
-  /* Supporting accent: one citrus-lime, used only for emphasised phrases in
-     prose and a few sparks in the hero K. Never for controls or structure.
-     16:1 on background. */
-  --signal: #d6f24a;
+  /* Ink: the single text colour family (soft white), in steps for hierarchy
+     (#A8AAB2 is the secondary text colour), plus the hairlines drawn in the
+     same ink. Sections use these instead of defining their own. */
+  --ink-rgb: 245 243 250;
+  --ink: #f5f3fa;
+  --ink-2: #a8aab2;
+  --ink-3: rgb(var(--ink-rgb) / 0.6);
+  --hair: rgb(var(--ink-rgb) / 0.14);
+  --hair-strong: rgb(var(--ink-rgb) / 0.34);
 
   /* Status (text-safe on every surface). */
   --success: #3ecf8e;
@@ -50,8 +62,8 @@
   --error: #ff6b5e;
 
   /* Graph paper: minor and major rules. */
-  --grid-minor: rgb(255 255 255 / 0.028);
-  --grid-major: rgb(255 255 255 / 0.055);
+  --grid-minor: rgb(var(--ink-rgb) / 0.028);
+  --grid-major: rgb(var(--ink-rgb) / 0.055);
   --grid-size: 1.5rem;
 
   /* -- Motion: four levels; see README. -------------------------------- */
@@ -87,7 +99,6 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--accent-soft);
   --color-focus: var(--focus);
-  --color-signal: var(--signal);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
@@ -175,7 +186,7 @@
   /* -- Elevation: depth on a dark ground comes from glow and deep shadow. */
   --shadow-subtle: 0 1px 2px 0 rgb(0 0 0 / 0.5);
   --shadow-elevated: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 28px 60px -24px rgb(0 0 0 / 0.85);
-  --shadow-glow: 0 0 0 1px rgb(79 127 255 / 0.35), 0 24px 70px -24px rgb(79 127 255 / 0.6);
+  --shadow-glow: 0 0 0 1px rgb(var(--accent-rgb) / 0.35), 0 24px 70px -24px rgb(var(--accent-rgb) / 0.55);
 
   /* -- Motion ------------------------------------------------------------- */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -266,7 +277,7 @@
    Blueprint components
    ========================================================================== */
 @layer components {
-  /* -- Cursor spotlight: cobalt grid lit around the pointer --------------- */
+  /* -- Cursor spotlight: the grid lit in mint around the pointer ---------- */
   .grid-spotlight {
     position: fixed;
     inset: 0;
@@ -275,8 +286,8 @@
     opacity: 0;
     transition: opacity 600ms var(--ease-standard);
     background-image:
-      linear-gradient(rgb(79 127 255 / 0.22) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(79 127 255 / 0.22) 1px, transparent 1px);
+      linear-gradient(rgb(var(--accent-rgb) / 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--accent-rgb) / 0.2) 1px, transparent 1px);
     background-size: var(--grid-size) var(--grid-size);
     mask-image: radial-gradient(
       15rem circle at var(--spot-x, -100rem) var(--spot-y, -100rem),
@@ -287,62 +298,6 @@
 
   .grid-spotlight[data-active="true"] {
     opacity: 1;
-  }
-
-  /* -- Crosshair cursor (decorative; the system cursor stays) ------------ */
-  .cursor-reticle {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 70;
-    width: 2.25rem;
-    height: 2.25rem;
-    margin: -1.125rem 0 0 -1.125rem;
-    pointer-events: none;
-    border: 1px solid rgb(79 127 255 / 0.7);
-    border-radius: 9999px;
-    opacity: 0;
-    transition:
-      opacity 300ms var(--ease-standard),
-      width 300ms var(--ease-emphasized),
-      height 300ms var(--ease-emphasized),
-      margin 300ms var(--ease-emphasized),
-      background-color 300ms var(--ease-standard);
-  }
-
-  /* Four ticks: a drafting reticle. */
-  .cursor-reticle::before,
-  .cursor-reticle::after {
-    content: "";
-    position: absolute;
-    background: var(--accent);
-  }
-
-  .cursor-reticle::before {
-    top: 50%;
-    left: -0.5rem;
-    right: -0.5rem;
-    height: 1px;
-    mask-image: linear-gradient(90deg, black 0 0.5rem, transparent 0.5rem calc(100% - 0.5rem), black calc(100% - 0.5rem));
-  }
-
-  .cursor-reticle::after {
-    left: 50%;
-    top: -0.5rem;
-    bottom: -0.5rem;
-    width: 1px;
-    mask-image: linear-gradient(black 0 0.5rem, transparent 0.5rem calc(100% - 0.5rem), black calc(100% - 0.5rem));
-  }
-
-  .cursor-reticle[data-visible="true"] {
-    opacity: 1;
-  }
-
-  .cursor-reticle[data-hover="true"] {
-    width: 3.75rem;
-    height: 3.75rem;
-    margin: -1.875rem 0 0 -1.875rem;
-    background-color: rgb(79 127 255 / 0.1);
   }
 
   /* -- 3D tilt (driven by <Tilt>; inert without a mouse) ------------------ */
@@ -464,8 +419,8 @@
     transform: rotateX(72deg) translateZ(-120px);
     transform-origin: 50% 100%;
     background-image:
-      linear-gradient(rgb(79 127 255 / 0.4) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(79 127 255 / 0.4) 1px, transparent 1px);
+      linear-gradient(rgb(var(--accent-rgb) / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--accent-rgb) / 0.4) 1px, transparent 1px);
     background-size: 2.25rem 2.25rem;
     mask-image: radial-gradient(closest-side, black 25%, transparent);
   }
@@ -546,7 +501,7 @@
     font-size: clamp(20rem, 10rem + 30vw, 40rem);
     line-height: 0.75;
     color: transparent;
-    -webkit-text-stroke: 1.5px rgb(79 127 255 / 0.45);
+    -webkit-text-stroke: 1.5px rgb(var(--accent-rgb) / 0.45);
     user-select: none;
   }
 }
@@ -560,7 +515,7 @@
      `html.motion-ready` and marks entries with `data-visible`; without
      JavaScript or under reduced motion nothing is ever hidden.
    L4 signature: the WebGL K, hero entrance, count-up figures, 3D phone fan,
-     pointer tilt, magnetic controls, cursor reticle and grid spotlight.
+     pointer tilt, magnetic controls and the grid spotlight.
    Reduced motion: all of it is off; the last rule neutralises every
    transition and animation.
    ========================================================================== */
@@ -657,6 +612,24 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* The opening holds the hero's entrance. The hero is already rendered and
+     painted behind it (so it counts for loading metrics and is never hidden
+     from anyone); its entrance plays when the opening hands over. */
+  html[data-intro="play"] .enter,
+  html[data-intro="play"] .enter-rise,
+  html[data-intro="play"] .enter-words .word > span {
+    animation: none;
+  }
+
+  /* After an opening, the hero should arrive quickly, not wait its turn again. */
+  html:is([data-intro="exiting"], [data-intro="done"]) .enter {
+    animation-delay: calc(var(--delay, 0ms) * 0.3);
+  }
+
+  html:is([data-intro="exiting"], [data-intro="done"]) .enter-words .word > span {
+    animation-delay: calc(var(--delay, 0ms) * 0.3 + var(--i, 0) * 70ms);
+  }
+
   /* Hero entrance: one-shot on load, staggered by --delay. CSS only, so it
      never depends on JavaScript. */
   .enter {
@@ -708,8 +681,21 @@
     transform: none !important;
   }
 
-  .cursor-reticle,
   .grid-spotlight {
     display: none;
   }
+}
+
+/* While the Index (or the intro) is open the page behind does not scroll.
+   The gutter stays reserved, so nothing shifts when the scrollbar hides. */
+html.nav-open {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+/* While the opening plays, the page behind it does not scroll (the still
+   title card shown under reduced motion never locks anything). */
+html[data-intro="play"]:not([data-intro-mode="still"]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
 }

@@ -28,15 +28,35 @@ export function HeroK({ className }: { className?: string }) {
 
     let idle = 0;
     let timer = 0;
+    let wait: MutationObserver | undefined;
     // requestIdleCallback is missing in Safari; fall back to a short timer.
     const ric = (window as { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback;
     const begin = () => {
       if (ric) idle = ric(() => setLoad(true), { timeout: 1500 });
       else timer = window.setTimeout(() => setLoad(true), 300);
     };
-    if (document.readyState === "complete") begin();
-    else window.addEventListener("load", begin, { once: true });
+    const afterLoad = () => {
+      if (document.readyState === "complete") begin();
+      else window.addEventListener("load", begin, { once: true });
+    };
+
+    // While the opening plays, and while it opens onto the page, the particle
+    // K waits: it should assemble where it can be seen, and its first-load
+    // set-up (a long task) must not land in the middle of the hand-over.
+    const root = document.documentElement;
+    const opening = () => root.dataset.intro === "play" || root.dataset.intro === "exiting";
+    if (opening()) {
+      wait = new MutationObserver(() => {
+        if (opening()) return;
+        wait?.disconnect();
+        afterLoad();
+      });
+      wait.observe(root, { attributes: true, attributeFilter: ["data-intro"] });
+    } else {
+      afterLoad();
+    }
     return () => {
+      wait?.disconnect();
       window.removeEventListener("load", begin);
       if (idle) window.cancelIdleCallback(idle);
       window.clearTimeout(timer);

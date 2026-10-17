@@ -15,7 +15,7 @@ interface CapabilityClusterProps {
 /**
  * A group of related skills as ruled specification rows: the skill, and
  * where it is evidenced (derived from project and experience data) beside
- * it. No levels, bars or scores. A row lights a cobalt tick on hover.
+ * it. No levels, bars or scores. A row lights a mint tick on hover.
  */
 export function CapabilityCluster({
   id,

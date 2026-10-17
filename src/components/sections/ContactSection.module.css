@@ -1,0 +1,38 @@
+/* ==========================================================================
+   Contact: atmosphere (section-scoped CSS Module).
+
+   The opening's dial returns, large and faint, behind the heading: a lit
+   room to end the page in. Decorative only.
+   ========================================================================== */
+
+.halo {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -10;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dial {
+  position: absolute;
+  left: 50%;
+  top: clamp(3rem, 2rem + 4vw, 5rem);
+  width: min(66rem, 150vw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  opacity: 0.9;
+  overflow: visible;
+  mask-image: radial-gradient(closest-side, #000 82%, transparent 100%);
+}
+
+/* A short horizon of light at the foot of the dial, under the tiles. */
+.floor {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(70rem, 120vw);
+  height: 14rem;
+  translate: -50% 40%;
+  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.13), transparent);
+}

@@ -1,0 +1,353 @@
+/* ==========================================================================
+   Index: the full-screen map of the site (section-scoped CSS Module).
+   Eight numbered destinations in display type; a plate beside them previews
+   the one that is hovered, focused or current, using real images and
+   existing data. Everything here is an enhancement of the plain links.
+   ========================================================================== */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgb(var(--ink-rgb) / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--ink-rgb) / 0.035) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+/* A soft mint light behind the preview plate. */
+.overlay::before {
+  content: "";
+  position: fixed;
+  top: 12%;
+  right: -10%;
+  width: 55vw;
+  height: 70vh;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.1), transparent);
+}
+
+.bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--header-height);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+.layout {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 2rem;
+  padding-block: clamp(0.5rem, 0.25rem + 1.5vw, 1.5rem) clamp(2rem, 1.5rem + 2vw, 3rem);
+}
+
+.label {
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--hair-strong);
+}
+
+.item {
+  border-bottom: 1px solid var(--hair);
+}
+
+.link {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  min-height: 2.75rem;
+  padding: clamp(0.5rem, 0.25rem + 0.9vw, 0.9rem) 0;
+  color: var(--ink);
+  text-decoration: none;
+  transition: opacity 300ms var(--ease-standard);
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  transition: color 300ms var(--ease-standard);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.05rem + 3vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  transition: translate 500ms var(--ease-emphasized);
+}
+
+.arrow {
+  font-size: 1.5rem;
+  opacity: 0;
+  translate: -0.5rem 0;
+  transition:
+    opacity 300ms var(--ease-standard),
+    translate 500ms var(--ease-emphasized);
+}
+
+/* The destination you are on: a mint tick in the margin. */
+.link[aria-current]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -0.875rem;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  translate: 0 -50%;
+  background: var(--accent);
+}
+
+.link:hover .num,
+.link:focus-visible .num,
+.link[aria-current] .num {
+  color: var(--ink);
+}
+
+.link:hover .name,
+.link:focus-visible .name {
+  translate: 0.75rem 0;
+}
+
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* With a pointer or focus on one row, the others step back. */
+.list:has(.link:hover, .link:focus-visible) .link:not(:hover, :focus-visible) {
+  opacity: 0.42;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* -- Preview plate (large screens) --------------------------------------- */
+
+.preview {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 0.65rem + 1.5vw, 2rem);
+  }
+
+  .nav {
+    grid-column: 1 / span 7;
+  }
+
+  .preview {
+    position: sticky;
+    top: calc(var(--header-height) + 1rem);
+    display: block;
+    grid-column: 8 / span 5;
+    align-self: start;
+    height: min(34rem, calc(100svh - var(--header-height) - 4rem));
+  }
+}
+
+.plate {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--hair-strong);
+  background: rgb(var(--ink-rgb) / 0.03);
+  opacity: 0;
+  translate: 0 0.75rem;
+  pointer-events: none;
+  transition:
+    opacity 380ms var(--ease-standard),
+    translate 600ms var(--ease-emphasized);
+}
+
+.plate[data-active="true"] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* The preview's own numbered corner. */
+.plate::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 0.625rem;
+  height: 0.625rem;
+  background: var(--accent);
+}
+
+.caption {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.pvCenter {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 0;
+}
+
+.pvPortrait {
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 24px 30px rgb(0 0 0 / 0.55));
+}
+
+.pvSquare {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: 50% 24%;
+}
+
+.pvCovers {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.pvCover {
+  position: absolute;
+  width: 78%;
+  height: auto;
+  border: 1px solid var(--hair-strong);
+  box-shadow: 0 24px 40px -20px rgb(0 0 0 / 0.8);
+}
+
+.pvCoverA {
+  top: 0;
+  left: 0;
+}
+
+.pvCoverB {
+  right: 0;
+  bottom: 0;
+  background: #fff;
+}
+
+.pvList {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pvTitle {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.pvMeta {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
+.pvSheet {
+  display: grid;
+  flex: 1;
+  place-items: center;
+}
+
+/* -- Opening -------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .overlay {
+    animation: indexIn 260ms var(--ease-standard) both;
+  }
+
+  .item {
+    animation: rowIn 700ms var(--ease-emphasized) both;
+    animation-delay: calc(60ms + var(--i) * 45ms);
+  }
+
+  .preview,
+  .foot {
+    animation: rowIn 800ms var(--ease-emphasized) 360ms both;
+  }
+}
+
+@keyframes indexIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}

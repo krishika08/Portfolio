@@ -15,7 +15,7 @@ interface ProgressionMarkerProps {
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * The portfolio's figure counter: a cobalt tick, then a mono "01 / 04" in
+ * The portfolio's figure counter: a mint tick, then a mono "01 / 04" in
  * the manner of drawing-sheet numbering. Marks progression through a
  * sequence (project chapters, case-study stages). The numbers are
  * decorative and hidden from assistive technology; the label is read

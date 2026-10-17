@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Sans } from "next/font/google";
+import { Intro } from "@/components/intro/Intro";
+import { introGateScript } from "@/components/intro/introGate";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { MotionLayer } from "@/components/motion/MotionLayer";
 import { siteConfig } from "@/config/site";
+import { profile } from "@/content/profile";
 import { baseOpenGraph } from "@/lib/metadata";
 import "./globals.css";
 
@@ -56,15 +59,23 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "dark",
-  themeColor: "#0a0a0a",
+  themeColor: "#080a0d",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    // suppressHydrationWarning: the gate script (below) sets data-intro on <html> before React runs.
+    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+      <head>
+        {/* A plain inline script, parsed and run before first paint: it decides whether the opening
+            plays (next/script's beforeInteractive would defer it until the app's JavaScript loads). */}
+        <script id="intro-gate" dangerouslySetInnerHTML={{ __html: introGateScript }} />
+      </head>
       <body className="flex min-h-dvh flex-col font-sans text-body text-foreground antialiased">
+        {/* The cinematic opening: first visit of a session, home page only. */}
+        <Intro name={profile.name} role={profile.role} />
         <SkipLink />
-        {/* Reading progress, cursor reticle and grid spotlight (MotionLayer). */}
+        {/* Reading progress and the grid spotlight (MotionLayer). */}
         <MotionLayer />
         <SiteHeader />
         {/* overflow-x: clip keeps 3D reveals and tilts from widening the page

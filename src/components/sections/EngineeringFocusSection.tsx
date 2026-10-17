@@ -20,7 +20,7 @@ export function EngineeringFocusSection() {
       className="relative isolate border-y border-border-subtle bg-surface"
     >
       <Container>
-        <SheetRule className="mb-block" />
+        <SheetRule section={sectionIds.focus} className="mb-block" />
         <Grid className="gap-y-block">
           <SectionHeader
             id="focus-title"

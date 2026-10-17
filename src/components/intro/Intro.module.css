@@ -1,0 +1,772 @@
+/* ==========================================================================
+   Opening (component-scoped CSS Module).
+
+   The sequence is timed by CSS. A master "clock" animation on the overlay
+   runs for the full length; the canvas reads it, and every other beat is an
+   animation delayed from the same start, with times injected as unitless
+   milliseconds (--t-*) from introTimeline.ts. Animation lists never change
+   while the opening plays (a changed list would restart the clock); modes
+   switch effects through attributes and custom properties instead.
+
+   Shown only when the gate script has set html[data-intro="play"]. It can
+   never be left covering the page: "vanish" ends in visibility:hidden by
+   itself, and pointer events stop as soon as the page is handed over.
+
+   Layers: the canvas (once running it paints the background, states 2–8 and
+   the opening onto the page: [data-particles]); state 1 in CSS (the cross,
+   the point of light, the typed labels); a CSS halo and iris, used only
+   when the canvas is not; the name, role and tagline; the Skip button.
+   ========================================================================== */
+
+@property --iris {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: -16vmin;
+}
+
+@property --fade {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 374deg;
+}
+
+.overlay {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --leave: cubic-bezier(0.55, 0, 0.35, 1);
+  --name-size: clamp(2.125rem, min(10.5vw, 12svh), 6.5rem);
+  --ring-size: min(66vmin, 36rem);
+  display: none;
+  position: fixed;
+  /* 100vw, not right: 0, so it also covers the scrollbar gutter the page
+     reserves while it is locked, and keeps one size when it is unlocked. */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 100;
+  overflow: hidden;
+  color: var(--ink);
+  background-color: #080a0d;
+  outline: none;
+}
+
+:global(html:is([data-intro="play"], [data-intro="exiting"])) .overlay {
+  display: block;
+}
+
+/* Until the component starts the clock (data-active) the opening is a clean
+   near-black screen: every beat, CSS or canvas, then plays from t = 0 on one
+   clock. The still card (reduced motion) needs no clock and shows at once. */
+:global(html:not([data-intro-mode="still"])) .overlay:not([data-active]) > * {
+  visibility: hidden;
+}
+
+:global(html:is([data-intro="play"], [data-intro="exiting"])) .overlay[data-active] {
+  animation:
+    vanish calc(var(--t-total) * 1ms) linear both,
+    iris calc((var(--t-total) - var(--t-portal)) * 1ms) cubic-bezier(0.55, 0, 0.35, 1)
+      calc(var(--t-portal) * 1ms) both,
+    fade calc((var(--t-total) - var(--t-portal)) * 1ms) ease-in-out calc(var(--t-portal) * 1ms) both;
+}
+
+/* Without the canvas, CSS opens the page: an iris from the centre, or a fade on phones. */
+:global(html:not([data-intro-mode="lite"])) .overlay:not([data-particles]) {
+  mask-image: radial-gradient(circle at 50% var(--cy), transparent var(--iris), #000 calc(var(--iris) + 16vmin));
+}
+
+:global(html[data-intro-mode="lite"]) .overlay:not([data-particles]) {
+  opacity: var(--fade);
+}
+
+/* With the canvas, it paints all of that itself. */
+.overlay[data-particles] {
+  background-color: transparent;
+}
+
+.overlay[data-particles] :is(.crossH, .crossV, .point, .ring) {
+  display: none;
+}
+
+/* Handed over: the page takes the pointer and the keyboard. */
+:global(html[data-intro="exiting"]) .overlay {
+  pointer-events: none;
+}
+
+/* Skipped: a short crossfade straight to the page. (A new animation list, so it starts now.) */
+:global(html[data-intro-skip]) .overlay {
+  animation: skipOut 420ms ease both;
+}
+
+:global(html[data-intro="done"]) .overlay {
+  display: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* -- State 1: the cross and the point of light ---------------------------- */
+
+.crossH,
+.crossV,
+.point {
+  position: absolute;
+  pointer-events: none;
+}
+
+.crossH {
+  left: 0;
+  right: 0;
+  top: var(--cy);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(var(--ink-rgb) / 0.3), transparent);
+}
+
+.overlay[data-active] .crossH {
+  animation: crossX 2200ms linear both;
+}
+
+.crossV {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform-origin: 50% var(--cy);
+  background: linear-gradient(transparent, rgb(var(--ink-rgb) / 0.22) var(--cy), transparent);
+}
+
+.overlay[data-active] .crossV {
+  animation: crossY 2200ms linear both;
+}
+
+.point {
+  left: 50%;
+  top: var(--cy);
+  width: 5px;
+  height: 5px;
+  margin: -2px 0 0 -2px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 6px 1px rgb(var(--accent-rgb) / 0.8),
+    0 0 22px 6px rgb(var(--accent-rgb) / 0.3);
+}
+
+.overlay[data-active] .point {
+  animation: pointLife 1250ms linear both;
+}
+
+.point::before,
+.point::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+
+.point::before {
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.85), transparent);
+}
+
+.point::after {
+  width: 1px;
+  height: 64px;
+  background: linear-gradient(transparent, rgb(255 255 255 / 0.75), transparent);
+}
+
+/* -- State 1: the labels type ------------------------------------------------ */
+
+.labels {
+  position: absolute;
+  left: clamp(1.25rem, 5vw, 5rem);
+  bottom: clamp(5rem, 17svh, 11rem);
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: clamp(0.625rem, 0.56rem + 0.2vw, 0.75rem);
+  letter-spacing: 0.16em;
+  line-height: 1;
+  color: var(--ink-2);
+  pointer-events: none;
+}
+
+.overlay[data-active] .labels {
+  animation: fadeAway 380ms ease calc(var(--t-labels-out) * 1ms) forwards;
+}
+
+.labels li {
+  display: flex;
+  align-items: flex-end;
+  white-space: nowrap;
+}
+
+/* Character by character: a clip that steps once per letter. */
+.type {
+  clip-path: inset(0 100% 0 0);
+}
+
+.overlay[data-active] .type {
+  animation: type calc(var(--n) * 12ms) steps(var(--n), end)
+    calc((var(--t-labels) + var(--i) * var(--t-label-step)) * 1ms) forwards;
+}
+
+.cursor {
+  width: 0.6em;
+  height: 1px;
+  margin-left: 0.5em;
+  background: var(--accent);
+  opacity: 0;
+}
+
+.overlay[data-active] .cursor {
+  animation: blink 560ms steps(1, end) calc(var(--t-cursor) * 1ms) infinite;
+}
+
+/* -- State 2: right-side technical markers --------------------------------- */
+
+.keywords {
+  position: absolute;
+  right: clamp(1.25rem, 5vw, 5rem);
+  top: clamp(4rem, 16svh, 9rem);
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: clamp(0.625rem, 0.56rem + 0.2vw, 0.75rem);
+  letter-spacing: 0.2em;
+  line-height: 1;
+  color: var(--ink-2);
+  pointer-events: none;
+}
+
+.overlay[data-active] .keywords {
+  animation: fadeAway 380ms ease calc(var(--t-keywords-out) * 1ms) forwards;
+}
+
+.keywords li {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(8px);
+}
+
+.overlay[data-active] .keywords li {
+  animation: keywordIn 350ms var(--ease) calc((var(--t-keywords) + var(--i) * var(--t-keyword-step)) * 1ms) forwards;
+}
+
+.keyword {
+  color: var(--ink-2);
+}
+
+.arrow {
+  color: var(--accent);
+  opacity: 0.85;
+  font-family: var(--font-sans);
+}
+
+@keyframes keywordIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* -- The halo, when the canvas is not running ---------------------------------- */
+
+.ring {
+  position: absolute;
+  left: 50%;
+  top: var(--cy);
+  width: var(--ring-size);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  overflow: visible;
+  pointer-events: none;
+  mask-image: conic-gradient(from 0deg, #000 calc(var(--sweep) - 14deg), transparent var(--sweep));
+}
+
+.overlay[data-active] .ring {
+  animation:
+    sweep 700ms var(--ease) calc((var(--t-depth) + 50) * 1ms) both,
+    dim 650ms linear 1600ms forwards,
+    ringOut calc((var(--t-total) - var(--t-exit)) * 1ms) var(--leave) calc(var(--t-exit) * 1ms) forwards;
+}
+
+.ring :is(circle, path) {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.dashed {
+  stroke: rgb(var(--ink-rgb) / 0.24);
+  stroke-dasharray: 2 8;
+}
+
+.hair {
+  stroke: rgb(var(--ink-rgb) / 0.24);
+}
+
+.faint {
+  stroke: rgb(var(--ink-rgb) / 0.1);
+}
+
+.tick {
+  stroke: rgb(var(--ink-rgb) / 0.3);
+}
+
+.tickMajor {
+  stroke: rgb(var(--ink-rgb) / 0.62);
+  stroke-width: 1.25;
+}
+
+.axis {
+  stroke: rgb(var(--ink-rgb) / 0.42);
+}
+
+/* -- The name ------------------------------------------------------------------------ */
+
+.center {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--cy);
+  translate: 0 -50%;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.overlay[data-active] .center {
+  animation: textAway 320ms var(--leave) calc(var(--t-exit) * 1ms) forwards;
+}
+
+/* Decorative: the page's h1 is the name assistive technology reads. */
+.name {
+  margin: 0;
+  padding-left: 0.22em;
+  font-family: var(--font-intro-serif), "Times New Roman", serif;
+  font-size: var(--name-size);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+  text-shadow: 0 0 0.6em rgb(var(--accent-rgb) / 0.12);
+}
+
+/* Without the particle name (no canvas, or the font came too late), the
+   letters fade in one after another. */
+.overlay[data-active]:not([data-particle-name]) .ch {
+  animation: chIn 700ms ease calc((var(--t-converge) + var(--i) * 70) * 1ms) both;
+}
+
+/* With it, the particles form the name and the canvas brings in the solid
+   letters on the same clock (--solid, --glow). */
+.overlay[data-particle-name] .ch {
+  animation: none;
+}
+
+.overlay[data-particle-name] .name {
+  opacity: var(--solid, 0);
+  text-shadow: 0 0 0.55em rgb(var(--accent-rgb) / calc(0.12 + var(--glow, 1) * 0.42));
+}
+
+/* -- The role and the tagline ------------------------------------------------------------ */
+
+.sub {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--cy) + var(--name-size) * 0.5 + clamp(1rem, 3.4svh, 1.875rem));
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 3.6svh, 2rem);
+  width: min(46rem, calc(100vw - 2rem));
+  text-align: center;
+  pointer-events: none;
+}
+
+.overlay[data-active] .sub {
+  animation: textAway 320ms var(--leave) calc(var(--t-exit) * 1ms) forwards;
+}
+
+.role {
+  margin: 0;
+  padding-left: 0.48em;
+  font-family: var(--font-sans);
+  font-size: clamp(0.6875rem, 0.6rem + 0.35vw, 0.9375rem);
+  font-weight: 500;
+  letter-spacing: 0.48em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 0 14px rgb(var(--accent-rgb) / 0.35);
+  opacity: 0;
+}
+
+.overlay[data-active] .role {
+  animation: rise 700ms var(--ease) calc(var(--t-role) * 1ms) forwards;
+}
+
+.tagline {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0.875rem 0.34em;
+  font-family: var(--font-sans);
+  font-size: clamp(0.5rem, 0.42rem + 0.42vw, 0.75rem);
+  letter-spacing: 0.34em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--ink-3);
+  opacity: 0;
+}
+
+.overlay[data-active] .tagline {
+  animation: rise 700ms var(--ease) calc(var(--t-tagline) * 1ms) forwards;
+}
+
+/* A short mint rule draws out under it. */
+.tagline::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 2.75rem;
+  height: 1px;
+  translate: -50% 0;
+  transform-origin: center;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgb(var(--accent-rgb) / 0.6);
+  transform: scaleX(0);
+}
+
+.overlay[data-active] .tagline::after {
+  animation: drawX 650ms var(--ease) calc((var(--t-tagline) + 220) * 1ms) forwards;
+}
+
+/* -- Skip ---------------------------------------------------------------------------------- */
+
+.skip {
+  position: absolute;
+  top: clamp(1rem, 4.5vmin, 2.75rem);
+  right: clamp(1rem, 4.5vmin, 2.75rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 0.875rem;
+  border: 1px solid rgb(var(--ink-rgb) / 0.3);
+  border-radius: 0.375rem;
+  background: rgb(8 10 13 / 0.6);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    border-color 240ms var(--ease),
+    background-color 240ms var(--ease);
+}
+
+.overlay[data-active] .skip {
+  animation:
+    fadeIn 800ms ease 300ms forwards,
+    fadeAway 300ms ease calc((var(--t-exit) + 80) * 1ms) forwards;
+}
+
+.skip:hover {
+  border-color: var(--accent);
+  background: rgb(var(--accent-rgb) / 0.1);
+}
+
+.skip svg {
+  transition: translate 240ms var(--ease);
+}
+
+.skip:hover svg {
+  translate: 0.1875rem 0;
+}
+
+/* -- Reduced motion: a still title card --------------------------------------------------
+   Opaque from the first paint, the name, role and tagline fade in (no
+   movement), then the card fades away. The page underneath is usable
+   throughout: nothing is inert or locked, and any key, click or scroll
+   dismisses it. These override the site-wide reduced-motion reset, for
+   opacity only. */
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html[data-intro-mode="still"]) .overlay {
+    animation: stillLife calc(var(--s-total) * 1ms) linear both !important;
+    mask-image: none;
+  }
+
+  :global(html[data-intro-mode="still"][data-intro-skip]) .overlay {
+    animation: none !important;
+    visibility: hidden;
+  }
+
+  :global(html[data-intro-mode="still"]) :is(.canvas, .point, .labels, .keywords) {
+    display: none;
+  }
+
+  :global(html[data-intro-mode="still"]) :is(.crossH, .crossV, .ring, .ch, .role, .tagline, .skip, .keywords) {
+    animation: none !important;
+  }
+
+  :global(html[data-intro-mode="still"]) .name {
+    opacity: 1 !important;
+  }
+
+  :global(html[data-intro-mode="still"]) :is(.role, .tagline) {
+    opacity: 1 !important;
+  }
+
+  :global(html[data-intro-mode="still"]) .skip {
+    opacity: 1 !important;
+  }
+
+  :global(html[data-intro-mode="still"]) .tagline::after {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+
+  :global(html[data-intro-mode="still"]) :is(.center, .sub) {
+    animation: stillIn 320ms ease 40ms both !important;
+  }
+}
+
+/* -- Keyframes ----------------------------------------------------------------------------- */
+
+@keyframes clock {
+  to {
+    --clock: 1;
+  }
+}
+
+@keyframes vanish {
+  from {
+    visibility: visible;
+  }
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes iris {
+  from {
+    --iris: -16vmin;
+  }
+  to {
+    --iris: 110vmax;
+  }
+}
+
+@keyframes fade {
+  from {
+    --fade: 1;
+  }
+  to {
+    --fade: 0;
+  }
+}
+
+@keyframes skipOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* The canvas mirrors these two (drawCross in introCanvas.ts). */
+@keyframes crossX {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  13.64% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  40.91% {
+    opacity: 1;
+  }
+  68.18% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes crossY {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  13.64% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  40.91% {
+    opacity: 1;
+  }
+  68.18% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* The canvas mirrors this one too (drawPoint). */
+@keyframes pointLife {
+  0% {
+    opacity: 0;
+    scale: 0.2;
+  }
+  10% {
+    opacity: 1;
+    scale: 1;
+  }
+  64% {
+    opacity: 1;
+    scale: 1;
+  }
+  100% {
+    opacity: 0;
+    scale: 0.5;
+  }
+}
+
+@keyframes type {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes sweep {
+  from {
+    --sweep: 0deg;
+  }
+  to {
+    --sweep: 374deg;
+  }
+}
+
+@keyframes dim {
+  to {
+    opacity: 0.14;
+  }
+}
+
+@keyframes ringOut {
+  to {
+    opacity: 0;
+    scale: 1.45;
+  }
+}
+
+@keyframes chIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes drawX {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes textAway {
+  to {
+    opacity: 0;
+    scale: 1.08;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeAway {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes stillLife {
+  0%,
+  71% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes stillIn {
+  from {
+    opacity: 0;
+  }
+}

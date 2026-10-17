@@ -7,15 +7,17 @@ import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
 import { Section } from "@/components/ui/Section";
 import { Tilt } from "@/components/ui/Tilt";
+import { HeroDial } from "@/components/sections/HeroDial";
 import { sectionIds } from "@/config/navigation";
 import { profile } from "@/content/profile";
 import { cn } from "@/lib/cn";
 import { getSocialLinks } from "@/lib/content";
 import { displayHref } from "@/lib/url";
+import styles from "./ContactSection.module.css";
 
 // Conversion: verified channels in priority order (email, LinkedIn, GitHub)
-// as large tiles that tilt toward the pointer and flood with cobalt on
-// hover or focus. No form, no backend.
+// as large tiles that tilt toward the pointer and flood with mint on
+// hover or focus, under the opening's dial. No form, no backend.
 export function ContactSection() {
   const channels = getSocialLinks();
 
@@ -23,10 +25,15 @@ export function ContactSection() {
     <Section id={sectionIds.contact} aria-labelledby="contact-title" className="relative isolate overflow-hidden">
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(55%_60%_at_50%_38%,rgb(79_127_255/0.14),transparent)]"
+        className="absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(55%_60%_at_50%_38%,rgb(var(--accent-rgb)_/_0.12),transparent)]"
       />
+      {/* The opening's dial, large and faint behind the heading. */}
+      <div aria-hidden className={styles.halo}>
+        <HeroDial className={styles.dial} />
+        <div className={styles.floor} />
+      </div>
       <Container>
-        <SheetRule className="mb-block" />
+        <SheetRule section={sectionIds.contact} className="mb-block" />
         <SectionHeader
           id="contact-title"
           title="Contact"

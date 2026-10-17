@@ -1,10 +1,8 @@
-import { Fragment } from "react";
+import { Fragment, type CSSProperties } from "react";
 import Image from "next/image";
-import { SectionHeader } from "@/components/portfolio/SectionHeader";
 import { SheetRule } from "@/components/portfolio/SheetRule";
 import { AboutStatement } from "@/components/sections/AboutStatement";
 import { Container } from "@/components/ui/Container";
-import { Grid } from "@/components/ui/Grid";
 import { Section } from "@/components/ui/Section";
 import { Text } from "@/components/ui/Text";
 import { Tilt } from "@/components/ui/Tilt";
@@ -12,10 +10,12 @@ import { sectionIds } from "@/config/navigation";
 import { profile } from "@/content/profile";
 import styles from "./AboutSection.module.css";
 
-// Compact human context from profile data, composed as an editorial spread:
-// the opening paragraphs above; below, a tall portrait pinned to a patch of
-// graph paper on the left, the engineering statement typeset in two tiers on
-// the right, and the Interests line anchored to the portrait's baseline.
+// A monochrome editorial spread. One warm off-white carries all the text
+// (hierarchy comes from scale, weight and space, never colour). An oversized
+// "About" opens the sheet beside the introduction; below it the portrait is
+// mounted like a print on a grained plate, with drafting guides running off
+// its corners, and the engineering statement is typeset opposite in two
+// tiers; the Interests line closes the sheet. All copy comes from profile data.
 export function AboutSection() {
   const paragraphs = profile.about;
   const statement = paragraphs.at(-1);
@@ -23,13 +23,30 @@ export function AboutSection() {
   const portrait = profile.portraits?.about;
 
   return (
-    <Section id={sectionIds.about} aria-labelledby="about-title" className="relative isolate border-t border-border-subtle">
+    <Section
+      id={sectionIds.about}
+      aria-labelledby="about-title"
+      className={`${styles.about} relative isolate border-t border-border-subtle`}
+    >
+      <div aria-hidden className={styles.light} />
       <Container>
-        <SheetRule className="mb-block" />
-        <Grid className="gap-y-cluster">
-          <SectionHeader id="about-title" eyebrow="Current direction" title="About" className="col-span-full lg:col-span-4" />
+        <SheetRule section={sectionIds.about} className="mb-block" />
+
+        <div className={styles.band}>
+          <header data-reveal className={styles.head}>
+            <p className={styles.eyebrow}>
+              <span aria-hidden className={styles.tick} />
+              Current direction
+            </p>
+            <h2 id="about-title" className={styles.title}>
+              <span className={styles.titleMask}>
+                <span className={styles.titleIn}>About</span>
+              </span>
+            </h2>
+          </header>
+
           {(opening || rest.length > 0) && (
-            <div className="reveal col-span-full max-w-reading space-y-group lg:col-span-7 lg:col-start-6 lg:pt-cluster">
+            <div data-reveal className={styles.intro}>
               {opening && <Text size="lead">{opening}</Text>}
               {rest.map((paragraph) => (
                 <Text key={paragraph} size="lead" tone="secondary">
@@ -38,56 +55,58 @@ export function AboutSection() {
               ))}
             </div>
           )}
-        </Grid>
+        </div>
 
-        <Grid className="mt-section gap-y-block lg:items-stretch">
+        <div className={styles.spread}>
           {portrait && (
-            <div className="col-span-full lg:col-span-5 lg:pt-16">
-              <div data-reveal className={styles.stageWrap}>
-                <Tilt max={3} glare={false} className={styles.stage}>
-                  <div aria-hidden className={styles.paper} />
-                  <svg aria-hidden className={styles.frame} viewBox="0 0 400 500">
-                    <rect x="0.75" y="0.75" width="398.5" height="498.5" pathLength="1" />
-                  </svg>
+            <div data-reveal className={styles.stageWrap}>
+              <Tilt max={3} glare={false} className={styles.stage}>
+                <span aria-hidden className={`${styles.guide} ${styles.guideTop}`} />
+                <span aria-hidden className={`${styles.guide} ${styles.guideBottom}`} />
+                <span aria-hidden className={`${styles.guide} ${styles.guideLeft}`} />
+                <span aria-hidden className={`${styles.guide} ${styles.guideRight}`} />
+                <div aria-hidden className={styles.slab} />
+                <svg aria-hidden className={styles.outline} viewBox="0 0 400 500">
+                  <rect x="0.5" y="0.5" width="399" height="499" pathLength="1" />
+                </svg>
+                <div className={styles.print}>
                   <div className={styles.photo}>
                     <Image
                       src={portrait.src}
                       alt={portrait.alt}
                       fill
-                      sizes="(min-width: 1024px) 27.5rem, (min-width: 640px) 24rem, 80vw"
+                      sizes="(min-width: 1024px) 28rem, (min-width: 640px) 26rem, 84vw"
                     />
                   </div>
-                  <span aria-hidden className={styles.marker} />
-                </Tilt>
-              </div>
+                </div>
+                <span aria-hidden className={styles.marker} />
+              </Tilt>
             </div>
           )}
 
-          <div
-            className={
-              portrait
-                ? "col-span-full flex flex-col gap-section-compact lg:col-span-7 lg:col-start-6 lg:justify-between"
-                : "col-span-full flex max-w-3xl flex-col gap-section-compact"
-            }
-          >
-            {statement && <AboutStatement text={statement} emphasis={profile.emphasis} />}
+          <div className={styles.copy}>{statement && <AboutStatement text={statement} emphasis={profile.emphasis} />}</div>
+        </div>
 
-            <div data-reveal className={styles.interests}>
-              <dl>
-                <dt className="font-mono text-eyebrow text-foreground-muted uppercase">Interests</dt>
-                <dd className="mt-micro text-body font-medium text-foreground">
-                  {profile.interests.map((interest, i) => (
-                    <Fragment key={interest}>
-                      {/* Items never break across lines; the line wraps between them. */}
-                      <span className="whitespace-nowrap">{interest}</span>
-                      {i < profile.interests.length - 1 && <span className="font-bold text-accent"> · </span>}
-                    </Fragment>
-                  ))}
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </Grid>
+        <div data-reveal className={styles.interests}>
+          <dl>
+            <dt className={styles.label}>Interests</dt>
+            <dd className={styles.items}>
+              {profile.interests.map((interest, i) => (
+                <Fragment key={interest}>
+                  {/* Items never break across lines; the line wraps between them. */}
+                  <span className={styles.item} style={{ "--i": i } as CSSProperties}>
+                    {interest}
+                  </span>
+                  {i < profile.interests.length - 1 && (
+                    <span className={styles.sep} style={{ "--i": i + 0.5 } as CSSProperties}>
+                      {" · "}
+                    </span>
+                  )}
+                </Fragment>
+              ))}
+            </dd>
+          </dl>
+        </div>
       </Container>
     </Section>
   );

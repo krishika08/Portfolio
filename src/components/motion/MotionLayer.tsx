@@ -16,8 +16,8 @@ const finePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)"
  * - progress: the reading hairline always; `[data-progress]` elements get
  *   `--progress` (0–1, as they pass through the viewport) when motion is
  *   allowed;
- * - pointer: a drafting reticle, a cobalt grid spotlight and magnetic
- *   `[data-magnetic]` controls, for mouse users only.
+ * - pointer: a mint grid spotlight and magnetic `[data-magnetic]` controls,
+ *   for mouse users only (the system cursor is never replaced).
  * Under reduced motion nothing but the reading hairline runs. Content is
  * never hidden before this has run, so it reads without JavaScript.
  */
@@ -25,7 +25,6 @@ export function MotionLayer() {
   const pathname = usePathname();
   const progressRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
-  const reticleRef = useRef<HTMLDivElement>(null);
 
   // Reveals: rescan on every route.
   useLayoutEffect(() => {
@@ -84,12 +83,11 @@ export function MotionLayer() {
     };
   }, [pathname]);
 
-  // Pointer: reticle, spotlight, magnetic controls (one frame per move).
+  // Pointer: spotlight and magnetic controls (one frame per move).
   useEffect(() => {
     if (!motionAllowed() || !finePointer()) return;
-    const reticle = reticleRef.current;
     const spot = spotRef.current;
-    if (!reticle || !spot) return;
+    if (!spot) return;
 
     const target = { x: -100, y: -100 };
     const pos = { x: -100, y: -100 };
@@ -99,7 +97,6 @@ export function MotionLayer() {
     const loop = () => {
       pos.x += (target.x - pos.x) * 0.24;
       pos.y += (target.y - pos.y) * 0.24;
-      reticle.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
       spot.style.setProperty("--spot-x", `${pos.x}px`);
       spot.style.setProperty("--spot-y", `${pos.y}px`);
       frame = Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3 ? requestAnimationFrame(loop) : 0;
@@ -117,11 +114,9 @@ export function MotionLayer() {
       target.x = event.clientX;
       target.y = event.clientY;
       if (!frame) frame = requestAnimationFrame(loop);
-      reticle.dataset.visible = "true";
       spot.dataset.active = "true";
 
       const element = event.target instanceof Element ? event.target : null;
-      reticle.dataset.hover = String(Boolean(element?.closest("a, button, summary, [role='button']")));
 
       const next = element?.closest<HTMLElement>("[data-magnetic]") ?? null;
       if (next !== magnet) release();
@@ -136,7 +131,6 @@ export function MotionLayer() {
     };
 
     const onLeave = () => {
-      reticle.dataset.visible = "false";
       spot.dataset.active = "false";
       release();
     };
@@ -155,7 +149,6 @@ export function MotionLayer() {
     <>
       <div ref={progressRef} aria-hidden className="scroll-progress" />
       <div ref={spotRef} aria-hidden className="grid-spotlight" />
-      <div ref={reticleRef} aria-hidden className="cursor-reticle" />
     </>
   );
 }

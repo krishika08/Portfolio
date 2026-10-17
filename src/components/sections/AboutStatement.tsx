@@ -31,7 +31,7 @@ const inside = (ranges: Range[], index: number) => ranges.some((r) => index >= r
 
 interface AboutStatementProps {
   text: string;
-  /** Exact phrases in `text` set in the supporting accent. */
+  /** Exact phrases in `text` that are set heavier. */
   emphasis?: string[];
 }
 
@@ -40,9 +40,10 @@ interface AboutStatementProps {
  * paragraph: a primary clause that runs to the end of the last highlighted
  * phrase (and its punctuation), then the supporting clause in the secondary
  * tone. The text is rendered exactly as given: every character, in order,
- * in one <p>. Words rise out of masks and the highlighted phrases light up
- * and underline (see AboutSection.module.css); nothing is ever hidden once
- * the section has been seen, and without motion it is static.
+ * in one <p>. Words rise out of masks (see AboutSection.module.css) and the
+ * highlighted phrases are set heavier, in the same colour as everything else;
+ * nothing is ever hidden once the section has been seen, and without motion
+ * it is static.
  */
 export function AboutStatement({ text, emphasis = [] }: AboutStatementProps) {
   const ranges = phraseRanges(text, emphasis);
