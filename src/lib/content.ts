@@ -1,9 +1,9 @@
 import { achievements } from "@/content/education";
-import { experience } from "@/content/experience";
+import { experience, experienceGrowth } from "@/content/experience";
 import { profile } from "@/content/profile";
 import { projects } from "@/content/projects";
 import { skillCategories } from "@/content/skills";
-import type { Achievement, Experience, Project, SkillCategory, SocialLink } from "@/types/content";
+import type { Achievement, Experience, ExperienceGrowth, Project, SkillCategory, SocialLink } from "@/types/content";
 
 const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
 
@@ -66,6 +66,18 @@ export function getAdjacentCaseStudies(slug: string): { previous?: Project; next
 
 export function getExperience(): Experience[] {
   return [...experience].sort(byOrder);
+}
+
+/**
+ * The growth panel's themes, keeping only roles that exist (and themes that
+ * still have one), so it can never point at a role the timeline lacks.
+ */
+export function getExperienceGrowth(): ExperienceGrowth {
+  const ids = new Set(experience.map((role) => role.id));
+  const themes = experienceGrowth.themes
+    .map((theme) => ({ ...theme, roles: theme.roles.filter((id) => ids.has(id)) }))
+    .filter((theme) => theme.roles.length > 0);
+  return { ...experienceGrowth, themes };
 }
 
 // "React.js" and "React" refer to the same skill.

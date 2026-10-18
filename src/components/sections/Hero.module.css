@@ -1,131 +1,191 @@
 /* ==========================================================================
-   Hero (section-scoped CSS Module).
+   Hero — Precision Editorial × Cinematic Engineering (section-scoped CSS Module).
 
-   The composition is sized from the viewport's height as well as its width,
-   so it neither clips on a short laptop screen nor drifts in the middle of a
-   tall monitor: the hero is one screen tall minus a "peek", so the next
-   section's numbered rule is already in view at the fold.
+   The hero runs under the transparent header and fills the first screen. A
+   dark stone wall with an arch opening onto the opening's landscape at
+   sunset; the real portrait stands on the lit steps in front, backlit by the
+   low sun. On the left, the identity and the actions; on the right, the
+   interests and the flagship; along the bottom, the facts and a scroll cue.
 
-   Left: eyebrow, the name and role in an editorial serif, the introduction,
-   the way into Selected Work. Right: an arched window onto the opening's
-   landscape, with its dial above the peaks, and the portrait standing in
-   front of it. Below: the verified facts as a ruled title block.
+   Colour: the shared palette for everything that is interface (soft white
+   type, mint for actions, active marks and the dial's arc, graphite for the
+   panel). The warmth is light, and lives in the picture only: the sky, the
+   sun, the crests, the steps and the rim on the figure.
 
-   Everything is legible and complete with motion off: the entrance and the
-   window's parallax only add to a finished, static composition.
+   Phones and small tablets read top to bottom (name → portrait →
+   introduction → actions → flagship → facts); from 768px the scene fills the
+   hero behind the copy. Complete and legible with all motion off.
    ========================================================================== */
 
-.inner {
+.hero {
+  --warm-rgb: 255 196 150;
+  --sun-rgb: 255 222 186;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  /* One screen minus the header and a peek of what follows; capped on tall screens. */
-  min-height: clamp(34rem, calc(100svh - var(--header-height) - 3.5rem), 60rem);
-  padding-top: clamp(0.75rem, 2.5vh, 2rem);
-  padding-bottom: clamp(1.25rem, 3vh, 2.25rem);
+  isolation: isolate;
+  overflow: hidden;
+  /* Under the transparent header: the scene starts at the top of the screen. */
+  margin-top: calc(-1 * var(--header-height));
+  padding-top: var(--header-height);
+  background: var(--background);
 }
 
-.grid {
+/* Phones: one column. */
+.inner {
   display: grid;
-  flex: 1;
   grid-template-columns: minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(1.75rem, 4vh, 2.75rem) 0;
+  grid-template-areas: "identity" "scene" "intro" "actions" "side" "facts";
+  padding-top: clamp(0.75rem, 2.5vh, 1.5rem);
+  padding-bottom: clamp(1.75rem, 4vh, 2.5rem);
 }
 
-/* -- Identity ------------------------------------------------------------------ */
+/* -- Identity ------------------------------------------------------------------- */
 
-.copy {
+.identity {
+  grid-area: identity;
   position: relative;
   z-index: 2;
-  min-width: 0;
+  margin: 0;
 }
 
+.counter {
+  --d: 120ms;
+  display: none;
+}
+
+/* The role, tracked small caps, with a rule running off it. */
 .eyebrow {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  margin: 0 0 clamp(1rem, 2.6vh, 1.75rem);
+  gap: 1rem;
+  margin: 0;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   line-height: 1;
-  letter-spacing: 0.26em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--ink-2);
 }
 
-.eyebrow::before {
+.eyebrow::after {
   content: "";
-  width: 1.75rem;
+  width: 3.5rem;
   height: 1px;
-  background: currentColor;
-  opacity: 0.55;
+  background: var(--hair-strong);
 }
 
-.title {
-  margin: 0;
+.name {
+  margin: clamp(0.75rem, 1.8vh, 1.25rem) 0 0;
   font-family: var(--font-hero-serif), Georgia, "Times New Roman", serif;
-  font-size: clamp(2.75rem, 12.5vw, 5rem);
+  font-size: clamp(3.5rem, 19vw, 5.5rem);
   font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.012em;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
   color: var(--ink);
-  /* Serif display type stays sharp: no shadow, no filter. */
   font-kerning: normal;
-  font-optical-sizing: auto;
 }
 
-/* Each line is its own mask (room for the comma and the g's descender). */
+/* Each line is its own mask (room for the descenders). */
 .line {
   display: block;
   overflow: clip;
-  padding: 0.06em 0 0.2em;
-  margin: -0.06em 0 -0.2em;
+  padding: 0.04em 0 0.18em;
+  margin: -0.04em 0 -0.18em;
 }
 
+/* The last of the sun on the name's right end: a warm white, barely. */
 .lineIn {
   display: inline-block;
+  background: linear-gradient(100deg, var(--ink) 58%, #f2e2d6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.role {
-  text-transform: capitalize;
-  color: var(--ink-2);
+@media (forced-colors: active) {
+  .lineIn {
+    background: none;
+    color: CanvasText;
+  }
+}
+
+/* The verified introduction: its opening clause in the serif, the rest as reading text. */
+.intro {
+  grid-area: intro;
+  position: relative;
+  z-index: 2;
+  max-width: 34rem;
+  margin: clamp(1.25rem, 3vh, 1.75rem) 0 0;
+}
+
+.lead {
+  display: block;
+  max-width: 13em;
+  font-family: var(--font-hero-serif), Georgia, "Times New Roman", serif;
+  font-size: clamp(1.75rem, 8vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+  color: var(--ink);
 }
 
 .accent {
   color: var(--accent);
+  white-space: nowrap;
 }
 
-.intro {
-  max-width: 33rem;
-  margin: clamp(1.25rem, 3vh, 1.875rem) 0 0;
+.rest {
+  display: block;
+  max-width: 31rem;
+  margin-top: clamp(0.875rem, 2vh, 1.25rem);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink-2);
 }
 
 .actions {
+  grid-area: actions;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: clamp(1.5rem, 3.5vh, 2.25rem);
+}
+
+.buttons {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.25rem;
-  margin-top: clamp(1.5rem, 3.6vh, 2.25rem);
+  gap: 0.75rem 1rem;
 }
 
-.primary {
-  padding-inline: 1.375rem;
+.primary,
+.secondary {
+  min-height: 3rem;
+  padding-inline: 1.5rem;
 }
 
 .social {
-  margin-left: -0.5rem;
+  margin-left: -0.75rem;
 }
 
-/* -- The stage: the window, its light, the portrait ------------------------------ */
+/* -- The scene ------------------------------------------------------------------------ */
 
-/* Phones: the name and the way in first, the window beneath, compact enough
-   that both are in the first screen. */
-.stage {
+/* Phones: a framed band of the scene between the name and the introduction. */
+.scene {
+  --a-left: 17%;
+  --a-width: 66%;
+  --a-top: 7%;
+  --a-floor: 13%;
+  --jamb: 0.9rem;
+  --p-left: 50%;
+  --p-height: 86%;
+  grid-area: scene;
   position: relative;
-  isolation: isolate;
-  height: min(22rem, 42svh);
-  min-width: 0;
+  height: clamp(16rem, 40svh, 22rem);
+  margin: clamp(1rem, 2.5vh, 1.5rem) calc(-1 * var(--spacing-gutter)) 0;
+  overflow: hidden;
 }
 
 .layers {
@@ -134,36 +194,60 @@
   isolation: isolate;
 }
 
-/* The window's light on the wall around it. */
-.glow {
+/* The wall: dark stone, warmed a little by the light coming through the arch. */
+.wall {
   position: absolute;
-  left: 50%;
-  bottom: 4%;
-  width: min(130%, 44rem);
-  height: 96%;
-  translate: -50% 0;
-  pointer-events: none;
-  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.09), transparent);
+  inset: 0;
+  background:
+    radial-gradient(40% 50% at calc(var(--a-left) + var(--a-width) / 2) 62%, rgb(var(--warm-rgb) / 0.07), transparent 75%),
+    linear-gradient(180deg, #0b0c0f, #0a0b0e 70%, var(--background));
 }
 
-/* The opening in the wall: a semicircle over straight jambs. */
+/* A pillar beyond the arch on the right, its near edge catching the light. */
+.pillar {
+  display: none;
+}
+
+/* The arch's stone surround: thick jambs down to the steps, lit on the inside. */
+.frame {
+  position: absolute;
+  left: calc(var(--a-left) - var(--jamb));
+  width: calc(var(--a-width) + 2 * var(--jamb));
+  top: calc(var(--a-top) - var(--jamb));
+  bottom: calc(var(--a-floor) - 0.25rem);
+  border-radius: 9999px 9999px 0 0;
+  background:
+    radial-gradient(70% 45% at 30% 72%, rgb(var(--warm-rgb) / 0.1), transparent 70%),
+    radial-gradient(60% 40% at 70% 40%, rgb(var(--warm-rgb) / 0.05), transparent 70%),
+    linear-gradient(180deg, #19181b, #131215 55%, #0e0e10);
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--ink-rgb) / 0.05),
+    0 30px 60px -20px rgb(0 0 0 / 0.8);
+}
+
+/* Weathered stone: a fine grain over the surround. */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+}
+
+/* The opening. */
 .arch {
   position: absolute;
-  left: 50%;
-  bottom: 7%;
-  height: 91%;
-  aspect-ratio: 0.88;
-  max-width: 100%;
-  translate: -50% 0;
+  left: var(--a-left);
+  width: var(--a-width);
+  top: var(--a-top);
+  bottom: var(--a-floor);
   border-radius: 9999px 9999px 0 0;
-  /* A thin moulding a little outside the opening. */
-  box-shadow:
-    0 0 0 1px rgb(var(--ink-rgb) / 0.2),
-    0 0 0 0.6rem rgb(var(--ink-rgb) / 0.012),
-    0 0 0 calc(0.6rem + 1px) rgb(var(--ink-rgb) / 0.07);
 }
 
-/* The depth of the wall, and a hairline of light on its inner edge. */
+/* The inside of the stone: dark at the edge, the sun catching the inner face. */
 .arch::after {
   content: "";
   position: absolute;
@@ -171,24 +255,37 @@
   border-radius: inherit;
   pointer-events: none;
   box-shadow:
-    inset 0 0 0 1px rgb(var(--accent-rgb) / 0.22),
-    inset 0 0 2.5rem 0.25rem rgb(0 0 0 / 0.55);
+    inset 0 0 0 1px rgb(var(--warm-rgb) / 0.22),
+    inset 0.6rem 0 1.2rem -0.4rem rgb(var(--warm-rgb) / 0.12),
+    inset 0 0 2.5rem 0.25rem rgb(0 0 0 / 0.45);
 }
 
+/* The sky at sunset: deep blue overhead, gold and rose towards the horizon. */
 .view {
   position: absolute;
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
-  background:
-    radial-gradient(70% 34% at 50% 64%, rgb(var(--accent-rgb) / 0.14), transparent 70%),
-    linear-gradient(180deg, #0b0e0e 0%, #0d1413 48%, #10201c 64%, #080a0d 100%);
+  background: linear-gradient(
+    180deg,
+    #0d1220 0%,
+    #19213a 22%,
+    #3a3550 38%,
+    #7b5260 50%,
+    #c47e62 60%,
+    #e3a273 66%,
+    #2a1d1e 82%,
+    #0b0b0d 100%
+  );
 }
 
-/* The view moves a little with the pointer, as it would through a window:
-   the farther a layer, the more it shifts against the frame (HeroParallax
-   sets --px / --py; the frame and the portrait stay still). */
+/* The view shifts a little with the pointer, as it would through a window:
+   the farther a layer, the more it moves against the frame (HeroParallax
+   sets --px / --py; the frame, the steps and the portrait stay still). */
 .stars,
+.clouds,
+.rays,
+.sun,
 .halo,
 .range,
 .horizon {
@@ -197,13 +294,60 @@
 
 .stars {
   position: absolute;
-  inset: 0 -4% 30% -4%;
+  inset: 0 -4% auto -4%;
   width: 108%;
   height: 70%;
   translate: calc(var(--px, 0) * 0.7rem) calc(var(--py, 0) * 0.35rem);
 }
 
-/* A square at the top of the opening: centred on the centre of its curve. */
+/* Clouds catching the light: soft, warm underneath, no hard edges. */
+.clouds {
+  position: absolute;
+  inset: 10% -10% 40% -10%;
+  pointer-events: none;
+  translate: calc(var(--px, 0) * 0.55rem) calc(var(--py, 0) * 0.25rem);
+  background:
+    radial-gradient(28% 9% at 76% 56%, rgb(var(--sun-rgb) / 0.42), transparent 70%),
+    radial-gradient(22% 6% at 30% 70%, rgb(var(--warm-rgb) / 0.26), transparent 70%),
+    radial-gradient(34% 8% at 50% 48%, rgb(214 168 170 / 0.16), transparent 70%),
+    radial-gradient(18% 5% at 82% 38%, rgb(var(--warm-rgb) / 0.2), transparent 70%),
+    radial-gradient(26% 6% at 22% 34%, rgb(160 140 170 / 0.12), transparent 70%);
+}
+
+/* Rays from the sun, fanning out and fading. */
+.rays {
+  position: absolute;
+  left: 79%;
+  top: 50%;
+  width: 260%;
+  aspect-ratio: 1;
+  translate: calc(-50% + var(--px, 0) * 0.4rem) -50%;
+  pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, rgb(var(--sun-rgb) / 0.07) 0deg 2.2deg, transparent 2.2deg 9deg);
+  mask-image: radial-gradient(closest-side, #000 0%, rgb(0 0 0 / 0.5) 18%, transparent 46%);
+}
+
+/* The low sun, right of the figure, on the far ridge. */
+.sun {
+  position: absolute;
+  left: 79%;
+  top: 50%;
+  width: 64%;
+  aspect-ratio: 1;
+  translate: calc(-50% + var(--px, 0) * 0.4rem) -50%;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 248 236) 0 5%,
+    rgb(var(--sun-rgb) / 0.85) 9%,
+    rgb(var(--sun-rgb) / 0.32) 22%,
+    rgb(var(--warm-rgb) / 0.1) 50%,
+    transparent
+  );
+}
+
+/* A square at the top of the opening, centred on the centre of its curve:
+   the opening's dial hangs there, in the sky. */
 .halo {
   position: absolute;
   inset: 0 0 auto;
@@ -215,7 +359,7 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 86%;
+  width: 84%;
   aspect-ratio: 1;
   overflow: visible;
   pointer-events: none;
@@ -228,33 +372,33 @@
 }
 
 .dialDashed {
-  stroke: rgb(var(--ink-rgb) / 0.24);
+  stroke: rgb(var(--ink-rgb) / 0.2);
   stroke-width: 1;
   stroke-dasharray: 2 8;
 }
 
 .dialHair {
-  stroke: rgb(var(--ink-rgb) / 0.24);
+  stroke: rgb(var(--ink-rgb) / 0.2);
   stroke-width: 1;
 }
 
 .dialFaint {
-  stroke: rgb(var(--ink-rgb) / 0.1);
+  stroke: rgb(var(--ink-rgb) / 0.07);
   stroke-width: 1;
 }
 
 .dialTick {
-  stroke: rgb(var(--ink-rgb) / 0.3);
+  stroke: rgb(var(--ink-rgb) / 0.18);
   stroke-width: 1;
 }
 
 .dialTickMajor {
-  stroke: rgb(var(--ink-rgb) / 0.62);
+  stroke: rgb(var(--ink-rgb) / 0.42);
   stroke-width: 1.25;
 }
 
 .dialAxis {
-  stroke: rgb(var(--ink-rgb) / 0.42);
+  stroke: rgb(var(--ink-rgb) / 0.32);
   stroke-width: 1;
 }
 
@@ -273,14 +417,14 @@
   transform-origin: 50% 50%;
 }
 
-/* Light on the horizon, behind the far ridge. */
+/* Haze along the horizon, behind the far ridge. */
 .horizon {
   position: absolute;
   left: -10%;
   right: -10%;
-  top: 48%;
+  top: 50%;
   height: 22%;
-  background: radial-gradient(50% 50% at 50% 60%, rgb(var(--accent-rgb) / 0.2), transparent);
+  background: radial-gradient(50% 50% at 74% 50%, rgb(var(--sun-rgb) / 0.26), transparent);
   translate: calc(var(--px, 0) * 0.45rem) 0;
 }
 
@@ -289,7 +433,7 @@
   left: -6%;
   bottom: 0;
   width: 112%;
-  height: 64%;
+  height: 72%;
   overflow: visible;
   translate: calc(var(--px, 0) * 0.25rem) 0;
 }
@@ -306,137 +450,321 @@
   translate: calc(var(--px, 0) * 5px) 0;
 }
 
+/* Far peaks lit and hazy, the near ridge a dark silhouette. */
 .land {
-  fill: #151c1b;
+  fill: #5b4548;
 }
 
 .ridge[data-depth="1"] .land {
-  fill: #0f1312;
+  fill: #2a2024;
 }
 
 .ridge[data-depth="2"] .land {
-  fill: #0b0c0c;
+  fill: #0e0d10;
 }
 
 .crest {
   fill: none;
-  stroke: rgb(var(--ink-rgb) / 0.3);
+  stroke: rgb(var(--sun-rgb) / 0.55);
   stroke-width: 1;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
-.ridge[data-depth="0"] .crest {
-  stroke: rgb(var(--ink-rgb) / 0.26);
+.ridge[data-depth="1"] .crest {
+  stroke: rgb(var(--warm-rgb) / 0.3);
 }
 
 .ridge[data-depth="2"] .crest {
-  stroke: rgb(var(--ink-rgb) / 0.4);
+  stroke: rgb(var(--warm-rgb) / 0.18);
 }
 
 .contour {
   fill: none;
-  stroke: rgb(var(--ink-rgb) / 0.07);
+  stroke: rgb(var(--ink-rgb) / 0.06);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
 
-/* The window's light falling forward across the floor. */
-.spill {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: min(36rem, 120%);
-  height: 9%;
-  translate: -50% 0;
-  pointer-events: none;
-  clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
-  background: linear-gradient(rgb(var(--accent-rgb) / 0.09), transparent);
-}
-
-/* A pool of light the figure stands in, with a hairline ring on it. */
+/* The steps the figure stands on: dark stone, their edges lit from the arch. */
 .floor {
   position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: -6%;
-  height: 19%;
-  pointer-events: none;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--a-floor) + 0.5rem);
+  background: linear-gradient(180deg, #121116, #0b0b0e 40%, var(--background));
+  mask-image: radial-gradient(42% 130% at calc(var(--a-left) + var(--a-width) / 2) 0%, #000 35%, rgb(0 0 0 / 0.4) 70%, transparent 100%);
 }
 
-.floor::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.22), rgb(var(--accent-rgb) / 0.07) 55%, transparent);
-  filter: blur(5px);
-}
-
+.floor::before,
 .floor::after {
   content: "";
   position: absolute;
-  inset: 26% 14%;
-  border: 1px solid rgb(var(--accent-rgb) / 0.32);
-  border-radius: 50%;
-  mask-image: linear-gradient(to bottom, transparent, #000 45%, #000);
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--warm-rgb) / 0.32) calc(var(--a-left) + var(--a-width) * 0.2),
+    rgb(var(--sun-rgb) / 0.5) calc(var(--a-left) + var(--a-width) * 0.6),
+    rgb(var(--warm-rgb) / 0.2) calc(var(--a-left) + var(--a-width) + 6%),
+    transparent
+  );
 }
 
-/* The portrait stands in front of the window and does not move with the pointer. */
+.floor::before {
+  top: 0;
+}
+
+.floor::after {
+  top: 46%;
+  opacity: 0.45;
+}
+
+/* The light falling through the arch onto the steps: brightest at the step's
+   edge (the floor line), fading towards the viewer. */
+.spill {
+  position: absolute;
+  left: calc(var(--a-left) - 6%);
+  width: calc(var(--a-width) + 12%);
+  bottom: 0;
+  height: var(--a-floor);
+  pointer-events: none;
+  background: radial-gradient(50% 75% at 58% 0%, rgb(var(--warm-rgb) / 0.15), rgb(var(--warm-rgb) / 0.04) 60%, transparent);
+}
+
+/* The portrait stands on the top step and does not move with the pointer. */
 .portrait {
   position: absolute;
-  left: 50%;
-  bottom: 0;
+  left: var(--p-left);
+  bottom: calc(var(--a-floor) - 1.25rem);
   z-index: 1;
-  height: 71%;
+  height: var(--p-height);
   aspect-ratio: 612 / 872;
-  max-width: 92%;
   translate: -50% 0;
 }
 
-/* Backlit by the window: a hairline of mint along the silhouette and the
-   deep shadow underneath. Nothing is drawn over the face. */
+/* Backlit by the low sun on the right: a fine warm rim along that edge, a soft
+   spill past it, and the shadow it casts. Nothing is drawn over the face. */
 .photo {
   position: relative;
   height: 100%;
-  filter: drop-shadow(0 0 1px rgb(var(--accent-rgb) / 0.45)) drop-shadow(0 0 14px rgb(var(--accent-rgb) / 0.12))
-    drop-shadow(0 28px 36px rgb(0 0 0 / 0.6));
+  filter: drop-shadow(1.5px -0.5px 0 rgb(var(--sun-rgb) / 0.42)) drop-shadow(0 0 16px rgb(var(--warm-rgb) / 0.14))
+    drop-shadow(-10px 22px 28px rgb(0 0 0 / 0.6));
 }
 
-/* The cut-out has a flat lower edge; it dissolves into the floor's light. */
+/* The cut-out has a flat lower edge; it dissolves into the steps. */
 .photo img {
   display: block;
   width: auto;
   height: 100%;
-  max-width: 100%;
+  max-width: none;
   margin-inline: auto;
   object-fit: contain;
   object-position: bottom;
-  mask-image: linear-gradient(to bottom, #000 0, #000 72%, rgb(0 0 0 / 0.5) 89%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 76%, rgb(0 0 0 / 0.5) 90%, transparent 100%);
 }
 
-/* -- The scroll cue (from laptop widths) ------------------------------------------- */
+/* Shade over the scene where the copy sits (none on phones). */
+.shade {
+  display: none;
+}
+
+/* -- The right: interests and the flagship ---------------------------------------- */
+
+.side {
+  grid-area: side;
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(1.75rem, 4vh, 2.5rem);
+}
+
+.sideLabel {
+  display: block;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.interests {
+  display: none;
+}
+
+/* Phones: a horizontal card. */
+.panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  grid-template-areas: "thumb label" "thumb title";
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: 0.4rem;
+  max-width: 24rem;
+  padding: 0.75rem 3.75rem 0.75rem 0.75rem;
+  border: 1px solid var(--hair);
+  border-radius: 0.75rem;
+  background: rgb(36 37 43 / 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--ink);
+  transition: border-color 300ms var(--ease-standard);
+}
+
+.panel .sideLabel {
+  grid-area: label;
+  align-self: end;
+}
+
+.panelTitle {
+  grid-area: title;
+  align-self: start;
+  font-family: var(--font-hero-serif), Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.panelThumb {
+  grid-area: thumb;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  border-radius: 0.375rem;
+  background: #000;
+}
+
+.panelThumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: scale 700ms var(--ease-emphasized);
+}
+
+.panelGo {
+  position: absolute;
+  right: 0.875rem;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  translate: 0 -50%;
+  border: 1px solid var(--hair-strong);
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  transition:
+    background-color 300ms var(--ease-standard),
+    border-color 300ms var(--ease-standard),
+    color 300ms var(--ease-standard);
+}
+
+.panelGo svg {
+  transition: translate 400ms var(--ease-emphasized);
+}
+
+@media (hover: hover) {
+  .panel:hover {
+    border-color: rgb(var(--accent-rgb) / 0.45);
+  }
+
+  .panel:hover .panelGo {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .panel:hover .panelGo svg {
+    translate: 0.1rem -0.1rem;
+  }
+
+  .panel:hover .panelThumb img {
+    scale: 1.04;
+  }
+}
+
+.panel:focus-visible {
+  border-color: var(--accent);
+}
+
+/* -- The facts strip --------------------------------------------------------------- */
+
+.facts {
+  grid-area: facts;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  margin: clamp(2rem, 5vh, 3rem) 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hair);
+}
+
+/* The icon sits in the margin of its item (it lives in the dt, so the list's
+   markup stays dt/dd pairs). */
+.fact {
+  position: relative;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding-left: 3.375rem;
+}
+
+.factIcon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--hair);
+  border-radius: 9999px;
+  background: rgb(36 37 43 / 0.6);
+  color: var(--accent);
+}
+
+.factIcon svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.factLabel {
+  margin: 0.15rem 0 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.factValue {
+  margin: 0.2rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+/* -- The scroll cue (laptops) --------------------------------------------------------- */
 
 .scroll {
-  position: absolute;
-  right: 0;
-  bottom: 9%;
-  z-index: 2;
   display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 0.375rem;
-  color: var(--ink-2);
 }
 
 .scrollRing {
   display: grid;
+  flex: none;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
   border: 1px solid var(--hair-strong);
   border-radius: 9999px;
   font-size: 1rem;
+  color: var(--ink);
   transition:
     border-color 240ms var(--ease-standard),
     color 240ms var(--ease-standard),
@@ -446,9 +774,10 @@
 .scrollLabel {
   font-family: var(--font-mono);
   font-size: 0.625rem;
-  letter-spacing: 0.2em;
+  line-height: 1.7;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 
 @media (hover: hover) {
@@ -464,231 +793,297 @@
   color: var(--accent);
 }
 
-/* -- Facts: the title block --------------------------------------------------------- */
+/* -- Narrowest phones ------------------------------------------------------------------ */
 
-.block {
-  margin-top: clamp(1.5rem, 3.5vh, 2.25rem);
-}
-
-.number {
-  margin-bottom: 0.625rem;
-}
-
-.facts {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  margin: 0;
-  padding-top: 0;
-  border-top: 1px solid var(--hair-strong);
-}
-
-.fact {
-  position: relative;
-  min-width: 0;
-  padding: 0.875rem 0;
-  border-bottom: 1px solid var(--hair);
-}
-
-.fact:last-child {
-  border-bottom: 0;
-}
-
-.label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-
-/* A short mint rule grows in front of the label when its cell is pointed at. */
-.label::before {
-  content: "";
-  width: 0.75rem;
-  height: 1px;
-  background: var(--hair-strong);
-  transition:
-    width 400ms var(--ease-emphasized),
-    background-color 240ms var(--ease-standard);
-}
-
-.value {
-  margin: 0.4rem 0 0;
-  font-size: 0.9375rem;
-  line-height: 1.45;
-  letter-spacing: -0.005em;
-  color: var(--ink);
-}
-
-/* The flagship cell is the way in: a small real preview, the name, an arrow. */
-.flagship {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.875rem;
-  min-height: 2.75rem;
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.thumb {
-  position: relative;
-  flex: none;
-  width: 5.5rem;
-  aspect-ratio: 1024 / 501;
-  overflow: hidden;
-  border: 1px solid var(--hair-strong);
-  border-radius: 0.25rem;
-  background: #000;
-  transition:
-    border-color 300ms var(--ease-standard),
-    scale 600ms var(--ease-emphasized);
-}
-
-.thumb img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.flagName {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-weight: 500;
-}
-
-.flagName svg {
-  transition: translate 300ms var(--ease-emphasized);
-}
-
-@media (hover: hover) {
-  .fact:hover .label::before {
-    width: 1.5rem;
-    background: var(--accent);
-  }
-
-  .flagship:hover .thumb {
-    border-color: var(--accent);
-    scale: 1.05;
-  }
-
-  .flagship:hover .flagName svg {
-    translate: 0.25rem 0;
-  }
-}
-
-.flagship:focus-visible .thumb {
-  border-color: var(--accent);
-}
-
-/* -- From tablets up ------------------------------------------------------------------ */
-
-/* The narrowest phones: the eyebrow stays on one line. */
 @media (max-width: 23.99rem) {
-  .eyebrow {
-    letter-spacing: 0.17em;
+  .name {
+    font-size: 3.25rem;
   }
 
-  .eyebrow::before {
-    display: none;
+  .lead {
+    font-size: 1.625rem;
+  }
+
+  .scene {
+    height: clamp(14rem, 34svh, 18rem);
   }
 }
 
 @media (min-width: 40rem) {
   .facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 1.5rem;
-  }
-
-  .fact:nth-last-child(-n + 2) {
-    border-bottom: 0;
+    gap: 1.5rem 2rem;
   }
 }
 
-/* -- Tablets and up: copy left, the window right ---------------------------------------- */
+/* -- From 768px: the scene fills the hero behind the copy ------------------------------ */
 
 @media (min-width: 48rem) {
-  .grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+  .inner {
+    min-height: clamp(40rem, calc(100svh - var(--header-height)), 60rem);
+    grid-template-columns: minmax(0, 6.5fr) minmax(0, 5.5fr);
+    grid-template-rows: minmax(0, 1fr) auto auto auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      ". ."
+      "identity ."
+      "intro ."
+      "actions ."
+      "side ."
+      ". ."
+      "facts facts";
     column-gap: var(--spacing-grid);
-    row-gap: 0;
   }
 
-  .copy {
-    grid-column: 1 / span 7;
-    grid-row: 1;
+  .counter {
+    display: flex;
+    margin-bottom: 1.25rem;
   }
 
-  .title {
-    font-size: clamp(3.25rem, 9vw, 5.5rem);
+  .counter::after {
+    content: "";
+    width: 3.5rem;
+    height: 1px;
+    margin-left: 0.5rem;
+    background: var(--hair-strong);
   }
 
-  /* A tall, narrow window beside the copy. */
-  .stage {
-    grid-column: 8 / span 5;
-    grid-row: 1;
-    height: min(34rem, 58svh);
+  .name {
+    font-size: clamp(4rem, 11vw, 6rem);
+  }
+
+  .lead {
+    font-size: clamp(2rem, 4.4vw, 2.75rem);
+  }
+
+  .scene {
+    --a-left: 57%;
+    --a-width: 37%;
+    --a-top: 9%;
+    --a-floor: 22%;
+    --jamb: clamp(1.25rem, 2.6vw, 2.75rem);
+    --p-left: 76%;
+    --p-height: 47%;
+    position: absolute;
+    inset: 0;
+    height: auto;
+    margin: 0;
+  }
+
+  /* Under the copy: the wall darkens towards the left edge, and the strip's
+     ground darkens at the bottom. */
+  .shade {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, var(--background) 0%, rgb(8 10 13 / 0.85) 30%, transparent 52%),
+      linear-gradient(0deg, rgb(8 10 13 / 0.94) 0%, rgb(8 10 13 / 0.6) 12%, transparent 26%);
+  }
+
+  .side {
+    margin-top: clamp(1.75rem, 4vh, 2.5rem);
+  }
+
+  .facts {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 0;
   }
 }
 
+/* -- Laptops and up: the copy left, the arch across the centre, the side right ---------- */
+
 @media (min-width: 64rem) {
-  .copy {
-    grid-column: 1 / span 6;
+  .inner {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 5fr) minmax(0, 2fr);
+    grid-template-rows: minmax(0, 1fr) auto auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      ". . side"
+      "identity . side"
+      "intro . side"
+      "actions . side"
+      ". . side"
+      "facts facts scroll";
   }
 
-  .title {
-    /* Width and height both limit it: the three lines always fit the screen. */
-    font-size: clamp(3.5rem, min(7vw, 10.5svh), 7.25rem);
+  .name {
+    /* Width and height both limit it: it always fits the first screen. */
+    font-size: clamp(4.5rem, min(7.6vw, 13svh), 8rem);
   }
 
-  .stage {
-    grid-column: 7 / span 6;
-    align-self: stretch;
-    height: auto;
-    min-height: 28rem;
+  .lead {
+    font-size: clamp(2rem, min(3.2vw, 5.4svh), 3.25rem);
   }
 
-  .scroll {
+  .rest {
+    max-width: 30rem;
+  }
+
+  .actions {
+    gap: 1.25rem;
+  }
+
+  .scene {
+    --a-left: 44%;
+    --a-width: 37%;
+    --a-top: 5%;
+    --a-floor: 19%;
+    --p-left: 55.5%;
+    --p-height: 60%;
+  }
+
+  .pillar {
+    display: block;
+    position: absolute;
+    left: calc(var(--a-left) + var(--a-width) + var(--jamb) + 4%);
+    right: -2%;
+    top: 0;
+    bottom: calc(var(--a-floor) - 0.25rem);
+    background:
+      linear-gradient(90deg, rgb(var(--warm-rgb) / 0.06), transparent 7%),
+      linear-gradient(180deg, #111114, #0d0d10 60%, #0b0b0e);
+    mask-image: linear-gradient(180deg, transparent, #000 12%);
+  }
+
+  .shade {
+    background:
+      linear-gradient(90deg, var(--background) 0%, rgb(8 10 13 / 0.9) 26%, rgb(8 10 13 / 0.4) 40%, transparent 47%),
+      linear-gradient(0deg, rgb(8 10 13 / 0.94) 0%, rgb(8 10 13 / 0.55) 10%, transparent 20%);
+  }
+
+  /* The side column: the interests at the top, the flagship towards the bottom. */
+  .side {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    margin: 0;
+    padding-block: clamp(2rem, 9vh, 5rem) clamp(0.5rem, 2vh, 1.5rem);
+  }
+
+  /* A compact vertical card. */
+  .panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "label" "title" "thumb";
+    row-gap: 0.625rem;
+    width: 100%;
+    max-width: 13rem;
+    margin-top: auto;
+    padding: 1rem;
+  }
+
+  .panel .sideLabel {
+    align-self: start;
+  }
+
+  .panelTitle {
+    font-size: 1.625rem;
+  }
+
+  .panelThumb {
+    margin-top: 0.375rem;
+  }
+
+  .panelGo {
+    top: auto;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    translate: none;
+    width: 2rem;
+    height: 2rem;
+    background: rgb(8 10 13 / 0.7);
   }
 
   .facts {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 0;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
   }
 
-  .fact {
-    padding: 0.875rem 1.25rem 0;
-    border-bottom: 0;
-    border-left: 1px solid var(--hair);
-  }
-
-  .fact:first-child {
-    padding-left: 0;
-    border-left: 0;
+  .scroll {
+    grid-area: scroll;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-self: end;
+    gap: 0.875rem;
+    margin-top: 1.5rem;
+    border-radius: 0.5rem;
   }
 }
 
-/* -- Motion ------------------------------------------------------------------------------ */
+/* Laptops below 1280px: a wider copy column, the arch further right, the facts in two columns. */
+@media (min-width: 64rem) and (max-width: 79.99rem) {
+  .inner {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 3.5fr) minmax(0, 2.5fr);
+  }
+
+  .scene {
+    --a-left: 49%;
+    --a-width: 37%;
+    --p-left: 63%;
+    --p-height: 58%;
+  }
+
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 2rem;
+  }
+}
+
+/* -- Wide: the interests list on the dark pillar ---------------------------------------- */
+
+@media (min-width: 80rem) {
+  .interests {
+    display: block;
+  }
+
+  .interests ul {
+    display: grid;
+    gap: 0.95rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .interests li {
+    font-size: 0.6875rem;
+    line-height: 1.3;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .interests::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    margin-top: 1.25rem;
+    background: var(--hair-strong);
+  }
+}
+
+/* -- Motion ---------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The entrance, in order: the window settles (the portrait rises, see
-     .enter-rise), the eyebrow, the three lines of the name, the
-     introduction, the actions, the facts. Short, and nothing blurs. */
+  /* The entrance, in order: the scene settles and the portrait rises (see
+     .enter-rise in globals.css), then the role and the name, the
+     introduction, the actions, the side and the facts. Short; nothing blurs. */
   .in {
     animation: heroIn 800ms var(--ease-emphasized) var(--d, 0ms) both;
   }
 
   .lineIn {
-    animation: lineUp 1000ms var(--ease-emphasized) calc(var(--d, 0ms) + var(--i, 0) * 90ms) both;
+    animation: lineUp 1000ms var(--ease-emphasized) var(--d, 0ms) both;
   }
 
-  :is(.arch, .glow, .spill, .floor) {
-    animation: settle 1300ms ease both;
+  :is(.wall, .frame, .arch, .floor, .spill, .pillar) {
+    animation: settle 1100ms ease both;
   }
 
   .dial {
@@ -705,14 +1100,10 @@
     animation: spin 34s steps(408) infinite;
   }
 
-  .scrollRing svg {
-    animation: nudge 2400ms var(--ease-emphasized) 2s infinite;
-  }
-
-  /* With the opening: the window is already there when it opens onto the
-     page (the opening's halo lands on this dial), so the stage does not enter
-     again; the copy waits behind the opening, then follows it quickly. */
-  :global(html[data-intro]) :is(.arch, .glow, .spill, .floor) {
+  /* After the opening: the scene is already there when the opening opens
+     onto it (its halo lands on this dial), so it does not enter again; the
+     copy waits behind the opening, then follows it quickly. */
+  :global(html[data-intro]) :is(.wall, .frame, .arch, .floor, .spill, .pillar) {
     animation: none;
   }
 
@@ -728,12 +1119,8 @@
     animation: none;
   }
 
-  :global(html:is([data-intro="exiting"], [data-intro="done"])) .in {
+  :global(html:is([data-intro="exiting"], [data-intro="done"])) :is(.in, .lineIn) {
     animation-delay: calc(var(--d, 0ms) * 0.3 + 140ms);
-  }
-
-  :global(html:is([data-intro="exiting"], [data-intro="done"])) .lineIn {
-    animation-delay: calc(var(--d, 0ms) * 0.3 + var(--i, 0) * 70ms + 140ms);
   }
 }
 
@@ -769,46 +1156,21 @@
   }
 }
 
-@keyframes nudge {
-  0%,
-  60%,
-  100% {
-    translate: 0 0;
-  }
-  30% {
-    translate: 0 0.25rem;
-  }
-}
-
-/* -- Depth on scroll ------------------------------------------------------------------- */
+/* -- Depth on scroll: the scene sinks and recedes a little as the page moves on --------- */
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: scroll()) {
-    .depthCopy {
-      animation: copyAway linear both;
+    .depthScene {
+      animation: sceneAway linear both;
       animation-timeline: scroll(root);
-      animation-range: 0 75svh;
-    }
-
-    .depthStage {
-      animation: stageAway linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 75svh;
+      animation-range: 0 80svh;
     }
   }
 }
 
-@keyframes copyAway {
+@keyframes sceneAway {
   to {
-    translate: 0 -2.25rem;
-    opacity: 0.3;
-  }
-}
-
-@keyframes stageAway {
-  to {
-    translate: 0 3rem;
-    scale: 0.965;
-    opacity: 0.55;
+    translate: 0 2.5rem;
+    opacity: 0.6;
   }
 }

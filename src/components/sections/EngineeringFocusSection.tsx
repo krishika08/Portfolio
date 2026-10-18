@@ -1,47 +1,51 @@
-import type { CSSProperties } from "react";
-import { CapabilityCluster } from "@/components/portfolio/CapabilityCluster";
-import { SectionHeader } from "@/components/portfolio/SectionHeader";
-import { SheetRule } from "@/components/portfolio/SheetRule";
 import { Container } from "@/components/ui/Container";
-import { Grid } from "@/components/ui/Grid";
 import { Section } from "@/components/ui/Section";
 import { sectionIds } from "@/config/navigation";
-import { getCapabilityClusters } from "@/lib/content";
+import { getCapabilityClusters, getSkillEvidence } from "@/lib/content";
+import { FocusClient, type DetailedSkillEvidence } from "./FocusClient";
+import styles from "./Focus.module.css";
 
-// Capability → technologies → evidence, as a specification sheet. Evidence
-// is derived from project, experience and achievement data; nothing is
-// self-rated. Set on the graphite band, with the title held in view beside
-// the tables on wide screens.
+// 04 / Engineering Focus — The Technical Atlas
+// Data-driven representation of verified skills from src/content/skills.ts,
+// with genuine evidence linking each skill to projects, internships,
+// and certifications without any fabricated skill scores or percentages.
 export function EngineeringFocusSection() {
+  const clusters = getCapabilityClusters();
+
+  // Build the detailed evidence map for every verified skill
+  const evidenceMap: Record<string, DetailedSkillEvidence> = {};
+  for (const cluster of clusters) {
+    for (const cap of cluster.capabilities) {
+      const ev = getSkillEvidence(cap.name);
+      const key = cap.name.toLowerCase().replace(/\.js$/, "").trim();
+      evidenceMap[key] = {
+        projects: ev.projects.map((p) => ({
+          name: p.name,
+          slug: p.slug,
+          href: `/projects/${p.slug}`,
+        })),
+        experience: ev.experience.map((e) => ({
+          organization: e.organization,
+          role: e.role,
+        })),
+        achievements: ev.achievements.map((a) => ({
+          title: a.title,
+          details: a.details,
+        })),
+      };
+    }
+  }
+
   return (
     <Section
       id={sectionIds.focus}
       aria-labelledby="focus-title"
-      className="relative isolate border-y border-border-subtle bg-surface"
+      className={styles.section}
     >
+      <div className={styles.ambientGlowTop} aria-hidden="true" />
+      <div className={styles.ambientGlowCenter} aria-hidden="true" />
       <Container>
-        <SheetRule section={sectionIds.focus} className="mb-block" />
-        <Grid className="gap-y-block">
-          <SectionHeader
-            id="focus-title"
-            title="Engineering focus"
-            size="h2"
-            description="Skills grouped by capability. Where a skill has been used in a project, internship or certification, that evidence is listed beside it."
-            className="col-span-full lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:col-span-4 lg:self-start"
-          />
-          <div className="col-span-full grid gap-x-grid gap-y-block md:grid-cols-2 lg:col-span-8 lg:col-start-5">
-            {getCapabilityClusters().map((cluster, i) => (
-              <CapabilityCluster
-                key={cluster.id}
-                id={`focus-${cluster.id}`}
-                title={cluster.label}
-                capabilities={cluster.capabilities}
-                className="reveal"
-                style={{ "--delay": `${(i % 2) * 120}ms` } as CSSProperties}
-              />
-            ))}
-          </div>
-        </Grid>
+        <FocusClient clusters={clusters} evidenceMap={evidenceMap} />
       </Container>
     </Section>
   );

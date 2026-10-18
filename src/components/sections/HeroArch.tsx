@@ -1,10 +1,12 @@
 import { HeroDial } from "./HeroDial";
 import styles from "./Hero.module.css";
 
-// The view through the hero's arch: a night sky, the opening's dial hanging
-// above a drafted mountain range (the landscape the opening flies through),
-// three ridgelines from far to near. Pure geometry from a fixed seed,
-// computed once, identically on server and client. Decorative.
+// The view through the hero's arch at dusk: a darkening sky with the
+// opening's dial hanging in it, a low sun warming the horizon behind the
+// figure, and a drafted mountain range (the landscape the opening flies
+// through), three ridgelines from far to near, their crests catching the
+// light. Pure geometry from a fixed seed, computed once, identically on
+// server and client. Decorative.
 
 const W = 400;
 const H = 280;
@@ -67,22 +69,18 @@ function ridge(seed: number, base: number, peak: number, centre: number, contour
   };
 }
 
+// Far to near: tall, jagged far peaks; the near ridges open into a valley
+// where the figure stands, so their peaks rise on either side of her.
 const RIDGES: Ridge[] = [
-  ridge(0x61726368, 150, 62, 0.15, 2),
-  ridge(0x76696577, 196, 92, -0.4, 1),
-  ridge(0x6e656172, 246, 150, -0.55, 0),
+  ridge(0x61726368, 156, 18, -0.05, 2),
+  ridge(0x76696577, 204, 88, -0.45, 1),
+  ridge(0x6e656172, 250, 158, -0.6, 0),
 ];
 
-/** Stars in the sky above the range: [x%, y%, radius, opacity, accent]. */
+/** The first stars, high in the sky (the horizon is still light): [x%, y%, radius, opacity]. */
 const STARS = (() => {
   const rand = mulberry32(0x73746172);
-  return Array.from({ length: 46 }, () => [
-    rand() * 100,
-    rand() * 62,
-    0.6 + rand() * 0.8,
-    0.2 + rand() * 0.55,
-    rand() < 0.2 ? 1 : 0,
-  ]);
+  return Array.from({ length: 34 }, () => [rand() * 100, rand() * 40, 0.55 + rand() * 0.7, 0.18 + rand() * 0.5]);
 })();
 
 export function HeroArch() {
@@ -90,18 +88,14 @@ export function HeroArch() {
     <div aria-hidden className={styles.arch}>
       <div className={styles.view}>
         <svg className={styles.stars} viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
-          {STARS.map(([x, y, r, o, accent], i) => (
-            <ellipse
-              key={i}
-              cx={x}
-              cy={y}
-              rx={(r ?? 1) * 0.16}
-              ry={(r ?? 1) * 0.12}
-              style={{ fill: accent ? "var(--accent)" : "var(--ink)" }}
-              opacity={o}
-            />
+          {STARS.map(([x, y, r, o], i) => (
+            <ellipse key={i} cx={x} cy={y} rx={(r ?? 1) * 0.16} ry={(r ?? 1) * 0.12} style={{ fill: "var(--ink)" }} opacity={o} />
           ))}
         </svg>
+        {/* Clouds catching the last light, the low sun, and its rays: the light the whole stage is lit by. */}
+        <div className={styles.clouds} />
+        <div className={styles.rays} />
+        <div className={styles.sun} />
         {/* The square at the top of the opening: its centre is the centre of the arch's curve. */}
         <div className={styles.halo}>
           {/* The opening's halo flies here and the page opens through it (see components/intro). */}

@@ -1,4 +1,4 @@
-import type { Experience } from "@/types/content";
+import type { Experience, ExperienceGrowth } from "@/types/content";
 
 // Contributions are written only from resume-verified points. Do not add
 // metrics, scope or responsibilities that the resume does not state.
@@ -33,3 +33,22 @@ export const experience: Experience[] = [
     order: 2,
   },
 ];
+
+// The growth panel beside the timeline. Each theme restates contributions
+// above and names the roles that state it; nothing here goes beyond them.
+// Title: AAS "Built mobile-first, responsive interfaces…" → Crobstacle
+// "Worked on production web applications across the frontend and backend."
+export const experienceGrowth: ExperienceGrowth = {
+  title: "From responsive interfaces to production web applications.",
+  themes: [
+    // AAS: "mobile-first, responsive interfaces"; Crobstacle: "responsive development".
+    { id: "responsive", label: "Responsive interfaces", roles: ["aas-welfare-society", "crobstacle-ventures"] },
+    { id: "accessible", label: "Accessible layouts", roles: ["aas-welfare-society"] },
+    { id: "compatibility", label: "Cross-browser compatibility and usability", roles: ["aas-welfare-society"] },
+    { id: "workflows", label: "Validated contact and registration workflows", roles: ["aas-welfare-society"] },
+    { id: "full-stack", label: "Production apps across frontend and backend", roles: ["crobstacle-ventures"] },
+    { id: "diagnosis", label: "Diagnosing and resolving issues", roles: ["crobstacle-ventures"] },
+    { id: "reliability", label: "Reliability improvements", roles: ["crobstacle-ventures"] },
+    { id: "collaboration", label: "Git-based cross-functional collaboration", roles: ["crobstacle-ventures"] },
+  ],
+};

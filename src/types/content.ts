@@ -116,6 +116,24 @@ export interface Experience {
   featured?: boolean;
 }
 
+/**
+ * A reading aid beside the experience timeline: what the roles' documented
+ * contributions cover, side by side. Derived from `Experience.contributions`
+ * in their own words; it summarises and never adds scope, outcomes or lessons.
+ */
+export interface ExperienceGrowth {
+  /** How the scope changed from role to role, in the contributions' own words. */
+  title: string;
+  themes: ExperienceTheme[];
+}
+
+export interface ExperienceTheme {
+  id: string;
+  label: string;
+  /** The roles (Experience ids) whose contributions state this theme. */
+  roles: string[];
+}
+
 // ── Education & achievements ───────────────────────────────────────────────
 
 export interface Education {
@@ -202,10 +220,107 @@ export interface NavItem {
   section?: string;
   /** Route prefix that also marks this item active, e.g. "/projects". */
   activePrefix?: string;
+  /** Shown inline only where the header has room for every link (lg and up). */
+  secondary?: boolean;
 }
 
 export interface SocialLink {
   id: "github" | "linkedin" | "email";
   label: string;
   href: string;
+}
+
+// ── DSA & LeetCode Journey ──────────────────────────────────────────────────
+
+export type DSAProblemDifficulty = "Easy" | "Medium" | "Hard";
+
+export interface DSAProblem {
+  id: string;
+  number: number;
+  title: string;
+  difficulty: DSAProblemDifficulty;
+  url: string;
+  topicId: string;
+  pattern: string;
+  notes?: string;
+}
+
+export interface DSATopic {
+  id: string;
+  name: string;
+  label: string;
+  badge?: string;
+  summary: string;
+  corePatterns: string[];
+}
+
+export interface DSAPracticeInsight {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface DSAJourney {
+  title: {
+    line1: string;
+    line2: string;
+    accent: string;
+  };
+  subtitle: string;
+  handwrittenAnnotation: string;
+  quote: string;
+  archImage: ImageAsset;
+  streakImage: ImageAsset;
+  topics: DSATopic[];
+  problems: DSAProblem[];
+  insights: DSAPracticeInsight[];
+  closingQuote: string;
+  pillars: {
+    icon: string;
+    title: string;
+    subtitle: string;
+  }[];
+}
+
+// ── Community & Events ──────────────────────────────────────────────────────
+
+export type CommunityEventStatus = "attended" | "upcoming";
+
+export interface CommunityEvent {
+  id: string;
+  title: string;
+  status: CommunityEventStatus;
+  statusLabel: string;
+  category: string;
+  year: string;
+  location?: string;
+  description: string;
+  photos?: ImageAsset[];
+  visualImage?: ImageAsset;
+  linkedInPostUrl?: string;
+  actionText?: string;
+  actionHref?: string;
+}
+
+export interface CommunityLearning {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface CommunitySectionData {
+  title: {
+    lead: string;
+    emphasis: string;
+  };
+  subtitle: string;
+  handwrittenAnnotation: string;
+  tagline: string;
+  heroImage: ImageAsset;
+  events: CommunityEvent[];
+  keyLearningsHeader: {
+    title: string;
+    description: string;
+  };
+  learnings: CommunityLearning[];
 }

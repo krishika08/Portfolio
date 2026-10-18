@@ -6,23 +6,22 @@ interface BrandProps {
   onClick?: () => void;
 }
 
-/** The wordmark: the first letter drawn as a registration mark, then the name. Links home. */
+/**
+ * The monogram: the name's initial in the hero's editorial serif and a mint
+ * full stop. The full name is the link's accessible name. Links home.
+ */
 export function Brand({ name, href, onClick }: BrandProps) {
   return (
     <BaseLink
       href={href}
       onClick={onClick}
-      className="group -mx-micro inline-flex min-h-11 items-center gap-tight rounded-sm px-micro font-display text-[1.1875rem] leading-none font-semibold tracking-[-0.02em] text-foreground"
+      className="group -mx-2 inline-flex min-h-11 min-w-11 items-center rounded-sm px-2 font-[family-name:var(--font-hero-serif)] text-[1.75rem] leading-none font-semibold text-foreground"
     >
-      <span
-        aria-hidden
-        className="relative grid size-8 place-items-center rounded-xs border border-accent text-[1rem] text-accent transition-[background-color,color,rotate] duration-(--duration-standard) group-hover:rotate-90 group-hover:bg-accent group-hover:text-accent-foreground"
-      >
-        <span className="transition-[rotate] duration-(--duration-standard) group-hover:-rotate-90">
-          {name.charAt(0)}
-        </span>
+      <span aria-hidden>{name.charAt(0)}</span>
+      <span aria-hidden className="text-accent transition-transform duration-(--duration-standard) ease-emphasized group-hover:translate-x-0.5">
+        .
       </span>
-      {name}
+      <span className="sr-only">{name}</span>
     </BaseLink>
   );
 }

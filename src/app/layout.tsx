@@ -8,6 +8,7 @@ import { SkipLink } from "@/components/layout/SkipLink";
 import { MotionLayer } from "@/components/motion/MotionLayer";
 import { siteConfig } from "@/config/site";
 import { profile } from "@/content/profile";
+import { editorialSerif } from "@/lib/fonts";
 import { baseOpenGraph } from "@/lib/metadata";
 import "./globals.css";
 
@@ -65,7 +66,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     // suppressHydrationWarning: the gate script (below) sets data-intro on <html> before React runs.
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${editorialSerif.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* A plain inline script, parsed and run before first paint: it decides whether the opening
             plays (next/script's beforeInteractive would defer it until the app's JavaScript loads). */}

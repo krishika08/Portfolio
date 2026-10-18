@@ -12,6 +12,8 @@ export const sectionIds = {
   focus: "focus",
   education: "education",
   about: "about",
+  leetcode: "leetcode",
+  community: "community",
   resume: "resume",
   contact: "contact",
 } as const;
@@ -26,20 +28,23 @@ interface DestinationDefinition {
   label: string;
   /** Shorter label for the inline header link. */
   navLabel?: string;
-  /** Shown in the header's inline links (everything is in the Index). */
+  /** Shown inline in the header from tablets up; the rest join them on laptops (everything is in the Index). */
   inline?: boolean;
   /** False when the destination has nothing real to point at yet. */
   available?: boolean;
 }
 
-// Page order. Keep in step with app/page.tsx.
+// Page order. Keep in step with app/page.tsx. `navLabel` is the short header
+// label ("Skills" for Engineering focus: its content is skills, grouped).
 const definitions: DestinationDefinition[] = [
   { id: sectionIds.home, label: "Home" },
-  { id: sectionIds.work, label: "Selected work", navLabel: "Work", inline: true },
+  { id: sectionIds.work, label: "Selected work", navLabel: "Projects", inline: true },
   { id: sectionIds.experience, label: "Experience", inline: true },
-  { id: sectionIds.focus, label: "Engineering focus" },
-  { id: sectionIds.education, label: "Education & achievements" },
+  { id: sectionIds.focus, label: "Engineering focus", navLabel: "Skills" },
+  { id: sectionIds.education, label: "Education & achievements", navLabel: "Education" },
   { id: sectionIds.about, label: "About", inline: true },
+  { id: sectionIds.leetcode, label: "LeetCode & DSA", navLabel: "LeetCode", inline: true },
+  { id: sectionIds.community, label: "Community & Events", navLabel: "Community", inline: true },
   // No resume file, no Resume destination: nothing here is ever a dead link.
   { id: sectionIds.resume, label: "Resume", available: Boolean(profile.resume) },
   { id: sectionIds.contact, label: "Contact", inline: true },
@@ -72,12 +77,16 @@ export const destinationTotal = destinations.length;
 export const destinationNumber = (id: SectionId): number | undefined =>
   destinations.find((destination) => destination.id === id)?.number;
 
-/** The header's inline links (the Work link also marks case-study pages). */
-export const primaryNavigation: NavItem[] = destinations
-  .filter((destination) => destination.inline)
-  .map((destination) => ({
-    label: destination.navLabel,
-    href: destination.href,
-    section: destination.id,
-    ...(destination.id === sectionIds.work && { activePrefix: "/projects" }),
-  }));
+/**
+ * The header's links: every destination, in page order. `secondary` ones are
+ * shown only where the bar has room for all of them (the rest appear from
+ * tablets up; on phones the Index is the menu). The Projects link also marks
+ * case-study pages.
+ */
+export const primaryNavigation: NavItem[] = destinations.map((destination) => ({
+  label: destination.navLabel,
+  href: destination.href,
+  section: destination.id,
+  secondary: !destination.inline,
+  ...(destination.id === sectionIds.work && { activePrefix: "/projects" }),
+}));

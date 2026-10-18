@@ -123,6 +123,44 @@ export function buildNavPreviews(): Record<string, ReactNode> {
     );
   }
 
+  previews[sectionIds.leetcode] = (
+    <div className={styles.pvSheet}>
+      <span className="block w-44 rounded-sm border border-border-strong bg-surface p-4">
+        <span className="flex items-center justify-between text-caption font-mono text-accent">
+          <span>LEETCODE / DSA</span>
+          <span>● ACTIVE</span>
+        </span>
+        <span className="mt-2 block text-body-sm font-medium text-foreground">
+          The Problem-Solving Lab
+        </span>
+        <span className="mt-2.5 flex flex-wrap gap-1">
+          {["Arrays", "Trees", "Graphs", "DP"].map((topic) => (
+            <span key={topic} className="rounded bg-surface-elevated px-1.5 py-0.5 text-[10px] text-muted">
+              {topic}
+            </span>
+          ))}
+        </span>
+      </span>
+    </div>
+  );
+
+  previews[sectionIds.community] = (
+    <div className={styles.pvSheet}>
+      <span className="block w-48 rounded-sm border border-border-strong bg-surface p-4">
+        <span className="flex items-center justify-between text-caption font-mono text-accent">
+          <span>COMMUNITY</span>
+          <span>● AWS 2025/2026</span>
+        </span>
+        <span className="mt-2 block text-body-sm font-medium text-foreground">
+          AWS Community Day
+        </span>
+        <span className="mt-2 block text-caption text-secondary">
+          Dehradun · Cloud Community
+        </span>
+      </span>
+    </div>
+  );
+
   if (profile.resume) {
     previews[sectionIds.resume] = (
       <div className={styles.pvSheet}>
